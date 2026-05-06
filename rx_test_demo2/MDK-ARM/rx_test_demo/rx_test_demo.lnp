@@ -1,0 +1,28 @@
+--cpu Cortex-M3
+"rx_test_demo\startup_stm32f103xb.o"
+"rx_test_demo\main.o"
+"rx_test_demo\gpio.o"
+"rx_test_demo\dma.o"
+"rx_test_demo\usart.o"
+"rx_test_demo\stm32f1xx_it.o"
+"rx_test_demo\stm32f1xx_hal_msp.o"
+"rx_test_demo\stm32f1xx_hal_timebase_tim.o"
+"rx_test_demo\stm32f1xx_hal_gpio_ex.o"
+"rx_test_demo\stm32f1xx_hal_tim.o"
+"rx_test_demo\stm32f1xx_hal_tim_ex.o"
+"rx_test_demo\stm32f1xx_hal_uart.o"
+"rx_test_demo\stm32f1xx_hal.o"
+"rx_test_demo\stm32f1xx_hal_rcc.o"
+"rx_test_demo\stm32f1xx_hal_rcc_ex.o"
+"rx_test_demo\stm32f1xx_hal_gpio.o"
+"rx_test_demo\stm32f1xx_hal_dma.o"
+"rx_test_demo\stm32f1xx_hal_cortex.o"
+"rx_test_demo\stm32f1xx_hal_pwr.o"
+"rx_test_demo\stm32f1xx_hal_flash.o"
+"rx_test_demo\stm32f1xx_hal_flash_ex.o"
+"rx_test_demo\stm32f1xx_hal_exti.o"
+"rx_test_demo\system_stm32f1xx.o"
+--strict --scatter "rx_test_demo\rx_test_demo.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "rx_test_demo.map" -o rx_test_demo\rx_test_demo.axf
