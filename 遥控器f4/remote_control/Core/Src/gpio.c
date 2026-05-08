@@ -58,7 +58,7 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pins : cross_key_SW1_Pin cross_key_SW2_Pin cross_key_SW3_Pin cross_key_SW4_Pin */
   GPIO_InitStruct.Pin = cross_key_SW1_Pin|cross_key_SW2_Pin|cross_key_SW3_Pin|cross_key_SW4_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : key_1_Pin key_2_Pin key_3_Pin key_4_Pin
@@ -66,7 +66,7 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = key_1_Pin|key_2_Pin|key_3_Pin|key_4_Pin
                           |key_5_Pin|key_6_Pin|swtich_1_Pin|swtich_2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pins : SX1281_MD0_Pin SX1281_MD1_Pin */
