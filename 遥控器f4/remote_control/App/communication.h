@@ -6,6 +6,7 @@
 #include "tim.h"
 #include "dma.h"
 #include <stdint.h>
+#include "Datapool.h"
 
 #define RING_BUF_SIZE 256
 #define DMA_BUF_SIZE  64
@@ -27,8 +28,7 @@ typedef struct {
     uint16_t ch2;
     uint16_t ch3;
     uint16_t ch4;
-    uint16_t key1;
-    uint16_t key2;
+    uint16_t key;
     uint8_t crc;
     uint8_t tail;      // e.g. 0xDE
 } JoystickFrame_t;
@@ -61,7 +61,7 @@ typedef struct {
 
     /* 解析出来/待发送的业务数据 */
     uint16_t send_joystick[4]; 
-    uint16_t send_key[2];
+    uint16_t send_key;
     uint16_t recv_xyz[3];
 } CommContext;
 
@@ -74,7 +74,7 @@ void Communication_Task_Loop(void);
 void Communication_SendData(const uint8_t* data, uint16_t len);
 
 // 业务层接口：设置当前要发送的摇杆和按键数据
-void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t key1, uint16_t key2);
+void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t key);
 
 // HAL 中断相关的回调接口
 void Comm_Timer_Callback_Wrapper(void);

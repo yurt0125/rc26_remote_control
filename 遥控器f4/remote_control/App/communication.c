@@ -65,8 +65,7 @@ void Communication_Task_Init(UART_HandleTypeDef *huart)
     g_Comm.send_joystick[2] = 0xBC9A;
     g_Comm.send_joystick[3] = 0x0FED;
 
-    g_Comm.send_key[0] = 0x0000;
-    g_Comm.send_key[1] = 0x0000;
+    g_Comm.send_key = 0x3412;
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
     
@@ -97,7 +96,7 @@ void Communication_Task_Loop(void)
             XYZFrame_t* pFrame = (XYZFrame_t*)frame_buf;
             
             // 验证帧尾是否对应 0xED
-            if (pFrame->tail == 0xED && pFrame->crc == crc8(frame_buf+2, sizeof(XYZFrame_t) - 2)) {
+            if (pFrame->tail == 0xED && pFrame->crc == crc8(frame_buf+2, sizeof(XYZFrame_t) - 4)) {
                 // 提取解包好的 XYZ 数据 (均为 16位 uint16_t 数据)
                 g_Comm.recv_xyz[0] = pFrame->x;
                 g_Comm.recv_xyz[1] = pFrame->y;
@@ -118,7 +117,7 @@ void Communication_Task_Loop(void)
 
 void Comm_Timer_Callback_Wrapper(void)
 {
-        
+    Communication_SetJoystickAndKeyData(joystick_Buf[0],joystick_Buf[1],joystick_Buf[2],joystick_Buf[3],button_Buf);
 		JoystickFrame_t frame;
     frame.header[0] = 0xAA;
     frame.header[1] = 0x55;
@@ -127,9 +126,8 @@ void Comm_Timer_Callback_Wrapper(void)
     frame.ch2 = g_Comm.send_joystick[1];
     frame.ch3 = g_Comm.send_joystick[2];
     frame.ch4 = g_Comm.send_joystick[3];
-    frame.key1 = g_Comm.send_key[0];
-    frame.key2 = g_Comm.send_key[1];
-    frame.crc = crc8((uint8_t*)&frame + 2, sizeof(JoystickFrame_t) - 2);
+    frame.key = g_Comm.send_key;
+    frame.crc = crc8((uint8_t*)&frame + 2, sizeof(JoystickFrame_t) - 4);
     frame.tail = 0xDE;
 
     uint8_t* ptr = (uint8_t*)&frame;
@@ -159,14 +157,13 @@ void Communication_SendData(const uint8_t* data, uint16_t len)
     }
 }
 
-void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t key1, uint16_t key2)
+void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t key)
 {
-    g_Comm.send_joystick[0] = ch1;
-    g_Comm.send_joystick[1] = ch2;
-    g_Comm.send_joystick[2] = ch3;
-    g_Comm.send_joystick[3] = ch4;
-    g_Comm.send_key[0] = key1;
-    g_Comm.send_key[1] = key2;
+//    g_Comm.send_joystick[0] = ch1;
+//    g_Comm.send_joystick[1] = ch2;
+//    g_Comm.send_joystick[2] = ch3;
+//    g_Comm.send_joystick[3] = ch4;
+    g_Comm.send_key = key;
 }
 
 void Comm_UartTxCplt_Callback_Wrapper(UART_HandleTypeDef *huart)
