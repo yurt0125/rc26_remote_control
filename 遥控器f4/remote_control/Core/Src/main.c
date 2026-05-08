@@ -176,21 +176,27 @@ void SystemClock_Config(void)
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t size)
 {
     Comm_UartRx_Callback_Wrapper(huart, size);
+    HMI_UartRx_Callback_Wrapper(huart, size);
+
 }
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 {
     Comm_UartError_Callback_Wrapper(huart);
+    HMI_UartTxCplt_Callback_Wrapper(huart);
+
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
     Comm_UartTxCplt_Callback_Wrapper(huart);
+    HMI_UartError_Callback_Wrapper(huart);
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
     JOY_AdcConvCplt_Callback_Wrapper(hadc);
+    KEY_AdcConvCplt_Callback_Wrapper(hadc);
 }
 /* USER CODE END 4 */
 
@@ -214,7 +220,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
   else if (htim->Instance == TIM1)
   {
-    // ���÷�װ�Ķ�ʱ���ص���������ͨ��ģ��ʹ��
     Comm_Timer_Callback_Wrapper();
   }
   /* USER CODE END Callback 1 */

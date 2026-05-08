@@ -25,7 +25,12 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "adc.h"
 #include "communication.h"
+#include "button.h"
+#include "joystick.h"
+#include "key.h"
+#include "tjc_huart_hmi.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -165,9 +170,11 @@ void StartDefaultTask(void *argument)
 void Display_task(void *argument)
 {
   /* USER CODE BEGIN Display_task */
+  HMI_Task_Init(&huart2);
   /* Infinite loop */
   for(;;)
   {
+    HMI_Task_Loop();
     osDelay(1);
   }
   /* USER CODE END Display_task */
@@ -184,7 +191,7 @@ void Communication_task(void *argument)
 {
   /* USER CODE BEGIN Communication_task */
   /* Infinite loop */
-	Communication_Task_Init(&huart2);
+	Communication_Task_Init(&huart3);
   for(;;)
   {
     Communication_Task_Loop();
@@ -203,10 +210,15 @@ void Communication_task(void *argument)
 void Button_task(void *argument)
 {
   /* USER CODE BEGIN Button_task */
+  Joystick_Task_Init(&hadc2);
+  Key_Task_Init(&hadc1);
+  Button_Task_Init();
   /* Infinite loop */
   for(;;)
   {
-		Communication_Task_Loop();
+    Joystick_Task_Loop();
+    Key_Task_Loop();
+    Button_Task_Loop();
     osDelay(1);
   }
   /* USER CODE END Button_task */

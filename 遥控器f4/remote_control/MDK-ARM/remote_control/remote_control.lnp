@@ -44,6 +44,7 @@
 "remote_control\joystick.o"
 "remote_control\key.o"
 "remote_control\tjc_huart_hmi.o"
+"remote_control\button.o"
 --strict --scatter "remote_control\remote_control.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

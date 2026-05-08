@@ -52,8 +52,8 @@ extern HMIContext g_HMI;
 void HMI_Task_Init(UART_HandleTypeDef *huart);
 void HMI_Task_Loop(void);
 
-// HAL 涓?鏂?鐩稿叧鐨勫洖璋冩帴鍙?
-void HMI_Timer_Callback_Wrapper(void);
+// HAL 相关的回调接口
+// void HMI_Timer_Callback_Wrapper(void);
 void HMI_UartRx_Callback_Wrapper(UART_HandleTypeDef *huart, uint16_t size);
 void HMI_UartTxCplt_Callback_Wrapper(UART_HandleTypeDef *huart);
 void HMI_UartError_Callback_Wrapper(UART_HandleTypeDef *huart);
