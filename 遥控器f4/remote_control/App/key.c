@@ -25,5 +25,31 @@ void KEY_AdcConvCplt_Callback_Wrapper(ADC_HandleTypeDef* hadc_)
         // 这里可以添加一些按键相关的 ADC 转换完成后的处理代码
         key_Buf[0] = key_AdcBuf[0];
         key_Buf[1] = key_AdcBuf[1];
+			
+				if(key_Buf[0]>3686)
+				{
+					button_Buf &= 0xFFF3; // 清除旧状态
+					button_Buf |= 0x8;		//赋值bit3-2：10
+				}else if(key_Buf[0]>409&&key_Buf[0]<=3686)
+				{
+					button_Buf &= 0xFFF3; // 清除旧状态
+					button_Buf |= 0x4;		//赋值bit3-2：01
+				}else
+				{
+					button_Buf &= 0xFFF3; // 清除旧状态
+				}
+				
+				if(key_Buf[1]>3686)
+				{
+					button_Buf &= 0xFFFC; // 清除旧状态
+					button_Buf |= 0x2;		//赋值bit1-0：10
+				}else if(key_Buf[1]>409&&key_Buf[1]<=3686)
+				{
+					button_Buf &= 0xFFFC; // 清除旧状态
+					button_Buf |= 0x1;		//赋值bit1-0：01
+				}else
+				{
+					button_Buf &= 0xFFFC; // 清除旧状态
+				}
     }
 }
