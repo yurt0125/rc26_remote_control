@@ -63,7 +63,7 @@ void Communication_Task_Init(UART_HandleTypeDef *huart)
     g_Comm.send_joystick[0] = 0x3412;
     g_Comm.send_joystick[1] = 0x7856;
     g_Comm.send_joystick[2] = 0xBC9A;
-    g_Comm.send_joystick[3] = 0x0FED;
+    g_Comm.send_joystick[3] = 0xF0DE;
 
     g_Comm.send_key = 0x3412;
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
@@ -112,6 +112,10 @@ void Communication_Task_Loop(void)
             // 没有找到帧头，抛弃头部第一字节，继续循环寻头
             g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
         }
+    }
+    if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14) == GPIO_PIN_SET)
+    {
+        Comm_Timer_Callback_Wrapper();
     }
 }
 

@@ -79,7 +79,7 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin : SX1281_AUX_Pin */
   GPIO_InitStruct.Pin = SX1281_AUX_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(SX1281_AUX_GPIO_Port, &GPIO_InitStruct);
 
 }

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [remote_control\remote_control.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image remote_control\remote_control.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Fri May  8 17:54:49 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Fri May  8 22:56:58 2026
 <BR><P>
 <H3>Maximum Stack Usage =        184 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -644,7 +644,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit_DMA
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PeriodElapsedCallback
+<BR>[Called By]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_Task_Loop
 </UL>
 
 <P><STRONG><a name="[93]"></a>Comm_UartError_Callback_Wrapper</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, communication.o(.text.Comm_UartError_Callback_Wrapper))
@@ -680,14 +680,17 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_task
 </UL>
 
-<P><STRONG><a name="[99]"></a>Communication_Task_Loop</STRONG> (Thumb, 262 bytes, Stack size 28 bytes, communication.o(.text.Communication_Task_Loop))
-<BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = Communication_Task_Loop
+<P><STRONG><a name="[99]"></a>Communication_Task_Loop</STRONG> (Thumb, 292 bytes, Stack size 32 bytes, communication.o(.text.Communication_Task_Loop))
+<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = Communication_Task_Loop &rArr; Comm_Timer_Callback_Wrapper &rArr; HAL_UART_Transmit_DMA &rArr; HAL_DMA_Start_IT
+</UL>
+<BR>[Calls]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
+<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Comm_Timer_Callback_Wrapper
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_task
 </UL>
 
 <P><STRONG><a name="[68]"></a>Communication_task</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, freertos.o(.text.Communication_task))
-<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = Communication_task &rArr; osDelay &rArr; vTaskDelay &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
+<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = Communication_task &rArr; Communication_Task_Loop &rArr; Comm_Timer_Callback_Wrapper &rArr; HAL_UART_Transmit_DMA &rArr; HAL_DMA_Start_IT
 </UL>
 <BR>[Calls]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_Task_Loop
 <LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_Task_Init
@@ -864,6 +867,7 @@ Global Symbols
 
 <P><STRONG><a name="[8a]"></a>HAL_GPIO_ReadPin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_gpio.o(.text.HAL_GPIO_ReadPin))
 <BR><BR>[Called By]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Button_Task_Loop
+<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_Task_Loop
 </UL>
 
 <P><STRONG><a name="[98]"></a>HAL_GPIO_WritePin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin))
@@ -1025,7 +1029,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[b7]"></a>HAL_TIM_IRQHandler</STRONG> (Thumb, 334 bytes, Stack size 16 bytes, stm32f4xx_hal_tim.o(.text.HAL_TIM_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; Comm_Timer_Callback_Wrapper &rArr; HAL_UART_Transmit_DMA &rArr; HAL_DMA_Start_IT
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = HAL_TIM_IRQHandler
 </UL>
 <BR>[Calls]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIMEx_CommutCallback
 <LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_TriggerCallback
@@ -1072,11 +1076,8 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Joystick_Task_Init
 </UL>
 
-<P><STRONG><a name="[bb]"></a>HAL_TIM_PeriodElapsedCallback</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, main.o(.text.HAL_TIM_PeriodElapsedCallback))
-<BR><BR>[Stack]<UL><LI>Max Depth = 52<LI>Call Chain = HAL_TIM_PeriodElapsedCallback &rArr; Comm_Timer_Callback_Wrapper &rArr; HAL_UART_Transmit_DMA &rArr; HAL_DMA_Start_IT
-</UL>
-<BR>[Calls]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Comm_Timer_Callback_Wrapper
-<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_IncTick
+<P><STRONG><a name="[bb]"></a>HAL_TIM_PeriodElapsedCallback</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, main.o(.text.HAL_TIM_PeriodElapsedCallback))
+<BR><BR>[Calls]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_IncTick
 </UL>
 <BR>[Called By]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IRQHandler
 </UL>
@@ -1173,9 +1174,9 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_DMA_Start_IT
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Task_Loop
-<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Comm_Timer_Callback_Wrapper
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Comm_UartTxCplt_Callback_Wrapper
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_UartTxCplt_Callback_Wrapper
+<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Comm_Timer_Callback_Wrapper
 </UL>
 
 <P><STRONG><a name="[c8]"></a>HAL_UART_TxCpltCallback</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, main.o(.text.HAL_UART_TxCpltCallback))
@@ -1309,7 +1310,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d5]"></a>MX_GPIO_Init</STRONG> (Thumb, 254 bytes, Stack size 48 bytes, gpio.o(.text.MX_GPIO_Init))
+<P><STRONG><a name="[d5]"></a>MX_GPIO_Init</STRONG> (Thumb, 252 bytes, Stack size 48 bytes, gpio.o(.text.MX_GPIO_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = MX_GPIO_Init &rArr; HAL_GPIO_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
@@ -1425,14 +1426,14 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(.text)
 </UL>
 <P><STRONG><a name="[23]"></a>TIM1_UP_TIM10_IRQHandler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, stm32f4xx_it.o(.text.TIM1_UP_TIM10_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = TIM1_UP_TIM10_IRQHandler &rArr; HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; Comm_Timer_Callback_Wrapper &rArr; HAL_UART_Transmit_DMA &rArr; HAL_DMA_Start_IT
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = TIM1_UP_TIM10_IRQHandler &rArr; HAL_TIM_IRQHandler
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IRQHandler
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
 <P><STRONG><a name="[26]"></a>TIM2_IRQHandler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, stm32f4xx_it.o(.text.TIM2_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = TIM2_IRQHandler &rArr; HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; Comm_Timer_Callback_Wrapper &rArr; HAL_UART_Transmit_DMA &rArr; HAL_DMA_Start_IT
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = TIM2_IRQHandler &rArr; HAL_TIM_IRQHandler
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IRQHandler
 </UL>
