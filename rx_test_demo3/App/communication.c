@@ -69,6 +69,9 @@ void Communication_Task_Init(UART_HandleTypeDef *huart)
     
     // 挂载 DMA 接收空闲中断至 DMA 专用连续缓冲区
     HAL_UARTEx_ReceiveToIdle_DMA(g_Comm.huart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
+    
+    // 【添加这行】：关闭 DMA 过半中断，防止 RxEventCallback 触发多次导致前面的数据被重复拷贝入 fifo
+    __HAL_DMA_DISABLE_IT(g_Comm.huart->hdmarx, DMA_IT_HT); 
 }
 
 void Communication_Task_Loop(void)
@@ -103,7 +106,17 @@ void Communication_Task_Loop(void)
                 g_Comm.rec_send_key = pFrame->key;
 
                 // 将 FIFO 头部读取指针越过已经正确消费的这一帧
-                g_Comm.rx_fifo.head = p; 
+                g_Comm.rx_fifo.head = p;
+//								last_rx_stamp=rx_stamp;
+//								rx_stamp=HAL_GetTick();
+				rx_cnt++;
+				if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_4) == GPIO_PIN_SET)
+				{
+//					Comm_Timer_Callback_Wrapper();
+					tx_cnt++;
+					// 方案一：由于仅发送 2 字节调试数据，直接使用阻塞发送，避免 DMA 冲突和状态覆盖（推荐）
+//					HAL_UART_Transmit(&huart1, (uint8_t*)&tx_cnt, 2, 10); 			
+				}
             } else {
                 // 坏帧，跳过头部第一个错误字节，继续往后寻找
                 g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
@@ -113,10 +126,7 @@ void Communication_Task_Loop(void)
             g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
         }
     }
-//    if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14) == GPIO_PIN_SET)
-//    {
-//        Comm_Timer_Callback_Wrapper();
-//    }
+    
 }
 
 void Comm_Timer_Callback_Wrapper(void)
@@ -197,6 +207,9 @@ void Comm_UartRx_Callback_Wrapper(UART_HandleTypeDef *huart, uint16_t size)
         
         // 立即开启下一次 DMA 接收，防止漏包
         HAL_UARTEx_ReceiveToIdle_DMA(g_Comm.huart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
+        
+        // 【加上这行】：每次重启 DMA 后，库内部会重新打开 HT 中断，必须再次手动关闭它！
+        __HAL_DMA_DISABLE_IT(g_Comm.huart->hdmarx, DMA_IT_HT);
     }
 }
 

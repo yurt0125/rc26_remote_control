@@ -71,6 +71,7 @@ void Communication_Task_Init(UART_HandleTypeDef *huart)
     
     // 挂载 DMA 接收空闲中断至 DMA 专用连续缓冲区
     HAL_UARTEx_ReceiveToIdle_DMA(g_Comm.huart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
+    __HAL_DMA_DISABLE_IT(g_Comm.huart->hdmarx, DMA_IT_HT);
 }
 
 void Communication_Task_Loop(void)
@@ -104,6 +105,8 @@ void Communication_Task_Loop(void)
                 
                 // 将 FIFO 头部读取指针越过已经正确消费的这一帧
                 g_Comm.rx_fifo.head = p; 
+								rx_stamp=HAL_GetTick();
+								rx_cnt++;
             } else {
                 // 坏帧，跳过头部第一个错误字节，继续往后寻找
                 g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
@@ -113,10 +116,10 @@ void Communication_Task_Loop(void)
             g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
         }
     }
-    if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14) == GPIO_PIN_SET)
-    {
-        Comm_Timer_Callback_Wrapper();
-    }
+//    if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14) == GPIO_PIN_SET)
+//    {
+//        Comm_Timer_Callback_Wrapper();
+//    }
 }
 
 void Comm_Timer_Callback_Wrapper(void)
@@ -142,6 +145,7 @@ void Comm_Timer_Callback_Wrapper(void)
     // 尝试拉起发送：如果底部DMA空闲，且队列里有东西
     if (g_Comm.tx_busy == 0 && FIFO_Count(&g_Comm.tx_fifo) > 0) {
        Comm_UartTxCplt_Callback_Wrapper(g_Comm.huart); 
+//			tx_stamp=HAL_GetTick();
     }
 }
 
@@ -201,6 +205,7 @@ void Comm_UartRx_Callback_Wrapper(UART_HandleTypeDef *huart, uint16_t size)
         
         // 立即开启下一次 DMA 接收，防止漏包
         HAL_UARTEx_ReceiveToIdle_DMA(g_Comm.huart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
+        __HAL_DMA_DISABLE_IT(g_Comm.huart->hdmarx, DMA_IT_HT);
     }
 }
 

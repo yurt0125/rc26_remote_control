@@ -192,8 +192,20 @@ void Communication_task(void *argument)
   /* USER CODE BEGIN Communication_task */
   /* Infinite loop */
 	Communication_Task_Init(&huart3);
+	
   for(;;)
   {
+		if(tx_cnt<1000)
+		{
+			while(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14) != GPIO_PIN_SET){}
+			if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14) == GPIO_PIN_SET)
+			{
+					Comm_Timer_Callback_Wrapper();
+					tx_cnt++;
+//					last_tx_stamp=tx_stamp;
+//					tx_stamp=HAL_GetTick();
+			}
+		}
     Communication_Task_Loop();
     osDelay(1);
   }

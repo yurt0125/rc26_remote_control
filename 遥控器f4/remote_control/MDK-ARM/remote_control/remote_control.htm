@@ -3,7 +3,7 @@
 <title>Static Call Graph - [remote_control\remote_control.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image remote_control\remote_control.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Fri May  8 22:56:58 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Sat May  9 20:03:10 2026
 <BR><P>
 <H3>Maximum Stack Usage =        184 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -620,8 +620,8 @@ Global Symbols
 <P><STRONG><a name="[88]"></a>Button_Task_Loop</STRONG> (Thumb, 166 bytes, Stack size 40 bytes, button.o(.text.Button_Task_Loop))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = Button_Task_Loop
 </UL>
-<BR>[Calls]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
-<LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
+<BR>[Calls]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
+<LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
 </UL>
 <BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Button_task
 </UL>
@@ -644,7 +644,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit_DMA
 </UL>
-<BR>[Called By]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_Task_Loop
+<BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_task
 </UL>
 
 <P><STRONG><a name="[93]"></a>Comm_UartError_Callback_Wrapper</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, communication.o(.text.Comm_UartError_Callback_Wrapper))
@@ -655,7 +655,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_ErrorCallback
 </UL>
 
-<P><STRONG><a name="[95]"></a>Comm_UartRx_Callback_Wrapper</STRONG> (Thumb, 310 bytes, Stack size 16 bytes, communication.o(.text.Comm_UartRx_Callback_Wrapper))
+<P><STRONG><a name="[95]"></a>Comm_UartRx_Callback_Wrapper</STRONG> (Thumb, 322 bytes, Stack size 16 bytes, communication.o(.text.Comm_UartRx_Callback_Wrapper))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = Comm_UartRx_Callback_Wrapper &rArr; HAL_UARTEx_ReceiveToIdle_DMA &rArr; HAL_DMA_Start_IT
 </UL>
 <BR>[Calls]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UARTEx_ReceiveToIdle_DMA
@@ -671,7 +671,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_TxCpltCallback
 </UL>
 
-<P><STRONG><a name="[97]"></a>Communication_Task_Init</STRONG> (Thumb, 96 bytes, Stack size 16 bytes, communication.o(.text.Communication_Task_Init))
+<P><STRONG><a name="[97]"></a>Communication_Task_Init</STRONG> (Thumb, 108 bytes, Stack size 16 bytes, communication.o(.text.Communication_Task_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = Communication_Task_Init &rArr; HAL_UARTEx_ReceiveToIdle_DMA &rArr; HAL_DMA_Start_IT
 </UL>
 <BR>[Calls]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
@@ -680,19 +680,20 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_task
 </UL>
 
-<P><STRONG><a name="[99]"></a>Communication_Task_Loop</STRONG> (Thumb, 292 bytes, Stack size 32 bytes, communication.o(.text.Communication_Task_Loop))
-<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = Communication_Task_Loop &rArr; Comm_Timer_Callback_Wrapper &rArr; HAL_UART_Transmit_DMA &rArr; HAL_DMA_Start_IT
+<P><STRONG><a name="[99]"></a>Communication_Task_Loop</STRONG> (Thumb, 298 bytes, Stack size 40 bytes, communication.o(.text.Communication_Task_Loop))
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = Communication_Task_Loop
 </UL>
-<BR>[Calls]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
-<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Comm_Timer_Callback_Wrapper
+<BR>[Calls]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_task
 </UL>
 
-<P><STRONG><a name="[68]"></a>Communication_task</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, freertos.o(.text.Communication_task))
-<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = Communication_task &rArr; Communication_Task_Loop &rArr; Comm_Timer_Callback_Wrapper &rArr; HAL_UART_Transmit_DMA &rArr; HAL_DMA_Start_IT
+<P><STRONG><a name="[68]"></a>Communication_task</STRONG> (Thumb, 92 bytes, Stack size 0 bytes, freertos.o(.text.Communication_task))
+<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = Communication_task &rArr; osDelay &rArr; vTaskDelay &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
-<BR>[Calls]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_Task_Loop
+<BR>[Calls]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Comm_Timer_Callback_Wrapper
+<LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
+<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_Task_Loop
 <LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_Task_Init
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 </UL>
@@ -867,7 +868,7 @@ Global Symbols
 
 <P><STRONG><a name="[8a]"></a>HAL_GPIO_ReadPin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_gpio.o(.text.HAL_GPIO_ReadPin))
 <BR><BR>[Called By]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Button_Task_Loop
-<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_Task_Loop
+<LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_task
 </UL>
 
 <P><STRONG><a name="[98]"></a>HAL_GPIO_WritePin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin))
@@ -879,6 +880,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_DMA_Abort
 <LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_DMA_Init
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Button_Task_Loop
+<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Communication_Task_Loop
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_ClockConfig
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_OscConfig
 </UL>
@@ -1173,10 +1175,10 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_DMA_Start_IT
 </UL>
-<BR>[Called By]<UL><LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Task_Loop
+<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Comm_Timer_Callback_Wrapper
+<LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Task_Loop
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Comm_UartTxCplt_Callback_Wrapper
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_UartTxCplt_Callback_Wrapper
-<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Comm_Timer_Callback_Wrapper
 </UL>
 
 <P><STRONG><a name="[c8]"></a>HAL_UART_TxCpltCallback</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, main.o(.text.HAL_UART_TxCpltCallback))

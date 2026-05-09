@@ -104,6 +104,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 		Communication_Task_Loop();
+//		HAL_UART_Transmit(&huart1, (uint8_t*)&tx_cnt, 2, 10); 
   }
   /* USER CODE END 3 */
 }
