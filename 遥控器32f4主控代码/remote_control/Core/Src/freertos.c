@@ -31,6 +31,7 @@
 #include "joystick.h"
 #include "key.h"
 #include "tjc_huart_hmi.h"
+#include "stm32f4xx.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -191,6 +192,9 @@ void Communication_task(void *argument)
 {
   /* USER CODE BEGIN Communication_task */
   /* Infinite loop */
+  CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; 
+  DWT->CYCCNT = 0;
+  DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 	Communication_Task_Init(&huart3);
 	
   for(;;)
@@ -202,8 +206,8 @@ void Communication_task(void *argument)
 			{
 					Comm_Timer_Callback_Wrapper();
 					tx_cnt++;
-//					last_tx_stamp=tx_stamp;
-//					tx_stamp=HAL_GetTick();
+					last_tx_stamp=tx_stamp;
+					tx_stamp=DWT->CYCCNT/168;
 			}
 		}
     Communication_Task_Loop();

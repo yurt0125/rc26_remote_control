@@ -7,7 +7,7 @@
 #include "dma.h"
 #include <stdint.h>
 #include "Datapool.h"
-
+#include "stm32f4xx.h"
 #define RING_BUF_SIZE 256
 #define DMA_BUF_SIZE  64
 
