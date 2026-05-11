@@ -198,6 +198,26 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     JOY_AdcConvCplt_Callback_Wrapper(hadc);
     KEY_AdcConvCplt_Callback_Wrapper(hadc);
 }
+
+extern osThreadId_t CommunicationHandle; 
+
+// HAL库当外部中断发生时会调用这个函数
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    if(GPIO_Pin == GPIO_PIN_14)
+    {
+        // 如果还需要做双重电平确认（防抖）：
+        // if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14) == GPIO_PIN_SET)
+        
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        
+        // 发送任务通知给Communication_task解除挂起状态
+        vTaskNotifyGiveFromISR( (TaskHandle_t)CommunicationHandle, &xHigherPriorityTaskWoken );
+        
+        // 如果唤醒的通信任务优先级比当前正在执行的任务优先级高，要求立即进行任务切换
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    }
+}
 /* USER CODE END 4 */
 
 /**

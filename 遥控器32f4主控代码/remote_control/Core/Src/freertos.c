@@ -191,27 +191,26 @@ void Display_task(void *argument)
 void Communication_task(void *argument)
 {
   /* USER CODE BEGIN Communication_task */
-  /* Infinite loop */
   CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; 
   DWT->CYCCNT = 0;
   DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
-	Communication_Task_Init(&huart3);
-	
+  Communication_Task_Init(&huart3);
+  Comm_Timer_Callback_Wrapper();
   for(;;)
   {
-		if(tx_cnt<1000)
-		{
-			while(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14) != GPIO_PIN_SET){}
-			if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14) == GPIO_PIN_SET)
-			{
-					Comm_Timer_Callback_Wrapper();
-					tx_cnt++;
-					last_tx_stamp=tx_stamp;
-					tx_stamp=DWT->CYCCNT/168;
-			}
-		}
-    Communication_Task_Loop();
-    osDelay(1);
+      // 这里的 ulTaskNotifyTake 会挂起任务，直到中断ISR里面给出通知才继续往下走
+      // osWaitForever 表示无限期等待。此时任务不消耗任何CPU
+      ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+      
+      if(tx_cnt < 1000)
+      {
+          Comm_Timer_Callback_Wrapper();
+          tx_cnt++;
+          last_tx_stamp = tx_stamp;
+          tx_stamp = DWT->CYCCNT / 168; // 你的微秒计时光标获取
+      }
+      
+//      Communication_Task_Loop();
   }
   /* USER CODE END Communication_task */
 }
@@ -235,6 +234,7 @@ void Button_task(void *argument)
     Joystick_Task_Loop();
     Key_Task_Loop();
     Button_Task_Loop();
+    Communication_Task_Loop();
     osDelay(1);
   }
   /* USER CODE END Button_task */
