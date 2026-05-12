@@ -3,8 +3,8 @@
 
 CommContext g_Comm = {0};
 
-/* ================= »·ĞÎ»º³åÇø (FIFO) ²Ù×÷ ================= */
-// Êı¾İ´æÈëÎ²²¿ (tail)
+/* ================= ç¯å½¢ç¼“å†²åŒº (FIFO) æ“ä½œ ================= */
+// æ•°æ®å­˜å…¥å°¾éƒ¨ (tail)
 static void FIFO_Push(comm_FIFO_t* fifo, uint8_t data) {
     uint16_t next = (fifo->tail + 1) % RING_BUF_SIZE;
     if (next != fifo->head) { 
@@ -13,7 +13,7 @@ static void FIFO_Push(comm_FIFO_t* fifo, uint8_t data) {
     }
 }
 
-// Ö÷Ñ­»·´ÓÍ·²¿ (head) È¡³ö´¦Àí
+// ä¸»å¾ªç¯ä»å¤´éƒ¨ (head) å–å‡ºå¤„ç†
 static int FIFO_Pop(comm_FIFO_t* fifo, uint8_t* data) {
     if (fifo->head == fifo->tail) return 0; 
     *data = fifo->buffer[fifo->head];
@@ -59,7 +59,7 @@ void Communication_Task_Init(UART_HandleTypeDef *huart)
     g_Comm.huart = huart;
     g_Comm.tx_busy = 0;
     
-    // ³õÊ¼»¯Ò»Ğ©Ò¡¸Ë²âÊÔÊı¾İ
+    // åˆå§‹åŒ–ä¸€äº›æ‘‡æ†æµ‹è¯•æ•°æ®
     g_Comm.send_xyz[0]=0xA9CB;
     g_Comm.send_xyz[1]=0x6587;
     g_Comm.send_xyz[2]=0x2143;
@@ -67,28 +67,28 @@ void Communication_Task_Init(UART_HandleTypeDef *huart)
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
     
-    // ¹ÒÔØ DMA ½ÓÊÕ¿ÕÏĞÖĞ¶ÏÖÁ DMA ×¨ÓÃÁ¬Ğø»º³åÇø
+    // æŒ‚è½½ DMA æ¥æ”¶ç©ºé—²ä¸­æ–­è‡³ DMA ä¸“ç”¨è¿ç»­ç¼“å†²åŒº
     HAL_UARTEx_ReceiveToIdle_DMA(g_Comm.huart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
     
-    // ¡¾Ìí¼ÓÕâĞĞ¡¿£º¹Ø±Õ DMA ¹ı°ëÖĞ¶Ï£¬·ÀÖ¹ RxEventCallback ´¥·¢¶à´Îµ¼ÖÂÇ°ÃæµÄÊı¾İ±»ÖØ¸´¿½±´Èë fifo
+    // ã€æ·»åŠ è¿™è¡Œã€‘ï¼šå…³é—­ DMA è¿‡åŠä¸­æ–­ï¼Œé˜²æ­¢ RxEventCallback è§¦å‘å¤šæ¬¡å¯¼è‡´å‰é¢çš„æ•°æ®è¢«é‡å¤æ‹·è´å…¥ fifo
     __HAL_DMA_DISABLE_IT(g_Comm.huart->hdmarx, DMA_IT_HT); 
 }
 
 void Communication_Task_Loop(void)
 {
-    // ²»¶Ï´¦Àí RX FIFO ÀïÃæÊÕµ½µÄÊı¾İ£¬Ö±µ½Ê£ÓàÊı¾İ²»×ãÒ»Ö¡³¤¶È
+    // ä¸æ–­å¤„ç† RX FIFO é‡Œé¢æ”¶åˆ°çš„æ•°æ®ï¼Œç›´åˆ°å‰©ä½™æ•°æ®ä¸è¶³ä¸€å¸§é•¿åº¦
     while (FIFO_Count(&g_Comm.rx_fifo) >= sizeof(JoystickFrame_t)) {
         
         uint16_t t_head = g_Comm.rx_fifo.head;
         uint8_t byte1 = g_Comm.rx_fifo.buffer[t_head];
         uint8_t byte2 = g_Comm.rx_fifo.buffer[(t_head + 1) % RING_BUF_SIZE];
         
-        // ²éÕÒÖ¡Í· 0xAA 0x55
+        // æŸ¥æ‰¾å¸§å¤´ 0xAA 0x55
         if (byte1 == 0xAA && byte2 == 0x55) {
             uint8_t frame_buf[sizeof(JoystickFrame_t)];
             uint16_t p = t_head;
             
-            // ¸´ÖÆÒÉËÆÒ»Ö¡µÄËùÓĞÊı¾İ
+            // å¤åˆ¶ç–‘ä¼¼ä¸€å¸§çš„æ‰€æœ‰æ•°æ®
             for(int i = 0; i < sizeof(JoystickFrame_t); i++) {
                 frame_buf[i] = g_Comm.rx_fifo.buffer[p];
                 p = (p + 1) % RING_BUF_SIZE;
@@ -96,16 +96,16 @@ void Communication_Task_Loop(void)
             
             JoystickFrame_t* pFrame = (JoystickFrame_t*)frame_buf;
             
-            // ÑéÖ¤Ö¡Î²ÊÇ·ñ¶ÔÓ¦ 0xDE
+            // éªŒè¯å¸§å°¾æ˜¯å¦å¯¹åº” 0xDE
             if (pFrame->tail == 0xDE && pFrame->crc == crc8(frame_buf+2, sizeof(JoystickFrame_t) - 4)) {
-                // ÌáÈ¡½â°üºÃµÄ XYZ Êı¾İ (¾ùÎª 16Î» uint16_t Êı¾İ)
+                // æå–è§£åŒ…å¥½çš„ XYZ æ•°æ® (å‡ä¸º 16ä½ uint16_t æ•°æ®)
                 g_Comm.rec_joystick[0] = pFrame->ch1;
                 g_Comm.rec_joystick[1] = pFrame->ch2;
                 g_Comm.rec_joystick[2] = pFrame->ch3;
                 g_Comm.rec_joystick[3] = pFrame->ch4;
                 g_Comm.rec_send_key = pFrame->key;
 
-                // ½« FIFO Í·²¿¶ÁÈ¡Ö¸ÕëÔ½¹ıÒÑ¾­ÕıÈ·Ïû·ÑµÄÕâÒ»Ö¡
+                // å°† FIFO å¤´éƒ¨è¯»å–æŒ‡é’ˆè¶Šè¿‡å·²ç»æ­£ç¡®æ¶ˆè´¹çš„è¿™ä¸€å¸§
                 g_Comm.rx_fifo.head = p;
 //								last_rx_stamp=rx_stamp;
 //								rx_stamp=HAL_GetTick();
@@ -114,15 +114,15 @@ void Communication_Task_Loop(void)
 				{
 //					Comm_Timer_Callback_Wrapper();
 					tx_cnt++;
-					// ·½°¸Ò»£ºÓÉÓÚ½ö·¢ËÍ 2 ×Ö½Úµ÷ÊÔÊı¾İ£¬Ö±½ÓÊ¹ÓÃ×èÈû·¢ËÍ£¬±ÜÃâ DMA ³åÍ»ºÍ×´Ì¬¸²¸Ç£¨ÍÆ¼ö£©
+					// æ–¹æ¡ˆä¸€ï¼šç”±äºä»…å‘é€ 2 å­—èŠ‚è°ƒè¯•æ•°æ®ï¼Œç›´æ¥ä½¿ç”¨é˜»å¡å‘é€ï¼Œé¿å… DMA å†²çªå’ŒçŠ¶æ€è¦†ç›–ï¼ˆæ¨èï¼‰
 //					HAL_UART_Transmit(&huart1, (uint8_t*)&tx_cnt, 2, 10); 			
 				}
             } else {
-                // »µÖ¡£¬Ìø¹ıÍ·²¿µÚÒ»¸ö´íÎó×Ö½Ú£¬¼ÌĞøÍùºóÑ°ÕÒ
+                // åå¸§ï¼Œè·³è¿‡å¤´éƒ¨ç¬¬ä¸€ä¸ªé”™è¯¯å­—èŠ‚ï¼Œç»§ç»­å¾€åå¯»æ‰¾
                 g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
             }
         } else {
-            // Ã»ÓĞÕÒµ½Ö¡Í·£¬Å×ÆúÍ·²¿µÚÒ»×Ö½Ú£¬¼ÌĞøÑ­»·Ñ°Í·
+            // æ²¡æœ‰æ‰¾åˆ°å¸§å¤´ï¼ŒæŠ›å¼ƒå¤´éƒ¨ç¬¬ä¸€å­—èŠ‚ï¼Œç»§ç»­å¾ªç¯å¯»å¤´
             g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
         }
     }
@@ -135,7 +135,7 @@ void Comm_Timer_Callback_Wrapper(void)
 		XYZFrame_t frame;
     frame.header[0] = 0x55;
     frame.header[1] = 0xAA;
-    // °Ñ 3 ¸ö16Î»µÄ×ø±êÊı¾İÊı¾İ´ò°ü
+    // æŠŠ 3 ä¸ª16ä½çš„åæ ‡æ•°æ®æ•°æ®æ‰“åŒ…
     frame.x = g_Comm.send_xyz[0];
     frame.y = g_Comm.send_xyz[1];
     frame.z = g_Comm.send_xyz[2];
@@ -147,7 +147,7 @@ void Comm_Timer_Callback_Wrapper(void)
         FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
     }
         
-    // ³¢ÊÔÀ­Æğ·¢ËÍ£ºÈç¹ûµ×²¿DMA¿ÕÏĞ£¬ÇÒ¶ÓÁĞÀïÓĞ¶«Î÷
+    // å°è¯•æ‹‰èµ·å‘é€ï¼šå¦‚æœåº•éƒ¨DMAç©ºé—²ï¼Œä¸”é˜Ÿåˆ—é‡Œæœ‰ä¸œè¥¿
     if (g_Comm.tx_busy == 0 && FIFO_Count(&g_Comm.tx_fifo) > 0) {
        Comm_UartTxCplt_Callback_Wrapper(g_Comm.huart); 
     }
@@ -183,15 +183,15 @@ void Comm_UartTxCplt_Callback_Wrapper(UART_HandleTypeDef *huart)
         if (count > 0) {
             if (count > DMA_BUF_SIZE) count = DMA_BUF_SIZE;
             
-            // ½«Óû·¢ËÍµÄ¶ÓÁĞÊı¾İÌÚ³öµ½ DMA Ê¹ÓÃµÄ¹Ì¶¨ÏßĞÔÊı×éÖĞ
+            // å°†æ¬²å‘é€çš„é˜Ÿåˆ—æ•°æ®è…¾å‡ºåˆ° DMA ä½¿ç”¨çš„å›ºå®šçº¿æ€§æ•°ç»„ä¸­
             for (uint16_t i = 0; i < count; i++) {
                 FIFO_Pop(&g_Comm.tx_fifo, &g_Comm.dma_tx_buf[i]);
             }
             
-            g_Comm.tx_busy = 1; // Ëø¶¨·¢ËÍ×´Ì¬
+            g_Comm.tx_busy = 1; // é”å®šå‘é€çŠ¶æ€
             HAL_UART_Transmit_DMA(g_Comm.huart, g_Comm.dma_tx_buf, count);
         } else {
-            // TX FIFO Îª¿Õ£¬»Øµ½¿ÕÏĞ×´Ì¬
+            // TX FIFO ä¸ºç©ºï¼Œå›åˆ°ç©ºé—²çŠ¶æ€
             g_Comm.tx_busy = 0;
         }
     }
@@ -200,15 +200,15 @@ void Comm_UartTxCplt_Callback_Wrapper(UART_HandleTypeDef *huart)
 void Comm_UartRx_Callback_Wrapper(UART_HandleTypeDef *huart, uint16_t size)
 {
     if (g_Comm.huart == huart) {
-        // DMA ÖĞ¶ÏÀ´ÁË£¬½«Æä¹Ì¶¨»º´æ¶ÎÀïÊÕµ½µÄÊı¾İ¸´ÖÆµ½ÒµÎñ²ãµÄ RX »·ĞÎ»º³åÇøÖĞ
+        // DMA ä¸­æ–­æ¥äº†ï¼Œå°†å…¶å›ºå®šç¼“å­˜æ®µé‡Œæ”¶åˆ°çš„æ•°æ®å¤åˆ¶åˆ°ä¸šåŠ¡å±‚çš„ RX ç¯å½¢ç¼“å†²åŒºä¸­
         for (uint16_t i = 0; i < size; i++) {
             FIFO_Push(&g_Comm.rx_fifo, g_Comm.dma_rx_buf[i]);
         }
         
-        // Á¢¼´¿ªÆôÏÂÒ»´Î DMA ½ÓÊÕ£¬·ÀÖ¹Â©°ü
+        // ç«‹å³å¼€å¯ä¸‹ä¸€æ¬¡ DMA æ¥æ”¶ï¼Œé˜²æ­¢æ¼åŒ…
         HAL_UARTEx_ReceiveToIdle_DMA(g_Comm.huart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
         
-        // ¡¾¼ÓÉÏÕâĞĞ¡¿£ºÃ¿´ÎÖØÆô DMA ºó£¬¿âÄÚ²¿»áÖØĞÂ´ò¿ª HT ÖĞ¶Ï£¬±ØĞëÔÙ´ÎÊÖ¶¯¹Ø±ÕËü£¡
+        // ã€åŠ ä¸Šè¿™è¡Œã€‘ï¼šæ¯æ¬¡é‡å¯ DMA åï¼Œåº“å†…éƒ¨ä¼šé‡æ–°æ‰“å¼€ HT ä¸­æ–­ï¼Œå¿…é¡»å†æ¬¡æ‰‹åŠ¨å…³é—­å®ƒï¼
         __HAL_DMA_DISABLE_IT(g_Comm.huart->hdmarx, DMA_IT_HT);
     }
 }
@@ -216,7 +216,7 @@ void Comm_UartRx_Callback_Wrapper(UART_HandleTypeDef *huart, uint16_t size)
 void Comm_UartError_Callback_Wrapper(UART_HandleTypeDef *huart)
 {
     if (g_Comm.huart == huart) {
-        // Èç¹û¶ÏÏß»òÕß²úÉúÒç³ö´íÎó£¬Ğè½â¹Ò²¢ÖØÆô½ÓÊÕÒÔ×ÔÎÒ»Ö¸´
+        // å¦‚æœæ–­çº¿æˆ–è€…äº§ç”Ÿæº¢å‡ºé”™è¯¯ï¼Œéœ€è§£æŒ‚å¹¶é‡å¯æ¥æ”¶ä»¥è‡ªæˆ‘æ¢å¤
         HAL_UARTEx_ReceiveToIdle_DMA(g_Comm.huart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
     }
 }

@@ -9,17 +9,17 @@
 #define RING_BUF_SIZE 256
 #define DMA_BUF_SIZE  64
 
-/* »·ĞÎ»º³åÇø½á¹¹ */
+/* ç¯å½¢ç¼“å†²åŒºç»“æ„ */
 typedef struct {
     uint8_t buffer[RING_BUF_SIZE];
     volatile uint16_t head;
     volatile uint16_t tail;
 } comm_FIFO_t;
 
-/* Ç¿ÖÆÒ»×Ö½Ú¶ÔÆëµÄÊı¾İÖ¡ */
+/* å¼ºåˆ¶ä¸€å­—èŠ‚å¯¹é½çš„æ•°æ®å¸§ */
 #pragma pack(push, 1)
 
-// ½ÓÊÕÖ¡£ºÒ¡¸Ë4¸öÍ¨µÀ (4 x 16Î»)
+// æ¥æ”¶å¸§ï¼šæ‘‡æ†4ä¸ªé€šé“ (4 x 16ä½)
 typedef struct {
     uint8_t header[2]; // e.g. 0xAA 0x55
     uint16_t ch1;
@@ -31,7 +31,7 @@ typedef struct {
     uint8_t tail;      // e.g. 0xDE
 } JoystickFrame_t;
 
-// ·¢ËÍÖ¡£ºXYZ (3 x 16Î»)
+// å‘é€å¸§ï¼šXYZ (3 x 16ä½)
 typedef struct {
     uint8_t header[2]; // e.g. 0x55 0xAA
     uint16_t x;
@@ -43,21 +43,21 @@ typedef struct {
 
 #pragma pack(pop)
 
-/* È«¾ÖÍ¨ĞÅÉÏÏÂÎÄ */
+/* å…¨å±€é€šä¿¡ä¸Šä¸‹æ–‡ */
 typedef struct {
     UART_HandleTypeDef* huart;  
 
-    /* ×¨¹© DMA Ö±½ÓÊÕ·¢µÄÏßĞÔ»º³åÇø */
+    /* ä¸“ä¾› DMA ç›´æ¥æ”¶å‘çš„çº¿æ€§ç¼“å†²åŒº */
     uint8_t dma_rx_buf[DMA_BUF_SIZE];
     uint8_t dma_tx_buf[DMA_BUF_SIZE];
 
-    /* ÓÃÓÚÒµÎñÂß¼­ºÍDMAÖ®¼ä½âñîµÄ»·ĞÎ»º³åÇø */
+    /* ç”¨äºä¸šåŠ¡é€»è¾‘å’ŒDMAä¹‹é—´è§£è€¦çš„ç¯å½¢ç¼“å†²åŒº */
     comm_FIFO_t rx_fifo;
     comm_FIFO_t tx_fifo;
 
-    volatile uint8_t tx_busy; // ·¢ËÍÃ¦Âµ±êÖ¾
+    volatile uint8_t tx_busy; // å‘é€å¿™ç¢Œæ ‡å¿—
 
-    /* ½âÎö³öÀ´/´ı·¢ËÍµÄÒµÎñÊı¾İ */
+    /* è§£æå‡ºæ¥/å¾…å‘é€çš„ä¸šåŠ¡æ•°æ® */
     uint16_t send_xyz[3]; 
     uint16_t rec_joystick[4];
     uint16_t rec_send_key;
@@ -68,13 +68,13 @@ extern CommContext g_Comm;
 void Communication_Task_Init(UART_HandleTypeDef *huart);
 void Communication_Task_Loop(void);
 
-// Í¨ÓÃÊı¾İ·¢ËÍ½Ó¿Ú£º°ÑÈÎºÎ×Ô¶¨ÒåµÄÖ¡Ñ¹Èë·¢ËÍ¶ÓÁĞ
+// é€šç”¨æ•°æ®å‘é€æ¥å£ï¼šæŠŠä»»ä½•è‡ªå®šä¹‰çš„å¸§å‹å…¥å‘é€é˜Ÿåˆ—
 void Communication_SendData(const uint8_t* data, uint16_t len);
 
-// ÒµÎñ²ã½Ó¿Ú£ºÉèÖÃµ±Ç°Òª·¢ËÍµÄÒ¡¸ËºÍ°´¼üÊı¾İ
+// ä¸šåŠ¡å±‚æ¥å£ï¼šè®¾ç½®å½“å‰è¦å‘é€çš„æ‘‡æ†å’ŒæŒ‰é”®æ•°æ®
 void Communication_SetJoystickAndKeyData(uint16_t x, uint16_t y, uint16_t z);
 
-// HAL ÖĞ¶ÏÏà¹ØµÄ»Øµ÷½Ó¿Ú
+// HAL ä¸­æ–­ç›¸å…³çš„å›è°ƒæ¥å£
 void Comm_Timer_Callback_Wrapper(void);
 void Comm_UartRx_Callback_Wrapper(UART_HandleTypeDef *huart, uint16_t size);
 void Comm_UartTxCplt_Callback_Wrapper(UART_HandleTypeDef *huart);

@@ -1,0 +1,187 @@
+#include "communication.hpp"
+
+namespace communication{
+    Communication::Communication(UART_HandleTypeDef *txhuart,UART_HandleTypeDef *rxhuart,
+        uint8_t *tx_ring_buf,uint8_t *tx_dma_buf,uint8_t *rx_ring_buf,uint8_t *rx_dma_buf)
+    {
+        g_Comm.txhuart = txhuart;
+        g_Comm.rxhuart = rxhuart;
+
+        g_Comm.dma_tx_buf = tx_dma_buf;
+        g_Comm.dma_rx_buf = rx_dma_buf;
+
+        comm_FIFO_t tx_fifo = {tx_ring_buf, 0, 0};
+        comm_FIFO_t rx_fifo = {rx_ring_buf, 0, 0};
+
+        g_Comm.tx_fifo = tx_fifo;
+        g_Comm.rx_fifo = rx_fifo;
+
+        g_Comm.tx_busy = 0; // 初始状态为非忙碌
+
+        g_Comm.send_xyz[0]=0xA9CB;
+        g_Comm.send_xyz[1]=0x6587;
+        g_Comm.send_xyz[2]=0x2143;
+
+        // Communication_RX_DMA(g_Comm.rxhuart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
+        // __HAL_DMA_DISABLE_IT(g_Comm.huart->hdmarx, DMA_IT_HT); 
+    }
+
+    Communication::~Communication()
+    {
+    }
+
+    static const uint8_t crc8_dvb_table[256] = {
+        0x00, 0xD5, 0x7F, 0xAA, 0xFE, 0x2B, 0x81, 0x54, 0x29, 0xFC, 0x56, 0x83, 0xD7, 0x02, 0xA8, 0x7D,
+        0x52, 0x87, 0x2D, 0xF8, 0xAC, 0x79, 0xD3, 0x06, 0x7B, 0xAE, 0x04, 0xD1, 0x85, 0x50, 0xFA, 0x2F,
+        0xA4, 0x71, 0xDB, 0x0E, 0x5A, 0x8F, 0x25, 0xF0, 0x8D, 0x58, 0xF2, 0x27, 0x73, 0xA6, 0x0C, 0xD9,
+        0xF6, 0x23, 0x89, 0x5C, 0x08, 0xDD, 0x77, 0xA2, 0xDF, 0x0A, 0xA0, 0x75, 0x21, 0xF4, 0x5E, 0x8B,
+        0x9D, 0x48, 0xE2, 0x37, 0x63, 0xB6, 0x1C, 0xC9, 0xB4, 0x61, 0xCB, 0x1E, 0x4A, 0x9F, 0x35, 0xE0,
+        0xCF, 0x1A, 0xB0, 0x65, 0x31, 0xE4, 0x4E, 0x9B, 0xE6, 0x33, 0x99, 0x4C, 0x18, 0xCD, 0x67, 0xB2,
+        0x39, 0xEC, 0x46, 0x93, 0xC7, 0x12, 0xB8, 0x6D, 0x10, 0xC5, 0x6F, 0xBA, 0xEE, 0x3B, 0x91, 0x44,
+        0x6B, 0xBE, 0x14, 0xC1, 0x95, 0x40, 0xEA, 0x3F, 0x42, 0x97, 0x3D, 0xE8, 0xBC, 0x69, 0xC3, 0x16,
+        0xEF, 0x3A, 0x90, 0x45, 0x11, 0xC4, 0x6E, 0xBB, 0xC6, 0x13, 0xB9, 0x6C, 0x38, 0xED, 0x47, 0x92,
+        0xBD, 0x68, 0xC2, 0x17, 0x43, 0x96, 0x3C, 0xE9, 0x94, 0x41, 0xEB, 0x3E, 0x6A, 0xBF, 0x15, 0xC0,
+        0x4B, 0x9E, 0x34, 0xE1, 0xB5, 0x60, 0xCA, 0x1F, 0x62, 0xB7, 0x1D, 0xC8, 0x9C, 0x49, 0xE3, 0x36,
+        0x19, 0xCC, 0x66, 0xB3, 0xE7, 0x32, 0x98, 0x4D, 0x30, 0xE5, 0x4F, 0x9A, 0xCE, 0x1B, 0xB1, 0x64,
+        0x72, 0xA7, 0x0D, 0xD8, 0x8C, 0x59, 0xF3, 0x26, 0x5B, 0x8E, 0x24, 0xF1, 0xA5, 0x70, 0xDA, 0x0F,
+        0x20, 0xF5, 0x5F, 0x8A, 0xDE, 0x0B, 0xA1, 0x74, 0x09, 0xDC, 0x76, 0xA3, 0xF7, 0x22, 0x88, 0x5D,
+        0xD6, 0x03, 0xA9, 0x7C, 0x28, 0xFD, 0x57, 0x82, 0xFF, 0x2A, 0x80, 0x55, 0x01, 0xD4, 0x7E, 0xAB,
+        0x84, 0x51, 0xFB, 0x2E, 0x7A, 0xAF, 0x05, 0xD0, 0xAD, 0x78, 0xD2, 0x07, 0x53, 0x86, 0x2C, 0xF9
+    };
+
+    uint8_t Communication::crc(const uint8_t *data, uint8_t len) {
+        uint8_t crc = 0x00;// initial value
+        for (uint8_t i = 0; i < len; i++) {
+            crc = crc8_dvb_table[crc ^ data[i]];
+        }
+        return crc;
+    }
+
+    bool Communication::Comm_Task_Loop(void)
+    {
+        bool data_updated = false;
+        // 不断处理 RX FIFO 里面收到的数据，直到剩余数据不足一帧长度
+        while (FIFO_Count(&g_Comm.rx_fifo) >= sizeof(JoystickFrame_t)) {
+        
+        uint16_t t_head = g_Comm.rx_fifo.head;
+        uint8_t byte1 = g_Comm.rx_fifo.buffer[t_head];
+        uint8_t byte2 = g_Comm.rx_fifo.buffer[(t_head + 1) % RING_BUF_SIZE];
+        
+        // 查找帧头 0xAA 0x55
+        if (byte1 == 0xAA && byte2 == 0x55) {
+            uint8_t frame_buf[sizeof(JoystickFrame_t)];
+            uint16_t p = t_head;
+            
+            // 复制疑似一帧的所有数据
+            for(int i = 0; i < sizeof(JoystickFrame_t); i++) {
+                frame_buf[i] = g_Comm.rx_fifo.buffer[p];
+                p = (p + 1) % RING_BUF_SIZE;
+            }
+            
+            JoystickFrame_t* pFrame = (JoystickFrame_t*)frame_buf;
+            
+            // 验证帧尾是否对应 0xDE
+            if (pFrame->tail == 0xDE && pFrame->crc == crc8(frame_buf+2, sizeof(JoystickFrame_t) - 4)) {
+                // 提取解包好的 XYZ 数据 (均为 16位 uint16_t 数据)
+                g_Comm.rec_joystick[0] = pFrame->ch1;
+                g_Comm.rec_joystick[1] = pFrame->ch2;
+                g_Comm.rec_joystick[2] = pFrame->ch3;
+                g_Comm.rec_joystick[3] = pFrame->ch4;
+                g_Comm.rec_send_key = pFrame->key;
+
+                // 将 FIFO 头部读取指针越过已经正确消费的这一帧
+                g_Comm.rx_fifo.head = p;
+                data_updated = true; // 标记数据已更新
+            } else {
+                // 坏帧，跳过头部第一个错误字节，继续往后寻找
+                g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
+            }
+            } else {
+                // 没有找到帧头，抛弃头部第一字节，继续循环寻头
+                g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
+            }
+        }        
+        return data_updated;
+    }
+
+    void Communication::Comm_SendAxisDataToTxBuffer(void)
+    {
+        Communication_SetAxisData(xyz_Buf[0], xyz_Buf[1], xyz_Buf[2]);
+            XYZFrame_t frame;
+        frame.header[0] = 0x55;
+        frame.header[1] = 0xAA;
+        // 把 3 个16位的坐标数据数据打包
+        frame.x = g_Comm.send_xyz[0];
+        frame.y = g_Comm.send_xyz[1];
+        frame.z = g_Comm.send_xyz[2];
+        frame.crc = crc8((uint8_t*)&frame + 2, sizeof(XYZFrame_t) - 4);
+        frame.tail = 0xED;
+
+        uint8_t* ptr = (uint8_t*)&frame;
+        for (int i = 0; i < sizeof(XYZFrame_t); i++) {
+            FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
+        }
+            
+        // 尝试拉起发送：如果底部DMA空闲，且队列里有东西
+        if (g_Comm.tx_busy == 0 && FIFO_Count(&g_Comm.tx_fifo) > 0) {
+            Comm_TxBufferToTxDMA(g_Comm.txhuart); 
+        }
+    }
+
+    void Communication::Comm_TxBufferToTxDMA(UART_HandleTypeDef *txhuart)
+    {
+        if (txhuart == g_Comm.txhuart) {
+            uint16_t count = FIFO_Count(&g_Comm.tx_fifo);
+            if (count > 0) {
+                if (count > DMA_BUF_SIZE) count = DMA_BUF_SIZE;
+                
+                // 将欲发送的队列数据腾出到 DMA 使用的固定线性数组中
+                for (uint16_t i = 0; i < count; i++) {
+                    FIFO_Pop(&g_Comm.tx_fifo, &g_Comm.dma_tx_buf[i]);
+                }
+                
+                g_Comm.tx_busy = 1; // 锁定发送状态
+                Comm_TxUseTxDMA(g_Comm.txhuart, g_Comm.dma_tx_buf, count);
+            } else {
+                // TX FIFO 为空，回到空闲状态
+                g_Comm.tx_busy = 0;
+            }
+        }
+    }
+
+
+    void Communication::Comm_SendAnyDataToTxBuffer(const uint8_t* data, uint16_t len)
+    {
+        if (data == NULL || len == 0) return;
+
+        __disable_irq(); 
+        for (uint16_t i = 0; i < len; i++) {
+            FIFO_Push(&g_Comm.tx_fifo, data[i]);
+        }
+        __enable_irq();
+
+        if (g_Comm.tx_busy == 0 && FIFO_Count(&g_Comm.tx_fifo) > 0) {
+            Comm_TxBufferToTxDMA(g_Comm.txhuart); 
+        }
+    }
+
+    void Communication::Comm_SetAxisData(uint16_t x, uint16_t y, uint16_t z)
+    {
+        // g_Comm.send_xyz[0] = x;
+        // g_Comm.send_xyz[1] = y;
+        // g_Comm.send_xyz[2] = z;
+    }
+
+    void Communication::Comm_RxDMAToRxBuffer(UART_HandleTypeDef *rxhuart, uint16_t size)
+    {
+        if (g_Comm.rxhuart == rxhuart) {
+            // DMA 中断来了，将其固定缓存段里收到的数据复制到业务层的 RX 环形缓冲区中
+            for (uint16_t i = 0; i < size; i++) {
+                FIFO_Push(&g_Comm.rx_fifo, g_Comm.dma_rx_buf[i]);
+            }
+            
+            // 立即开启下一次 DMA 接收，防止漏包
+            // __HAL_DMA_DISABLE_IT(g_Comm.rxhuart->hdmarx, DMA_IT_HT);
+        }
+    }
+}
