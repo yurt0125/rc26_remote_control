@@ -208,57 +208,62 @@
         <Ww>
           <count>11</count>
           <WinNumber>2</WinNumber>
-          <ItemText>g_Comm.recv_xyz[0]</ItemText>
+          <ItemText>tx_stamp,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>2</WinNumber>
-          <ItemText>g_Comm.recv_xyz[1]</ItemText>
+          <ItemText>rx_stamp,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>2</WinNumber>
-          <ItemText>g_Comm.recv_xyz[2]</ItemText>
+          <ItemText>tx_cnt,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>2</WinNumber>
-          <ItemText>tx_stamp,0x0A</ItemText>
+          <ItemText>rx_cnt,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>2</WinNumber>
-          <ItemText>rx_stamp,0x0A</ItemText>
+          <ItemText>last_tx_stamp,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>2</WinNumber>
-          <ItemText>tx_cnt,0x0A</ItemText>
+          <ItemText>tx_stamp,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
           <WinNumber>2</WinNumber>
-          <ItemText>rx_cnt,0x0A</ItemText>
+          <ItemText>rf_tx_cnt,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>18</count>
           <WinNumber>2</WinNumber>
-          <ItemText>last_tx_stamp,0x0A</ItemText>
+          <ItemText>rf_tx_interval_us,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>19</count>
           <WinNumber>2</WinNumber>
-          <ItemText>tx_stamp,0x0A</ItemText>
+          <ItemText>g_Comm.recv_status,0x10</ItemText>
         </Ww>
         <Ww>
           <count>20</count>
           <WinNumber>2</WinNumber>
-          <ItemText>rf_tx_cnt,0x0A</ItemText>
+          <ItemText>g_Comm.recv_mode</ItemText>
         </Ww>
         <Ww>
           <count>21</count>
           <WinNumber>2</WinNumber>
-          <ItemText>rf_tx_interval_us,0x0A</ItemText>
+          <ItemText>g_Comm.recv_command1</ItemText>
+        </Ww>
+        <Ww>
+          <count>22</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>g_Comm.recv_command2</ItemText>
         </Ww>
       </WatchWindow2>
       <Tracepoint>

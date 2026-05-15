@@ -23,6 +23,10 @@ namespace communication{
         send_xyz[0]=0xA9CB;
         send_xyz[1]=0x6587;
         send_xyz[2]=0x2143;
+        send_mode = 0xAA;
+        send_status = 0xBB;
+        send_command1 = 0xCC;
+        send_command2 = 0xDD;
 
         // Communication_RX_DMA(rxhuart, dma_rx_buf, DMA_BUF_SIZE);
         // __HAL_DMA_DISABLE_IT(huart->hdmarx, DMA_IT_HT); 
@@ -128,11 +132,15 @@ namespace communication{
         return data_updated;
     }
 
-    void Communication::Comm_SendAxisDataToTxBuffer(uint16_t  x, uint16_t y, uint16_t z)
+    void Communication::Comm_SendAxisDataToTxBuffer(uint16_t  x, uint16_t y, uint16_t z,uint8_t status, uint8_t mode, uint8_t command1, uint8_t command2)
     {
         send_xyz[0] = x;
         send_xyz[1] = y;
         send_xyz[2] = z;
+        send_status = status;
+        send_mode = mode;
+        send_command1 = command1;
+        send_command2 = command2;
 
             XYZFrame_t frame;
         frame.header[0] = 0x55;
@@ -141,6 +149,10 @@ namespace communication{
         frame.x = send_xyz[0];
         frame.y = send_xyz[1];
         frame.z = send_xyz[2];
+        frame.status = send_status;
+        frame.mode = send_mode;
+        frame.command1 = send_command1;
+        frame.command2 = send_command2;
         frame.crc = crc8((uint8_t*)&frame + 2, sizeof(XYZFrame_t) - 4);
         frame.tail = 0xED;
 

@@ -104,10 +104,14 @@ void Communication_Task_Loop(void)
             // 验证帧尾是否对应 0xED
             if (pFrame->tail == 0xED && pFrame->crc == crc8(frame_buf+2, sizeof(XYZFrame_t) - 4)) {
                 // 提取解包好的 XYZ 数据 (均为 16位 uint16_t 数据)
-                g_Comm.recv_xyz[0] = pFrame->x;
-                g_Comm.recv_xyz[1] = pFrame->y;
-                g_Comm.recv_xyz[2] = pFrame->z;
-                
+                g_Comm.recv_x = pFrame->x;
+                g_Comm.recv_y = pFrame->y;
+                g_Comm.recv_z = pFrame->z;
+                g_Comm.recv_status = pFrame->status;
+                g_Comm.recv_mode = pFrame->mode;
+                g_Comm.recv_command1 = pFrame->command1;
+                g_Comm.recv_command2 = pFrame->command2;
+
                 // 将 FIFO 头部读取指针越过已经正确消费的这一帧
                 g_Comm.rx_fifo.head = p; 
 								rx_stamp=HAL_GetTick();

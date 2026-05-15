@@ -39,6 +39,10 @@ typedef struct {
     uint16_t x;
     uint16_t y;
     uint16_t z;
+    uint8_t status;   // bit5-3:夹爪状态 bit2-1：吸盘状态 bit0:自动模式状态
+    uint8_t mode;
+    uint8_t command1;
+    uint8_t command2;
     uint8_t crc;
     uint8_t tail;      // e.g. 0xED
 } XYZFrame_t;
@@ -63,7 +67,13 @@ typedef struct {
     /* 解析出来/待发送的业务数据 */
     uint16_t send_joystick[4]; 
     uint16_t send_key;
-    uint16_t recv_xyz[3];
+    uint16_t recv_x;
+    uint16_t recv_y;
+    uint16_t recv_z;
+    uint8_t recv_status;
+    uint8_t recv_mode;
+    uint8_t recv_command1;
+    uint8_t recv_command2;
 } CommContext;
 
 extern CommContext g_Comm;

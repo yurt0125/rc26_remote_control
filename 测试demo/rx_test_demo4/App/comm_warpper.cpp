@@ -52,8 +52,8 @@ extern "C" {
         if (g_comm) g_comm->Comm_TxBufferToTxDMA(txhuart);
     }
 
-    void CommWrapper_SendAxisData(uint16_t x, uint16_t y, uint16_t z) {
-        if (g_comm) g_comm->Comm_SendAxisDataToTxBuffer(x, y, z);
+    void CommWrapper_SendAxisData(uint16_t x, uint16_t y, uint16_t z,uint8_t status, uint8_t mode, uint8_t command1, uint8_t command2) {
+        if (g_comm) g_comm->Comm_SendAxisDataToTxBuffer(x, y, z, status, mode ,command1, command2);
     }
 
     void CommWrapper_GetRecvData(uint16_t* joystick, uint16_t* key) {

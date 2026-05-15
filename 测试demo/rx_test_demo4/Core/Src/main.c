@@ -213,7 +213,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
   else if (htim->Instance == TIM2)
   {
-		 CommWrapper_SendAxisData(1, 2, 5);
+		 CommWrapper_SendAxisData(1, 2, 5 ,0xAA,0xBB,0xCC,0xDD);
   }
   /* USER CODE END Callback 1 */
 }

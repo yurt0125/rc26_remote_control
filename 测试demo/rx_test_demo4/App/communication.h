@@ -35,6 +35,10 @@ namespace communication{
         uint16_t x;
         uint16_t y;
         uint16_t z;
+        uint8_t status;   // bit5-3:夹爪状态 bit2-1：吸盘状态 bit0:自动模式状态
+        uint8_t mode;
+        uint8_t command1;
+        uint8_t command2;
         uint8_t crc;
         uint8_t tail;      // e.g. 0xED
     } XYZFrame_t;
@@ -68,7 +72,7 @@ namespace communication{
         /**
          * @brief 将发送环形缓冲区的数据转移到DMA缓冲区并拉起底层硬件发送
          * @param txhuart 触发调用的UART句柄（内部用于防重防错判）
-         * @note 时机/用法：内部在压入新数据后自动调用；也可在串口DMA发送完成中断 (HAL_UART_TxCpltCallback) 内部调用，用于接力发送队列中剩余包数据。
+         * @note 时机/用法：写在发送的GPIO外部中断里面，不可以写在发送回调！！！！！！！！
          */
         void Comm_TxBufferToTxDMA(UART_HandleTypeDef *txhuart);
 
@@ -84,7 +88,7 @@ namespace communication{
          * @brief 将底层DMA接收到的无序缓存数据推入业务侧接收环形缓冲区
          * @param rxhuart 产生中断的接收UART句柄
          * @param size    本次DMA/空闲中断接收到的实际长度
-         * @note 时机/用法：必须在串口空闲中断 (UARTEx_RxEventCallback) 或 接收中断 (UART_RxCpltCallback) 中第一时间调用，防止新一轮DMA覆盖旧数据。
+         * @note 时机/用法：必须在串口空闲中断 (UARTEx_RxEventCallback)  中第一时间调用，防止新一轮DMA覆盖旧数据。
          */
         void Comm_RxDMAToRxBuffer(UART_HandleTypeDef *rxhuart, uint16_t size);
 
@@ -93,9 +97,10 @@ namespace communication{
          * @param x X轴坐标 (16位)
          * @param y Y轴坐标 (16位)
          * @param z Z轴坐标 (16位)
-         * @note 时机/用法：在需要上报坐标数据的地方（如传感器读取完毕后）主动调用。
+         * @note 时机/用法：定时器更新中断调用发送
          */
-        void Comm_SendAxisDataToTxBuffer(uint16_t  x, uint16_t y, uint16_t z);
+        void Comm_SendAxisDataToTxBuffer(uint16_t  x, uint16_t y, uint16_t z,
+            uint8_t status, uint8_t mode, uint8_t command1, uint8_t command2);
 
         /**
          * @brief 纯虚函数：启动底层物理发送动作
@@ -137,6 +142,10 @@ namespace communication{
 
         /* 解析出来/待发送的业务数据 */
         uint16_t send_xyz[3]; 
+        uint8_t send_mode;
+        uint8_t send_status;   // bit5-3:夹爪状态 bit2-1：吸盘状态 bit0:自动模式状态
+        uint8_t send_command1;
+        uint8_t send_command2;
         uint16_t rec_joystick[4];
         uint16_t rec_send_key;
     protected:

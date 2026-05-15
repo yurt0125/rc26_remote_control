@@ -3,7 +3,7 @@
 <title>Static Call Graph - [rx_test_demo\rx_test_demo.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image rx_test_demo\rx_test_demo.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri May 15 15:41:06 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri May 15 18:07:07 2026
 <BR><P>
 <H3>Maximum Stack Usage =        192 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -598,10 +598,10 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UARTEx_RxEventCallback
 </UL>
 
-<P><STRONG><a name="[79]"></a>CommWrapper_SendAxisData</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, comm_warpper.o(i.CommWrapper_SendAxisData))
-<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = CommWrapper_SendAxisData &rArr; communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short) &rArr; communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
+<P><STRONG><a name="[79]"></a>CommWrapper_SendAxisData</STRONG> (Thumb, 40 bytes, Stack size 40 bytes, comm_warpper.o(i.CommWrapper_SendAxisData))
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = CommWrapper_SendAxisData &rArr; communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short, unsigned char, unsigned char, unsigned char, unsigned char) &rArr; communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short)
+<BR>[Calls]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short, unsigned char, unsigned char, unsigned char, unsigned char)
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PeriodElapsedCallback
 </UL>
@@ -735,7 +735,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[c3]"></a>HAL_GPIO_ReadPin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f1xx_hal_gpio.o(i.HAL_GPIO_ReadPin))
-<BR><BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short)
+<BR><BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short, unsigned char, unsigned char, unsigned char, unsigned char)
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
 </UL>
 
@@ -891,7 +891,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[9a]"></a>HAL_TIM_IRQHandler</STRONG> (Thumb, 304 bytes, Stack size 24 bytes, stm32f1xx_hal_tim.o(i.HAL_TIM_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; CommWrapper_SendAxisData &rArr; communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short) &rArr; communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; CommWrapper_SendAxisData &rArr; communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short, unsigned char, unsigned char, unsigned char, unsigned char) &rArr; communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PeriodElapsedCallback
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_TriggerCallback
@@ -913,8 +913,8 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IRQHandler
 </UL>
 
-<P><STRONG><a name="[9e]"></a>HAL_TIM_PeriodElapsedCallback</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, main.o(i.HAL_TIM_PeriodElapsedCallback))
-<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = HAL_TIM_PeriodElapsedCallback &rArr; CommWrapper_SendAxisData &rArr; communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short) &rArr; communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
+<P><STRONG><a name="[9e]"></a>HAL_TIM_PeriodElapsedCallback</STRONG> (Thumb, 48 bytes, Stack size 16 bytes, main.o(i.HAL_TIM_PeriodElapsedCallback))
+<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = HAL_TIM_PeriodElapsedCallback &rArr; CommWrapper_SendAxisData &rArr; communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short, unsigned char, unsigned char, unsigned char, unsigned char) &rArr; communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_IncTick
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CommWrapper_SendAxisData
@@ -1107,14 +1107,14 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f103xb.o(.text)
 </UL>
 <P><STRONG><a name="[2f]"></a>TIM1_UP_IRQHandler</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stm32f1xx_it.o(i.TIM1_UP_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = TIM1_UP_IRQHandler &rArr; HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; CommWrapper_SendAxisData &rArr; communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short) &rArr; communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = TIM1_UP_IRQHandler &rArr; HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; CommWrapper_SendAxisData &rArr; communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short, unsigned char, unsigned char, unsigned char, unsigned char) &rArr; communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IRQHandler
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f103xb.o(RESET)
 </UL>
 <P><STRONG><a name="[32]"></a>TIM2_IRQHandler</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stm32f1xx_it.o(i.TIM2_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = TIM2_IRQHandler &rArr; HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; CommWrapper_SendAxisData &rArr; communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short) &rArr; communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = TIM2_IRQHandler &rArr; HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; CommWrapper_SendAxisData &rArr; communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short, unsigned char, unsigned char, unsigned char, unsigned char) &rArr; communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IRQHandler
 </UL>
@@ -1162,7 +1162,7 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f103xb.o(RESET)
 </UL>
 <P><STRONG><a name="[c1]"></a>communication::Communication::FIFO_Count(communication::comm_FIFO_t*)</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, communication.o(i._ZN13communication13Communication10FIFO_CountEPNS_11comm_FIFO_tE))
-<BR><BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short)
+<BR><BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short, unsigned char, unsigned char, unsigned char, unsigned char)
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
 <LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_Task_Loop()
 </UL>
@@ -1193,11 +1193,11 @@ Global Symbols
 <LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::FIFO_Count(communication::comm_FIFO_t*)
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CommWrapper_TxBufferToTxDMA
-<LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short)
+<LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short, unsigned char, unsigned char, unsigned char, unsigned char)
 </UL>
 
-<P><STRONG><a name="[7a]"></a>communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short)</STRONG> (Thumb, 130 bytes, Stack size 32 bytes, communication.o(i._ZN13communication13Communication27Comm_SendAxisDataToTxBufferEttt))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short) &rArr; communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
+<P><STRONG><a name="[7a]"></a>communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short, unsigned char, unsigned char, unsigned char, unsigned char)</STRONG> (Thumb, 190 bytes, Stack size 40 bytes, communication.o(i._ZN13communication13Communication27Comm_SendAxisDataToTxBufferEttthhhh))
+<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short, unsigned char, unsigned char, unsigned char, unsigned char) &rArr; communication::Communication::Comm_TxBufferToTxDMA(__UART_HandleTypeDef*)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
 <LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::FIFO_Push(communication::comm_FIFO_t*, unsigned char)
@@ -1211,7 +1211,7 @@ Global Symbols
 <P><STRONG><a name="[c0]"></a>communication::Communication::crc8(const unsigned char*, unsigned char)</STRONG> (Thumb, 26 bytes, Stack size 12 bytes, communication.o(i._ZN13communication13Communication4crc8EPKhh))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = communication::Communication::crc8(const unsigned char*, unsigned char)
 </UL>
-<BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short)
+<BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short, unsigned char, unsigned char, unsigned char, unsigned char)
 <LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_Task_Loop()
 </UL>
 
@@ -1222,11 +1222,11 @@ Global Symbols
 <P><STRONG><a name="[c2]"></a>communication::Communication::FIFO_Push(communication::comm_FIFO_t*, unsigned char)</STRONG> (Thumb, 24 bytes, Stack size 8 bytes, communication.o(i._ZN13communication13Communication9FIFO_PushEPNS_11comm_FIFO_tEh))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = communication::Communication::FIFO_Push(communication::comm_FIFO_t*, unsigned char)
 </UL>
-<BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short)
+<BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_SendAxisDataToTxBuffer(unsigned short, unsigned short, unsigned short, unsigned char, unsigned char, unsigned char, unsigned char)
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_RxDMAToRxBuffer(__UART_HandleTypeDef*, unsigned short)
 </UL>
 
-<P><STRONG><a name="[75]"></a>communication::Communication::Communication__sub_object(__UART_HandleTypeDef*, __UART_HandleTypeDef*, unsigned char*, unsigned char*, unsigned char*, unsigned char*)</STRONG> (Thumb, 60 bytes, Stack size 20 bytes, communication.o(i._ZN13communication13CommunicationC2EP20__UART_HandleTypeDefS2_PhS3_S3_S3_))
+<P><STRONG><a name="[75]"></a>communication::Communication::Communication__sub_object(__UART_HandleTypeDef*, __UART_HandleTypeDef*, unsigned char*, unsigned char*, unsigned char*, unsigned char*)</STRONG> (Thumb, 84 bytes, Stack size 20 bytes, communication.o(i._ZN13communication13CommunicationC2EP20__UART_HandleTypeDefS2_PhS3_S3_S3_))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = communication::Communication::Communication__sub_object(__UART_HandleTypeDef*, __UART_HandleTypeDef*, unsigned char*, unsigned char*, unsigned char*, unsigned char*)
 </UL>
 <BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CommWrapper_Init

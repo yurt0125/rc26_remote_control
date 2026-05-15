@@ -21,7 +21,7 @@ void CommWrapper_RxDMAToRxBuffer(UART_HandleTypeDef *rxhuart, uint16_t size);
 void CommWrapper_TxBufferToTxDMA(UART_HandleTypeDef *txhuart);
 
 // 5. 业务：发送 XYZ 坐标数据
-void CommWrapper_SendAxisData(uint16_t x, uint16_t y, uint16_t z);
+void CommWrapper_SendAxisData(uint16_t x, uint16_t y, uint16_t z,uint8_t status, uint8_t mode, uint8_t command1, uint8_t command2);
 
 // 6. 获取接收到的数据
 void CommWrapper_GetRecvData(uint16_t* joystick, uint16_t* key);

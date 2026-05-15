@@ -1,7 +1,7 @@
 Dependencies for Project 'rx_test_demo', Target 'rx_test_demo': (DO NOT MODIFY !)
 CompilerVersion: 5060750::V5.06 update 6 (build 750)::.\ARMCC5
 F (startup_stm32f103xb.s)(0x6A06C7DF)(--cpu Cortex-M3 -g --apcs=interwork -I.\RTE\_rx_test_demo-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-ID:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include--pd "__UVISION_VERSION SETA 543" --pd "STM32F10X_MD SETA 1" --pd "_RTE_ SETA 1"--list startup_stm32f103xb.lst --xref -o rx_test_demo\startup_stm32f103xb.o --depend rx_test_demo\startup_stm32f103xb.d)
-F (../Core/Src/main.c)(0x6A06CA4D)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Com-I.\RTE\_rx_test_demo-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-ID:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o rx_test_demo\main.o --omf_browse rx_test_demo\main.crf --depend rx_test_demo\main.d)
+F (../Core/Src/main.c)(0x6A06E612)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Com-I.\RTE\_rx_test_demo-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-ID:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o rx_test_demo\main.o --omf_browse rx_test_demo\main.crf --depend rx_test_demo\main.d)
 I (../Core/Inc/main.h)(0x6A06C7DD)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x69E5E83C)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x69F0B0D8)
@@ -34,8 +34,8 @@ I (../Core/Inc/dma.h)(0x69F0B0D7)
 I (../Core/Inc/tim.h)(0x6A06B431)
 I (../Core/Inc/usart.h)(0x69F206E8)
 I (../Core/Inc/gpio.h)(0x69F0A655)
-I (../App/communication.h)(0x6A0528B1)
-I (../App/comm_wrapper.h)(0x6A0528A8)
+I (../App/communication.h)(0x6A06EBE3)
+I (../App/comm_wrapper.h)(0x6A06E69C)
 I (D:\Keil5\ARM\ARMCC5\include\stdbool.h)(0x5D9B3488)
 F (../Core/Src/gpio.c)(0x6A06C7DC)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Com-I.\RTE\_rx_test_demo-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-ID:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o rx_test_demo\gpio.o --omf_browse rx_test_demo\gpio.crf --depend rx_test_demo\gpio.d)
 I (../Core/Inc/gpio.h)(0x69F0A655)
@@ -664,8 +664,8 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x69E5E83C)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x69E5E83C)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x69E5E83C)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x69E5E83C)
-F (..\App\communication.cpp)(0x6A06CE07)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Com-I.\RTE\_rx_test_demo-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-ID:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o rx_test_demo\communication.o --omf_browse rx_test_demo\communication.crf --depend rx_test_demo\communication.d)
-I (..\App\communication.h)(0x6A0528B1)
+F (..\App\communication.cpp)(0x6A06F027)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Com-I.\RTE\_rx_test_demo-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-ID:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o rx_test_demo\communication.o --omf_browse rx_test_demo\communication.crf --depend rx_test_demo\communication.d)
+I (..\App\communication.h)(0x6A06EBE3)
 I (../Core/Inc/usart.h)(0x69F206E8)
 I (../Core/Inc/main.h)(0x6A06C7DD)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x69E5E83C)
@@ -695,9 +695,9 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x69E5E83C)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x69E5E83C)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x69E5E83C)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x69E5E83C)
-F (..\App\communication.h)(0x6A0528B1)()
-F (..\App\comm_warpper.cpp)(0x6A0528B1)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Com-I.\RTE\_rx_test_demo-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-ID:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o rx_test_demo\comm_warpper.o --omf_browse rx_test_demo\comm_warpper.crf --depend rx_test_demo\comm_warpper.d)
-I (..\App\comm_wrapper.h)(0x6A0528A8)
+F (..\App\communication.h)(0x6A06EBE3)()
+F (..\App\comm_warpper.cpp)(0x6A06E66A)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Com-I.\RTE\_rx_test_demo-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-ID:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o rx_test_demo\comm_warpper.o --omf_browse rx_test_demo\comm_warpper.crf --depend rx_test_demo\comm_warpper.d)
+I (..\App\comm_wrapper.h)(0x6A06E69C)
 I (../Core/Inc/usart.h)(0x69F206E8)
 I (../Core/Inc/main.h)(0x6A06C7DD)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x69E5E83C)
@@ -728,8 +728,8 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x69E5E83C)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x69E5E83C)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x69E5E83C)
 I (D:\Keil5\ARM\ARMCC5\include\stdbool.h)(0x5D9B3488)
-I (..\App\communication.h)(0x6A0528B1)
-F (..\App\comm_wrapper.h)(0x6A0528A8)()
+I (..\App\communication.h)(0x6A06EBE3)
+F (..\App\comm_wrapper.h)(0x6A06E69C)()
 F (..\Com\Datapool.c)(0x69FF211A)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../App -I ../Com-I.\RTE\_rx_test_demo-ID:\Keil5\ARM\PACK\ARM\CMSIS\6.2.0\CMSIS\Core\Include-ID:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o rx_test_demo\datapool.o --omf_browse rx_test_demo\datapool.crf --depend rx_test_demo\datapool.d)
 I (..\Com\Datapool.h)(0x69FF17D6)
 I (../Core/Inc/main.h)(0x6A06C7DD)
