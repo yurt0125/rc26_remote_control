@@ -24,6 +24,7 @@
 #include "RC_flysky.h"
 #include "RC_data_pool.h"
 #include "RC_LiDAR.h"
+#include "RC_lora.h"
 #include "RC_omni_chassis.h"
 #include "RC_lift_chassis.h"
 #include "RC_auto_lift.h"

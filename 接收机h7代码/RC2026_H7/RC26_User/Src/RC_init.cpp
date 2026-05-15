@@ -1,5 +1,4 @@
 #include "RC_init.h"
-#include "Lora_communication.h"
 /*====================================外设初始化====================================*/
 // 定时中断
 tim::Tim tim7_1khz(htim7);
@@ -55,8 +54,12 @@ ros::BestPath 	MF_path(CDC_HS, 3);// 路径数据接收
 lidar::LiDAR lidar_1(huart8);
 
 // Lora通讯 
-// 收发统一使用 huart1，AUX管脚使用 PD14(photogate_3_Pin)，并挂载到已初始化的底层 1ms 硬件定时器 (tim7_1khz)
-communication::Lora_communication lora(&huart3, &huart1, photogate_3_GPIO_Port, photogate_3_Pin, &tim7_1khz);
+communication::Lora_communication lora_comm(
+    &huart2, &huart6,    // 替换为真实的发送和接收UART外设句柄，如 &huart2, &huart3
+    GPIOG, GPIO_PIN_6,   // 替换为真实的发送AUX引脚端口和PIN
+    GPIOG, GPIO_PIN_5,   // 替换为真实的接收AUX引脚端口和PIN
+    &tim7_1khz           // 传入前面已初始化的硬件定时器对象 (1ms周期)
+);
 
 // 遥控
 flysky::FlySky remote_ctrl(GPIO_PIN_8);
@@ -304,6 +307,6 @@ void All_Init()
 	// 场地位置初始化
 	data::Init_Side(true);
 	
-	
+	lora_comm.Init();
 	Motor_Config();
 }

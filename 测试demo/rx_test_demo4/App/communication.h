@@ -58,7 +58,9 @@ namespace communication{
          * @note 时机/用法：在系统初始化阶段(如main函数或应用层初始化代码中)调用一次。传入的缓冲区内存通常由外部按需静态分配传递进来，便于内存管理。
          */
         Communication(UART_HandleTypeDef *txhuart,UART_HandleTypeDef *rxhuart,
-            uint8_t *tx_ring_buf,uint8_t *tx_dma_buf,uint8_t *rx_ring_buf,uint8_t *rx_dma_buf);
+            uint8_t *tx_ring_buf,uint8_t *tx_dma_buf,uint8_t *rx_ring_buf,uint8_t *rx_dma_buf,
+            GPIO_TypeDef *tx_aux_port, uint16_t tx_aux_pin,
+            GPIO_TypeDef *rx_aux_port, uint16_t rx_aux_pin);
         
         ~Communication();
 
@@ -129,6 +131,11 @@ namespace communication{
         
         UART_HandleTypeDef* txhuart;
         UART_HandleTypeDef* rxhuart;  
+
+        GPIO_TypeDef* tx_aux_port;
+        uint16_t tx_aux_pin;
+        GPIO_TypeDef* rx_aux_port;
+        uint16_t rx_aux_pin;
 
         /* 专供 DMA 直接收发的线性缓冲区 */
         uint8_t* dma_rx_buf;

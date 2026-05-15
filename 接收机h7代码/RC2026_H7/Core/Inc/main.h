@@ -80,6 +80,12 @@ void Error_Handler(void);
 #define photogate_4_Pin GPIO_PIN_15
 #define photogate_4_GPIO_Port GPIOD
 #define photogate_4_EXTI_IRQn EXTI15_10_IRQn
+#define RX_AUX_Pin GPIO_PIN_5
+#define RX_AUX_GPIO_Port GPIOG
+#define RX_AUX_EXTI_IRQn EXTI9_5_IRQn
+#define TX_AUX_Pin GPIO_PIN_6
+#define TX_AUX_GPIO_Port GPIOG
+#define TX_AUX_EXTI_IRQn EXTI9_5_IRQn
 #define suction_pin_1_Pin GPIO_PIN_7
 #define suction_pin_1_GPIO_Port GPIOG
 

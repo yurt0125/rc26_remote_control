@@ -9,7 +9,9 @@ extern "C" {
 #include <stdbool.h>
 
 // 1. 初始化通信模块
-void CommWrapper_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rxhuart);
+void CommWrapper_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rxhuart, 
+                      GPIO_TypeDef *tx_aux_port, uint16_t tx_aux_pin,
+                      GPIO_TypeDef *rx_aux_port, uint16_t rx_aux_pin);
 
 // 2. 放在主循环 while (1) 里的业务轮询
 bool CommWrapper_Task_Loop(void);

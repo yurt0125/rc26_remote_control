@@ -1,11 +1,17 @@
-#include "communication.h"
+#include "RC_communication.h"
 
 namespace communication{
     Communication::Communication(UART_HandleTypeDef *txhuart,UART_HandleTypeDef *rxhuart,
-        uint8_t *tx_ring_buf,uint8_t *tx_dma_buf,uint8_t *rx_ring_buf,uint8_t *rx_dma_buf)
+        uint8_t *tx_ring_buf,uint8_t *tx_dma_buf,uint8_t *rx_ring_buf,uint8_t *rx_dma_buf,
+        GPIO_TypeDef *tx_aux_port, uint16_t tx_aux_pin,
+        GPIO_TypeDef *rx_aux_port, uint16_t rx_aux_pin)
     {
         this->txhuart = txhuart;
         this->rxhuart = rxhuart;
+        this->tx_aux_port = tx_aux_port;
+        this->tx_aux_pin = tx_aux_pin;
+        this->rx_aux_port = rx_aux_port;
+        this->rx_aux_pin = rx_aux_pin;
 
         this->dma_tx_buf = tx_dma_buf;
         this->dma_rx_buf = rx_dma_buf;
@@ -163,7 +169,7 @@ namespace communication{
         
         // 尝试拉起发送：如果底部DMA空闲，且队列里有东西
         if (tx_busy == 0 && FIFO_Count(&tx_fifo) > 0) {
-            if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_11) == GPIO_PIN_SET)
+            if(HAL_GPIO_ReadPin(this->tx_aux_port, this->tx_aux_pin) == GPIO_PIN_SET)
             {
                 Comm_TxBufferToTxDMA(txhuart); 
             }
@@ -181,7 +187,7 @@ void Communication::Comm_SendAnyDataToTxBuffer(const uint8_t* data, uint16_t len
         // __enable_irq();
 
         if (tx_busy == 0 && FIFO_Count(&tx_fifo) > 0) {
-            if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_11) == GPIO_PIN_SET) {
+            if(HAL_GPIO_ReadPin(this->tx_aux_port, this->tx_aux_pin) == GPIO_PIN_SET) {
                 Comm_TxBufferToTxDMA(this->txhuart); 
             }
         }
@@ -191,7 +197,7 @@ void Communication::Comm_SendAnyDataToTxBuffer(const uint8_t* data, uint16_t len
     {
         if (this->txhuart == txhuart_param) {
             // 安全保护：如果在忙碌期间误入或对方为低电平（繁忙），直接退出
-            if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_11) == GPIO_PIN_RESET) {
+            if (HAL_GPIO_ReadPin(this->tx_aux_port, this->tx_aux_pin) == GPIO_PIN_RESET) {
                 return;
             }
 

@@ -11,8 +11,10 @@ static uint8_t app_rx_dma_buf[DMA_BUF_SIZE];
 class CommunicationImpl : public communication::Communication {
 public:
     CommunicationImpl(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rxhuart,
-                      uint8_t *tx_ring, uint8_t *tx_dma, uint8_t *rx_ring, uint8_t *rx_dma)
-        : Communication(txhuart, rxhuart, tx_ring, tx_dma, rx_ring, rx_dma) {}
+                      uint8_t *tx_ring, uint8_t *tx_dma, uint8_t *rx_ring, uint8_t *rx_dma,
+                      GPIO_TypeDef *tx_aux_port, uint16_t tx_aux_pin,
+                      GPIO_TypeDef *rx_aux_port, uint16_t rx_aux_pin)
+        : Communication(txhuart, rxhuart, tx_ring, tx_dma, rx_ring, rx_dma, tx_aux_port, tx_aux_pin, rx_aux_port, rx_aux_pin) {}
 
     // 重点：实现抽象类中虚约束（物理底层发送）
     virtual void Comm_TxUseTxDMA(UART_HandleTypeDef * huart, uint8_t* data, uint16_t size) {
@@ -26,12 +28,16 @@ static CommunicationImpl* g_comm = NULL;
 
 // 提供给 C 语言环境 (如 main.c) 调用的普通 C 函数
 extern "C" {
-    void CommWrapper_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rxhuart) {
+    void CommWrapper_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rxhuart,
+                          GPIO_TypeDef *tx_aux_port, uint16_t tx_aux_pin,
+                          GPIO_TypeDef *rx_aux_port, uint16_t rx_aux_pin) {
         if (!g_comm) {
             // 利用局部静态变量初始化实例（避免外部重复初始化造成内存或状态异常）
             static CommunicationImpl instance(txhuart, rxhuart, 
                                               app_tx_ring_buf, app_tx_dma_buf, 
-                                              app_rx_ring_buf, app_rx_dma_buf);
+                                              app_rx_ring_buf, app_rx_dma_buf,
+                                              tx_aux_port, tx_aux_pin,
+                                              rx_aux_port, rx_aux_pin);
             g_comm = &instance;
 
             // 开启首次 DMA 空闲中断接收

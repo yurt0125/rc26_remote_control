@@ -101,7 +101,7 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
-  CommWrapper_Init(&huart1,&huart2);
+  CommWrapper_Init(&huart1, &huart2, TX_AUX_GPIO_Port, TX_AUX_Pin, RX_AUX_GPIO_Port, RX_AUX_Pin);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -177,7 +177,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  if (GPIO_Pin == GPIO_PIN_11) {
+  if (GPIO_Pin == TX_AUX_Pin) {
 		CommWrapper_TxBufferToTxDMA(&huart1);
   }
 }
