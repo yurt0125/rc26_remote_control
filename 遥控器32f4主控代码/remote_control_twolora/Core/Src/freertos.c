@@ -222,7 +222,7 @@ void Button_task(void *argument)
     Joystick_Task_Loop();
     Key_Task_Loop();
     Button_Task_Loop();
-    Communication_Task_Loop();
+//    Communication_Task_Loop();
     osDelay(1);
   }
   /* USER CODE END Button_task */

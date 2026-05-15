@@ -1,4 +1,4 @@
-#include "communication.hpp"
+#include "communication.h"
 
 namespace communication{
     Communication::Communication(UART_HandleTypeDef *txhuart,UART_HandleTypeDef *rxhuart,
@@ -10,8 +10,13 @@ namespace communication{
         this->dma_tx_buf = tx_dma_buf;
         this->dma_rx_buf = rx_dma_buf;
 
-        this->tx_fifo = {tx_ring_buf, 0, 0};
-        this->rx_fifo = {rx_ring_buf, 0, 0};
+        this->tx_fifo.buffer = tx_ring_buf;
+        this->tx_fifo.head = 0;
+        this->tx_fifo.tail = 0;
+        
+        this->rx_fifo.buffer = rx_ring_buf;
+        this->rx_fifo.head = 0;
+        this->rx_fifo.tail = 0;
 
         this->tx_busy = 0; // 初始状态为非忙碌
 
@@ -143,10 +148,13 @@ namespace communication{
         for (int i = 0; i < sizeof(XYZFrame_t); i++) {
             FIFO_Push(&tx_fifo, ptr[i]);
         }
-            
+        
         // 尝试拉起发送：如果底部DMA空闲，且队列里有东西
         if (tx_busy == 0 && FIFO_Count(&tx_fifo) > 0) {
-            Comm_TxBufferToTxDMA(txhuart); 
+            if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_11) == GPIO_PIN_SET)
+            {
+                Comm_TxBufferToTxDMA(txhuart); 
+            }
         }
     }
 
@@ -161,13 +169,20 @@ void Communication::Comm_SendAnyDataToTxBuffer(const uint8_t* data, uint16_t len
         // __enable_irq();
 
         if (tx_busy == 0 && FIFO_Count(&tx_fifo) > 0) {
-            Comm_TxBufferToTxDMA(this->txhuart); 
+            if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_11) == GPIO_PIN_SET) {
+                Comm_TxBufferToTxDMA(this->txhuart); 
+            }
         }
     }
 
     void Communication::Comm_TxBufferToTxDMA(UART_HandleTypeDef *txhuart_param)
     {
         if (this->txhuart == txhuart_param) {
+            // 安全保护：如果在忙碌期间误入或对方为低电平（繁忙），直接退出
+            if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_11) == GPIO_PIN_RESET) {
+                return;
+            }
+
             uint16_t count = FIFO_Count(&tx_fifo);
             if (count > 0) {
                 if (count > DMA_BUF_SIZE) count = DMA_BUF_SIZE;
@@ -180,7 +195,7 @@ void Communication::Comm_SendAnyDataToTxBuffer(const uint8_t* data, uint16_t len
                 tx_busy = 1; // 锁定发送状态
                 Comm_TxUseTxDMA(txhuart, dma_tx_buf, count);
             } else {
-                // TX FIFO 为空，回到空闲状态
+                // 如果且仅如果队列已经为空了，清除忙碌标志位
                 tx_busy = 0;
             }
         }
@@ -196,6 +211,7 @@ void Communication::Comm_SendAnyDataToTxBuffer(const uint8_t* data, uint16_t len
             }
             
             // 立即开启下一次 DMA 接收，防止漏包
+            HAL_UARTEx_ReceiveToIdle_DMA(rxhuart_param, dma_rx_buf, DMA_BUF_SIZE);
             // __HAL_DMA_DISABLE_IT(rxhuart->hdmarx, DMA_IT_HT);
         }
     }

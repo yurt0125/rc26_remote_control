@@ -29,7 +29,9 @@ rx_test_demo\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 rx_test_demo\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 rx_test_demo\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 rx_test_demo\main.o: ../Core/Inc/dma.h
+rx_test_demo\main.o: ../Core/Inc/tim.h
 rx_test_demo\main.o: ../Core/Inc/usart.h
 rx_test_demo\main.o: ../Core/Inc/gpio.h
 rx_test_demo\main.o: ../App/communication.h
-rx_test_demo\main.o: ../Com/Datapool.h
+rx_test_demo\main.o: ../App/comm_wrapper.h
+rx_test_demo\main.o: D:\Keil5\ARM\ARMCC5\Bin\..\include\stdbool.h

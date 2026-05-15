@@ -1,6 +1,6 @@
-rx_test_demo\communication.o: ..\App\communication.c
+rx_test_demo\communication.o: ..\App\communication.cpp
 rx_test_demo\communication.o: ..\App\communication.h
-rx_test_demo\communication.o: ../Core/Inc/gpio.h
+rx_test_demo\communication.o: ../Core/Inc/usart.h
 rx_test_demo\communication.o: ../Core/Inc/main.h
 rx_test_demo\communication.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
 rx_test_demo\communication.o: ../Core/Inc/stm32f1xx_hal_conf.h
@@ -30,6 +30,3 @@ rx_test_demo\communication.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_
 rx_test_demo\communication.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 rx_test_demo\communication.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 rx_test_demo\communication.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
-rx_test_demo\communication.o: ../Core/Inc/usart.h
-rx_test_demo\communication.o: ../Com/Datapool.h
-rx_test_demo\communication.o: D:\Keil5\ARM\ARMCC5\Bin\..\include\string.h

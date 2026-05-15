@@ -19,12 +19,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "dma.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "communication.h"
+#include "comm_wrapper.h"
 uint16_t bag_cnt=0;
 uint16_t cor_bag_cnt=0;
 /* USER CODE END Includes */
@@ -47,7 +49,11 @@ uint16_t cor_bag_cnt=0;
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint16_t global_joy_ch1 = 0;
+uint16_t global_joy_ch2 = 0;
+uint16_t global_joy_ch3 = 0;
+uint16_t global_joy_ch4 = 0;
+uint16_t global_key = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -92,8 +98,10 @@ int main(void)
   MX_DMA_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  Communication_Task_Init(&huart2);
+  HAL_TIM_Base_Start_IT(&htim2);
+  CommWrapper_Init(&huart1,&huart2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -103,7 +111,15 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		Communication_Task_Loop();
+		if (CommWrapper_Task_Loop()) {
+        // 如果处理到有效的数据，则获取最新的摇杆和按键数据到全局变量中
+        uint16_t temp_joystick[4] = {0};
+        CommWrapper_GetRecvData(temp_joystick, &global_key);
+        global_joy_ch1 = temp_joystick[0];
+        global_joy_ch2 = temp_joystick[1];
+        global_joy_ch3 = temp_joystick[2];
+        global_joy_ch4 = temp_joystick[3];
+    }
 //		HAL_UART_Transmit(&huart1, (uint8_t*)&tx_cnt, 2, 10); 
   }
   /* USER CODE END 3 */
@@ -151,19 +167,24 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart_, uint16_t size_)
 {
-  Comm_UartRx_Callback_Wrapper(huart_, size_);
+  CommWrapper_RxDMAToRxBuffer(huart_, size_);
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
-  Comm_UartTxCplt_Callback_Wrapper(huart);
+// CommWrapper_TxBufferToTxDMA(huart);
 }
 
-
-void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  Comm_UartError_Callback_Wrapper(huart);
+  if (GPIO_Pin == GPIO_PIN_11) {
+		CommWrapper_TxBufferToTxDMA(&huart1);
+  }
 }
+//void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+//{
+//  Comm_UartError_Callback_Wrapper(huart);
+//}
 
 
 
@@ -190,7 +211,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-
+  else if (htim->Instance == TIM2)
+  {
+		 CommWrapper_SendAxisData(1, 2, 5);
+  }
   /* USER CODE END Callback 1 */
 }
 
