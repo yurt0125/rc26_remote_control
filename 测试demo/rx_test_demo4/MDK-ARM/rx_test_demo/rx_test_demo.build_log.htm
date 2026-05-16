@@ -27,13 +27,13 @@ Project File Date:  05/15/2026
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'D:\Keil5\ARM\ARMCC5\Bin'
 Build target 'rx_test_demo'
-compiling comm_warpper.cpp...
-compiling main.c...
 compiling communication.cpp...
-linking...
-Program Size: Code=9480 RO-data=592 RW-data=36 ZI-data=2892  
-FromELF: creating hex file...
-"rx_test_demo\rx_test_demo.axf" - 0 Error(s), 0 Warning(s).
+..\App\communication.cpp(1): error:  #5: cannot open source input file "RC_communication.h": No such file or directory
+  #include "RC_communication.h"
+..\App\communication.cpp: 0 warnings, 1 error
+compiling main.c...
+compiling comm_warpper.cpp...
+"rx_test_demo\rx_test_demo.axf" - 1 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -57,6 +57,7 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE@6.1.1
       Include file:  CMSIS/Core/Include/tz_context.h
+Target not created.
 Build Time Elapsed:  00:00:01
 </pre>
 </body>

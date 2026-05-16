@@ -129,7 +129,7 @@ void Communication_Task_Loop(void)
 
 void Comm_Timer_Callback_Wrapper(void)
 {
-    Communication_SetJoystickAndKeyData(joystick_Buf[0],joystick_Buf[1],joystick_Buf[2],joystick_Buf[3],button_Buf);
+    Communication_SetJoystickAndKeyData(joystick_Buf[0],joystick_Buf[1],joystick_Buf[2],joystick_Buf[3],tx_button_state);
 		JoystickFrame_t frame;
     frame.header[0] = 0xAA;
     frame.header[1] = 0x55;
@@ -189,13 +189,13 @@ void Communication_SendData(const uint8_t* data, uint16_t len)
     }
 }
 
-void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t key)
+void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t TX_Button_State)
 {
-//    g_Comm.send_joystick[0] = ch1;
-//    g_Comm.send_joystick[1] = ch2;
-//    g_Comm.send_joystick[2] = ch3;
-//    g_Comm.send_joystick[3] = ch4;
-    g_Comm.send_key = key;
+    g_Comm.send_joystick[0] = ch1;
+    g_Comm.send_joystick[1] = ch2;
+    g_Comm.send_joystick[2] = ch3;
+    g_Comm.send_joystick[3] = ch4;
+    g_Comm.send_key = TX_Button_State;
 }
 
 void TxBufferToDMA(UART_HandleTypeDef *txhuart)
@@ -212,6 +212,7 @@ void TxBufferToDMA(UART_HandleTypeDef *txhuart)
             
             g_Comm.tx_busy = 1; // 锁定发送状态
             HAL_UART_Transmit_DMA(g_Comm.txhuart, g_Comm.dma_tx_buf, count);
+						tx_cnt++;
         } else {
             // TX FIFO 为空，回到空闲状态
             g_Comm.tx_busy = 0;

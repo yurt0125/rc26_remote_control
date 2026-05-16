@@ -1,20 +1,20 @@
-#include "button.h"
+#include "gpio_button.h"
 
 // 按键数组实例，包含 PE7-14（机器人控制） 和 PC0-3（十字按键）
 Button_t Buttons[BUTTON_COUNT] = {
     //端口，引脚，有效电平，状态，计时器，事件 //对应数据池位数
-    {GPIOE, GPIO_PIN_7,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//button_Bufbit16
-    {GPIOE, GPIO_PIN_8,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//button_Bufbit15
-    {GPIOE, GPIO_PIN_9,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//button_Bufbit14
-    {GPIOE, GPIO_PIN_10, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//button_Bufbit13
-    {GPIOE, GPIO_PIN_11, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//button_Bufbit12
-    {GPIOE, GPIO_PIN_12, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//button_Bufbit11
-    {GPIOE, GPIO_PIN_13, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//button_Bufbit10
-    {GPIOE, GPIO_PIN_14, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//button_Bufbit9
-    {GPIOC, GPIO_PIN_0,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//button_Bufbit8
-    {GPIOC, GPIO_PIN_1,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//button_Bufbit7
-    {GPIOC, GPIO_PIN_2,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//button_Bufbit6
-    {GPIOC, GPIO_PIN_3,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP} //button_Buf[1]5
+    {GPIOE, GPIO_PIN_7,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit16
+    {GPIOE, GPIO_PIN_8,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit15
+    {GPIOE, GPIO_PIN_9,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit14
+    {GPIOE, GPIO_PIN_10, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit13
+    {GPIOE, GPIO_PIN_11, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit12
+    {GPIOE, GPIO_PIN_12, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit11
+    {GPIOE, GPIO_PIN_13, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit10
+    {GPIOE, GPIO_PIN_14, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit9
+    {GPIOC, GPIO_PIN_0,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit8
+    {GPIOC, GPIO_PIN_1,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit7
+    {GPIOC, GPIO_PIN_2,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit6
+    {GPIOC, GPIO_PIN_3,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP} //tx_button_statebit5
 };
 
 void Button_Task_Init(void)
@@ -75,9 +75,9 @@ void Button_Task_Loop(void)
         
         uint16_t mask = 0x0001 << ((15 - i));
 
-        button_Buf &= ~mask; // 清除旧状态
+        tx_button_state &= ~mask; // 清除旧状态
         if (Buttons[i].event == BTN_EVENT_DOWN) {
-            button_Buf |= (0x01 << (15 - i));
+            tx_button_state |= (0x01 << (15 - i));
         } 
     }
 

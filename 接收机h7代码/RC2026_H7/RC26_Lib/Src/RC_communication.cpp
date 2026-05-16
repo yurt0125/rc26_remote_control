@@ -210,6 +210,10 @@ void Communication::Comm_SendAnyDataToTxBuffer(const uint8_t* data, uint16_t len
                     FIFO_Pop(&tx_fifo, &dma_tx_buf[i]);
                 }
                 
+                // 【新增】将 D-Cache 里的数据主动推入 SRAM 供 DMA 读取
+                // 注意这里要保证清除完整的 count 长度，如果你传入的是部分长度可能没刷新干净
+                SCB_CleanDCache_by_Addr((uint32_t*)dma_tx_buf, count);
+                
                 tx_busy = 1; // 锁定发送状态
                 Comm_TxUseTxDMA(txhuart, dma_tx_buf, count);
             } else {
@@ -223,6 +227,9 @@ void Communication::Comm_SendAnyDataToTxBuffer(const uint8_t* data, uint16_t len
     void Communication::Comm_RxDMAToRxBuffer(UART_HandleTypeDef *rxhuart_param, uint16_t size)
     {
         if (this->rxhuart == rxhuart_param) {
+            // 【新增】使 Cache 中对应的区域无效化，迫使 CPU 接下来直接去 SRAM 读取 DMA 传来的新数据
+            SCB_InvalidateDCache_by_Addr((uint32_t*)dma_rx_buf, DMA_BUF_SIZE);
+
             // DMA 中断来了，将其固定缓存段里收到的数据复制到业务层的 RX 环形缓冲区中
             for (uint16_t i = 0; i < size; i++) {
                 FIFO_Push(&rx_fifo, dma_rx_buf[i]);

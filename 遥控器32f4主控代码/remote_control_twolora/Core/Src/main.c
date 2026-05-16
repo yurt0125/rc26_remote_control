@@ -29,7 +29,7 @@
 /* USER CODE BEGIN Includes */
 #include "communication.h"
 #include "joystick.h"
-#include "key.h"
+#include "adc_switch.h"
 #include "tjc_huart_hmi.h"
 /* USER CODE END Includes */
 

@@ -39,5 +39,5 @@ remote_control/main.o: ..\Core\Src\main.c ..\Core\Inc\main.h \
   ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.h \
   ..\Core\Inc\adc.h ..\Core\Inc\dma.h ..\Core\Inc\tim.h \
   ..\Core\Inc\usart.h ..\Core\Inc\gpio.h ..\App\communication.h \
-  ..\Common\Datapool.h ..\App\joystick.h ..\App\key.h \
+  ..\Common\Datapool.h ..\App\joystick.h ..\App\adc_switch.h \
   ..\App\tjc_huart_hmi.h

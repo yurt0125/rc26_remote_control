@@ -40,9 +40,11 @@ private:
     
     // 底层数据缓冲区
     uint8_t tx_ring_buffer[RING_BUF_SIZE];
-    uint8_t tx_dma_buffer[DMA_BUF_SIZE];
     uint8_t rx_ring_buffer[RING_BUF_SIZE];
-    uint8_t rx_dma_buffer[DMA_BUF_SIZE];
+
+    // 【修改】强制向 32 字节对齐
+    alignas(32) uint8_t tx_dma_buffer[DMA_BUF_SIZE];
+    alignas(32) uint8_t rx_dma_buffer[DMA_BUF_SIZE];
 };
 
 }

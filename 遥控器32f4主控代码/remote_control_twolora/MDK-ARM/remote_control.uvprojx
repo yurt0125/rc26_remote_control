@@ -645,9 +645,9 @@
               <FilePath>..\App\joystick.h</FilePath>
             </File>
             <File>
-              <FileName>key.c</FileName>
+              <FileName>adc_switch.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\App\key.c</FilePath>
+              <FilePath>..\App\adc_switch.c</FilePath>
             </File>
             <File>
               <FileName>key.h</FileName>
@@ -665,9 +665,9 @@
               <FilePath>..\App\tjc_huart_hmi.h</FilePath>
             </File>
             <File>
-              <FileName>button.c</FileName>
+              <FileName>gpio_button.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\App\button.c</FilePath>
+              <FilePath>..\App\gpio_button.c</FilePath>
             </File>
             <File>
               <FileName>button.h</FileName>

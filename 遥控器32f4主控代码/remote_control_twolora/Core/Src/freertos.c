@@ -27,9 +27,9 @@
 /* USER CODE BEGIN Includes */
 #include "adc.h"
 #include "communication.h"
-#include "button.h"
+#include "gpio_button.h"
 #include "joystick.h"
-#include "key.h"
+#include "adc_switch.h"
 #include "tjc_huart_hmi.h"
 #include "stm32f4xx.h"
 /* USER CODE END Includes */
@@ -268,7 +268,6 @@ void TxBufferToDMA_task(void *argument)
   {
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
     TxBufferToDMA(&huart6);
-    tx_cnt++;
     
     // //先拿当前拍数
     // uint32_t current_cyccnt = DWT->CYCCNT;
