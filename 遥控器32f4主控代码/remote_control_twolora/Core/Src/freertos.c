@@ -88,13 +88,6 @@ const osThreadAttr_t TxBufferToDMA_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for TxCommunication */
-osThreadId_t TxCommunicationHandle;
-const osThreadAttr_t TxCommunication_attributes = {
-  .name = "TxCommunication",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
-};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -106,7 +99,6 @@ void Display_task(void *argument);
 void Button_task(void *argument);
 void RXComunication_task(void *argument);
 void TxBufferToDMA_task(void *argument);
-void TxCommunication_task(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -151,9 +143,6 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of TxBufferToDMA */
   TxBufferToDMAHandle = osThreadNew(TxBufferToDMA_task, NULL, &TxBufferToDMA_attributes);
-
-  /* creation of TxCommunication */
-  TxCommunicationHandle = osThreadNew(TxCommunication_task, NULL, &TxCommunication_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -273,29 +262,10 @@ void TxBufferToDMA_task(void *argument)
     // uint32_t current_cyccnt = DWT->CYCCNT;
     // // 凭借无符号数减法的特性，即使 current 折返归零了，减去 last_tx 依然是准确的差值跑过的拍数！
     // tx_stamp = (current_cyccnt - last_tx_stamp) / 168; 
-    
     // // 更新上一拍
     // last_tx_stamp = current_cyccnt;
   }
   /* USER CODE END TxBufferToDMA_task */
-}
-
-/* USER CODE BEGIN Header_TxCommunication_task */
-/**
-* @brief Function implementing the TxCommunication thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_TxCommunication_task */
-void TxCommunication_task(void *argument)
-{
-  /* USER CODE BEGIN TxCommunication_task */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END TxCommunication_task */
 }
 
 /* Private application code --------------------------------------------------*/

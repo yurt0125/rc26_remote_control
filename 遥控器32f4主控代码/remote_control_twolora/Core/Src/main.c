@@ -183,13 +183,13 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t size)
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 {
     Comm_UartError_Callback_Wrapper(huart);
-    HMI_UartTxCplt_Callback_Wrapper(huart);
+    HMI_UartError_Callback_Wrapper(huart);
 
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
-    HMI_UartError_Callback_Wrapper(huart);
+    HMI_UartTxCplt_Callback_Wrapper(huart);
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)

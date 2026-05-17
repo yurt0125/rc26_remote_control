@@ -27,4 +27,5 @@ remote_control/tjc_huart_hmi.o: ..\App\tjc_huart_hmi.c \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
-  ..\Core\Inc\usart.h ..\Core\Inc\tim.h ..\Core\Inc\dma.h
+  ..\Core\Inc\usart.h ..\Core\Inc\tim.h ..\Core\Inc\dma.h \
+  ..\Common\Datapool.h

@@ -138,12 +138,12 @@ namespace communication{
         return data_updated;
     }
 
-    void Communication::Comm_SendAxisDataToTxBuffer(uint16_t  x, uint16_t y, uint16_t z,uint8_t status, uint8_t mode, uint8_t command1, uint8_t command2)
+    void Communication::Comm_SendAxisDataToTxBuffer(uint16_t  x, uint16_t y, uint16_t z,uint8_t Gripper_Status, uint8_t Suction_Cup_Status,uint8_t Automatic_status, uint8_t mode, uint8_t command1, uint8_t command2)
     {
         send_xyz[0] = x;
         send_xyz[1] = y;
         send_xyz[2] = z;
-        send_status = status;
+        send_status = (Gripper_Status << 3) | (Suction_Cup_Status << 1) | Automatic_status;
         send_mode = mode;
         send_command1 = command1;
         send_command2 = command2;

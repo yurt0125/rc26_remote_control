@@ -14,6 +14,8 @@ static void FIFO_Push(comm_FIFO_t* fifo, uint8_t data) {
     if (next != fifo->head) { 
         fifo->buffer[fifo->tail] = data;
         fifo->tail = next;
+    } else {
+        fifo->drop_cnt++; // 缓冲区满，丢包并计数
     }
 }
 
@@ -63,6 +65,8 @@ void Communication_Task_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rx
     g_Comm.txhuart = txhuart;
     g_Comm.rxhuart = rxhuart;
     g_Comm.tx_busy = 0;
+    g_Comm.rx_fifo.drop_cnt = 0;
+    g_Comm.tx_fifo.drop_cnt = 0;
     
     // 初始化一些摇杆测试数据
     g_Comm.send_joystick[0] = 0x3412;
@@ -114,8 +118,11 @@ void Communication_Task_Loop(void)
 
                 // 将 FIFO 头部读取指针越过已经正确消费的这一帧
                 g_Comm.rx_fifo.head = p; 
-								rx_stamp=HAL_GetTick();
-								rx_cnt++;
+				rx_stamp=HAL_GetTick();
+				rx_cnt++;
+                HMI_SendDataFrame(g_Comm.recv_x, g_Comm.recv_y, g_Comm.recv_z,
+                                  g_Comm.recv_status, g_Comm.recv_mode,
+                                  g_Comm.recv_command1, g_Comm.recv_command2);
             } else {
                 // 坏帧，跳过头部第一个错误字节，继续往后寻找
                 g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;

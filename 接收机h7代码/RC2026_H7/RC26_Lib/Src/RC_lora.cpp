@@ -52,9 +52,9 @@ void Lora_communication::Task_Process() {
 void Lora_communication::Tim_It_Process() {
     // 这个回调依附于底层的硬件中断（比如你传进来的 tim7_1khz 1ms产生一次中断）
     timer_tick_count++;
-    if (timer_tick_count >= 10) { // 计数达到 10ms 
+    if (timer_tick_count >= 20) { // 计数达到 10ms 
         timer_tick_count = 0;
-        Comm_SendAxisDataToTxBuffer(1, 2, 5 ,0xAA,0xBB,0xCC,0xDD);
+        Comm_SendAxisDataToTxBuffer(1, 2, 5 ,1,1,1,0xBB,0xCC,0xDD);
     }
 }
 

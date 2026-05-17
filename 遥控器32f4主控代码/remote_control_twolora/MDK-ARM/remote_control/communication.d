@@ -28,7 +28,7 @@ remote_control/communication.o: ..\App\communication.c \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
   ..\Core\Inc\usart.h ..\Core\Inc\tim.h ..\Core\Inc\dma.h \
-  ..\Common\Datapool.h \
+  ..\Common\Datapool.h ..\App\tjc_huart_hmi.h \
   ..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h \
   ..\Core\Inc\FreeRTOSConfig.h \
   ..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h \

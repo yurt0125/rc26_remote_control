@@ -650,11 +650,6 @@
               <FilePath>..\App\adc_switch.c</FilePath>
             </File>
             <File>
-              <FileName>key.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\App\key.h</FilePath>
-            </File>
-            <File>
               <FileName>tjc_huart_hmi.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\App\tjc_huart_hmi.c</FilePath>
@@ -668,11 +663,6 @@
               <FileName>gpio_button.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\App\gpio_button.c</FilePath>
-            </File>
-            <File>
-              <FileName>button.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\App\button.h</FilePath>
             </File>
           </Files>
         </Group>

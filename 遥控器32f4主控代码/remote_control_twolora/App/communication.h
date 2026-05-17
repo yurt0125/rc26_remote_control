@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include "Datapool.h"
 #include "stm32f4xx.h"
+#include "tjc_huart_hmi.h"
+
 #define RING_BUF_SIZE 256
 #define DMA_BUF_SIZE  64
 
@@ -16,6 +18,7 @@ typedef struct {
     uint8_t buffer[RING_BUF_SIZE];
     volatile uint16_t head;
     volatile uint16_t tail;
+    volatile uint16_t drop_cnt; // 缓冲区满时丢包计数
 } comm_FIFO_t;
 
 /* 强制一字节对齐的数据帧 */

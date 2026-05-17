@@ -39,5 +39,5 @@ remote_control/freertos.o: ..\Core\Src\freertos.c \
   ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.h \
   ..\Core\Inc\adc.h ..\App\communication.h ..\Core\Inc\gpio.h \
   ..\Core\Inc\usart.h ..\Core\Inc\tim.h ..\Core\Inc\dma.h \
-  ..\Common\Datapool.h ..\App\gpio_button.h ..\App\joystick.h \
-  ..\App\adc_switch.h ..\App\tjc_huart_hmi.h
+  ..\Common\Datapool.h ..\App\tjc_huart_hmi.h ..\App\gpio_button.h \
+  ..\App\joystick.h ..\App\adc_switch.h

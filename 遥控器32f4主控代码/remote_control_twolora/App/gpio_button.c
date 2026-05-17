@@ -1,4 +1,5 @@
 #include "gpio_button.h"
+#include "tjc_huart_hmi.h"
 
 // 按键数组实例，包含 PE7-14（机器人控制） 和 PC0-3（十字按键）
 Button_t Buttons[BUTTON_COUNT] = {
@@ -55,6 +56,17 @@ void Button_Task_Loop(void)
                     if ((current_tick - btn->start_tick) >= BTN_DEBOUNCE_TIME) {
                         btn->event = BTN_EVENT_DOWN;
                         btn->state = 2;
+
+                        // PC0-3 / PE13-14：数据设置界面按键，消抖确认后发送单次
+                        switch (i) {
+                            case 6:  HMI_SendSettingFrame(2, 0, 0); break; // PE13
+                            case 7:  HMI_SendSettingFrame(3, 0, 0); break; // PE14
+                            case 8:  HMI_SendSettingFrame(1, 1, 0); break; // PC0
+                            case 9:  HMI_SendSettingFrame(1, 2, 0); break; // PC1
+                            case 10: HMI_SendSettingFrame(1, 3, 0); break; // PC2
+                            case 11: HMI_SendSettingFrame(1, 4, 0); break; // PC3
+                            default: break;
+                        }
                     }
                 } else {
                     btn->state = 0; // 抖动，重置状态

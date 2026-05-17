@@ -102,7 +102,7 @@ namespace communication{
          * @note 时机/用法：定时器更新中断调用发送
          */
         void Comm_SendAxisDataToTxBuffer(uint16_t  x, uint16_t y, uint16_t z,
-            uint8_t status, uint8_t mode, uint8_t command1, uint8_t command2);
+            uint8_t Gripper_Status, uint8_t Suction_Cup_Status,uint8_t Automatic_status, uint8_t mode, uint8_t command1, uint8_t command2);
 
         /**
          * @brief 纯虚函数：启动底层物理发送动作
