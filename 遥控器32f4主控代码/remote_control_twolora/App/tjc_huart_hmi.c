@@ -244,7 +244,7 @@ void HMI_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load2)
 }
 
 // 发送 DataFrame (0x55 0xCC) — 仅数据显示界面(page 2) 发送
-void HMI_SendDataFrame(uint16_t x, uint16_t y, uint16_t z,
+void HMI_SendDataFrame(int16_t x, int16_t y, int16_t z,
                        uint8_t status, uint8_t mode,
                        uint8_t send_cmd1, uint8_t send_cmd2)
 {

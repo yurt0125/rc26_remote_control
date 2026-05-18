@@ -12,10 +12,10 @@ Button_t Buttons[BUTTON_COUNT] = {
     {GPIOE, GPIO_PIN_12, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit11
     {GPIOE, GPIO_PIN_13, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit10
     {GPIOE, GPIO_PIN_14, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit9
-    {GPIOC, GPIO_PIN_0,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit8
-    {GPIOC, GPIO_PIN_1,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit7
-    {GPIOC, GPIO_PIN_2,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit6
-    {GPIOC, GPIO_PIN_3,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP} //tx_button_statebit5
+    {GPIOC, GPIO_PIN_0,  GPIO_PIN_RESET, 0, 0, BTN_EVENT_UP},//tx_button_statebit8
+    {GPIOC, GPIO_PIN_1,  GPIO_PIN_RESET, 0, 0, BTN_EVENT_UP},//tx_button_statebit7
+    {GPIOC, GPIO_PIN_2,  GPIO_PIN_RESET, 0, 0, BTN_EVENT_UP},//tx_button_statebit6
+    {GPIOC, GPIO_PIN_3,  GPIO_PIN_RESET, 0, 0, BTN_EVENT_UP} //tx_button_statebit5
 };
 
 void Button_Task_Init(void)

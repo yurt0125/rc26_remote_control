@@ -36,12 +36,12 @@ typedef struct {
     uint8_t tail;      // e.g. 0xDE
 } JoystickFrame_t;
 
-// 接收帧：XYZ (3 x 16位)
+// 接收帧：XYZ (3 x 16位 有符号)
 typedef struct {
     uint8_t header[2]; // e.g. 0x55 0xAA
-    uint16_t x;
-    uint16_t y;
-    uint16_t z;
+    int16_t x;
+    int16_t y;
+    int16_t z;
     uint8_t status;   // bit5-3:夹爪状态 bit2-1：吸盘状态 bit0:自动模式状态
     uint8_t mode;
     uint8_t command1;
@@ -70,9 +70,9 @@ typedef struct {
     /* 解析出来/待发送的业务数据 */
     uint16_t send_joystick[4]; 
     uint16_t send_key;
-    uint16_t recv_x;
-    uint16_t recv_y;
-    uint16_t recv_z;
+    int16_t recv_x;
+    int16_t recv_y;
+    int16_t recv_z;
     uint8_t recv_status;
     uint8_t recv_mode;
     uint8_t recv_command1;

@@ -207,24 +207,27 @@ void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch
 
 void TxBufferToDMA(UART_HandleTypeDef *txhuart)
 {
-    if (txhuart == g_Comm.txhuart) {
-        uint16_t count = FIFO_Count(&g_Comm.tx_fifo);
-        if (count > 0) {
-            if (count > DMA_BUF_SIZE) count = DMA_BUF_SIZE;
-            
-            // 将欲发送的队列数据腾出到 DMA 使用的固定线性数组中
-            for (uint16_t i = 0; i < count; i++) {
-                FIFO_Pop(&g_Comm.tx_fifo, &g_Comm.dma_tx_buf[i]);
-            }
-            
-            g_Comm.tx_busy = 1; // 锁定发送状态
-            HAL_UART_Transmit_DMA(g_Comm.txhuart, g_Comm.dma_tx_buf, count);
-						tx_cnt++;
-        } else {
-            // TX FIFO 为空，回到空闲状态
-            g_Comm.tx_busy = 0;
+    if (txhuart != g_Comm.txhuart) return;
+
+    // 关中断：防止 DMA 完成 ISR 或 AUX EXTI 与任务并发操作 FIFO
+    __disable_irq();
+
+    uint16_t count = FIFO_Count(&g_Comm.tx_fifo);
+    if (count > 0) {
+        if (count > DMA_BUF_SIZE) count = DMA_BUF_SIZE;
+
+        for (uint16_t i = 0; i < count; i++) {
+            FIFO_Pop(&g_Comm.tx_fifo, &g_Comm.dma_tx_buf[i]);
         }
+
+        g_Comm.tx_busy = 1;
+        HAL_UART_Transmit_DMA(g_Comm.txhuart, g_Comm.dma_tx_buf, count);
+        tx_cnt++;
+    } else {
+        g_Comm.tx_busy = 0;
     }
+
+    __enable_irq();
 }
 
 void Comm_UartRx_Callback_Wrapper(UART_HandleTypeDef *rxhuart, uint16_t size)

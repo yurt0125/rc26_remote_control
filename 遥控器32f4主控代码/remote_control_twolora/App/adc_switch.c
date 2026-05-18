@@ -26,11 +26,11 @@ void KEY_AdcConvCplt_Callback_Wrapper(ADC_HandleTypeDef* hadc_)
         adc_key_val[0] = key_AdcBuf[0];
         adc_key_val[1] = key_AdcBuf[1];
 			
-				if(adc_key_val[0]>3072)
+				if(adc_key_val[0]>2854)
 				{
 					tx_button_state &= 0xFFF3; // 清除旧状态
 					tx_button_state |= 0x8;		//赋值bit3-2：10
-				}else if(adc_key_val[0]>1024&&adc_key_val[0]<=3072)
+				}else if(adc_key_val[0]>806&&adc_key_val[0]<=2854)
 				{
 					tx_button_state &= 0xFFF3; // 清除旧状态
 					tx_button_state |= 0x4;		//赋值bit3-2：01
@@ -39,11 +39,11 @@ void KEY_AdcConvCplt_Callback_Wrapper(ADC_HandleTypeDef* hadc_)
 					tx_button_state &= 0xFFF3; // 清除旧状态
 				}
 				
-				if(adc_key_val[1]>3072)
+				if(adc_key_val[1]>2854)
 				{
 					tx_button_state &= 0xFFFC; // 清除旧状态
 					tx_button_state |= 0x2;		//赋值bit1-0：10
-				}else if(adc_key_val[1]>1024&&adc_key_val[1]<=3072)
+				}else if(adc_key_val[1]>806&&adc_key_val[1]<=2854)
 				{
 					tx_button_state &= 0xFFFC; // 清除旧状态
 					tx_button_state |= 0x1;		//赋值bit1-0：01

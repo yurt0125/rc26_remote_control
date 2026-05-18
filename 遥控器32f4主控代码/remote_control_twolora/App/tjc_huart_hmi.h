@@ -40,9 +40,9 @@ typedef struct {
 //Data Frame
 typedef struct {
     uint8_t header[2]; // e.g. 0x55 0xCC
-    uint16_t x;
-    uint16_t y;
-    uint16_t z;
+    int16_t x;
+    int16_t y;
+    int16_t z;
     uint8_t status;   // bit5-3:夹爪状态 bit2-1：吸盘状态 bit0:自动模式状态
     uint8_t mode;
     uint8_t send_command1;
@@ -81,9 +81,9 @@ typedef struct {
     uint8_t setting_rx_load[2];
 
     // DataFrame (0x55 0xCC) 接收存储
-    uint16_t data_send_x;
-    uint16_t data_send_y;
-    uint16_t data_send_z;
+    int16_t data_send_x;
+    int16_t data_send_y;
+    int16_t data_send_z;
     uint8_t  data_send_status;
     uint8_t  data_send_mode;
     uint8_t  data_send_command[2];
@@ -103,7 +103,7 @@ void HMI_Task_Loop(void);
 
 // 发送接口 — 仅数据设置(0xBB) 和 数据显示(0xCC) 需要发送
 void HMI_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load2);
-void HMI_SendDataFrame(uint16_t x, uint16_t y, uint16_t z,
+void HMI_SendDataFrame(int16_t x, int16_t y, int16_t z,
                        uint8_t status, uint8_t mode,
                        uint8_t send_cmd1, uint8_t send_cmd2);
 

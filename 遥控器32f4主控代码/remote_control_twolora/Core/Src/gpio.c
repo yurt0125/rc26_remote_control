@@ -61,7 +61,7 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pins : cross_key_SW1_Pin cross_key_SW2_Pin cross_key_SW3_Pin cross_key_SW4_Pin */
   GPIO_InitStruct.Pin = cross_key_SW1_Pin|cross_key_SW2_Pin|cross_key_SW3_Pin|cross_key_SW4_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : key_1_Pin key_2_Pin key_3_Pin key_4_Pin
