@@ -44,7 +44,9 @@ void Lora_communication::Task_Process() {
     if (Comm_Task_Loop()) {
         static uint16_t joystick[4];
         static uint16_t key;
-        GetRecvData(joystick, &key);
+        GetRecvData(joystick, key);
+        static uint8_t command, load1, load2;
+        GetSettingData(command, load1, load2);
     }
 
 }

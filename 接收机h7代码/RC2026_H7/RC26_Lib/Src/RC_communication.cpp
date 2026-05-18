@@ -34,6 +34,10 @@ namespace communication{
         send_command1 = 0xCC;
         send_command2 = 0xDD;
 
+        rec_setting_command = 0;
+        rec_setting_load1 = 0;
+        rec_setting_load2 = 0;
+
         // Communication_RX_DMA(rxhuart, dma_rx_buf, DMA_BUF_SIZE);
         // __HAL_DMA_DISABLE_IT(huart->hdmarx, DMA_IT_HT); 
     }
@@ -42,24 +46,24 @@ namespace communication{
     {
     }
 
-    void Communication::FIFO_Push(comm_FIFO_t* fifo, uint8_t data) {
-        uint16_t next = (fifo->tail + 1) % RING_BUF_SIZE;
-        if (next != fifo->head) { 
-            fifo->buffer[fifo->tail] = data;
-            fifo->tail = next;
+    void Communication::FIFO_Push(comm_FIFO_t& fifo, uint8_t data) {
+        uint16_t next = (fifo.tail + 1) % RING_BUF_SIZE;
+        if (next != fifo.head) { 
+            fifo.buffer[fifo.tail] = data;
+            fifo.tail = next;
         }
     }
 
     // 主循环从头部 (head) 取出处理
-    int Communication::FIFO_Pop(comm_FIFO_t* fifo, uint8_t* data) {
-        if (fifo->head == fifo->tail) return 0; 
-        *data = fifo->buffer[fifo->head];
-        fifo->head = (fifo->head + 1) % RING_BUF_SIZE;
+    int Communication::FIFO_Pop(comm_FIFO_t& fifo, uint8_t& data) {
+        if (fifo.head == fifo.tail) return 0; 
+        data = fifo.buffer[fifo.head];
+        fifo.head = (fifo.head + 1) % RING_BUF_SIZE;
         return 1;
     }
 
-    uint16_t Communication::FIFO_Count(comm_FIFO_t* fifo) {
-        return (fifo->tail + RING_BUF_SIZE - fifo->head) % RING_BUF_SIZE;
+    uint16_t Communication::FIFO_Count(comm_FIFO_t& fifo) {
+        return (fifo.tail + RING_BUF_SIZE - fifo.head) % RING_BUF_SIZE;
     }
 
     namespace {//0xD5
@@ -94,15 +98,18 @@ namespace communication{
     bool Communication::Comm_Task_Loop(void)
     {
         bool data_updated = false;
-        // 不断处理 RX FIFO 里面收到的数据，直到剩余数据不足一帧长度
-        while (FIFO_Count(&rx_fifo) >= sizeof(JoystickFrame_t)) {
+        // 不断处理 RX FIFO 里面收到的数据，直到剩余数据不足最小帧长度
+        while (FIFO_Count(rx_fifo) >= sizeof(SettingFrame_t)) {
         
         uint16_t t_head = rx_fifo.head;
         uint8_t byte1 = rx_fifo.buffer[t_head];
         uint8_t byte2 = rx_fifo.buffer[(t_head + 1) % RING_BUF_SIZE];
         
-        // 查找帧头 0xAA 0x55
+        // 查找帧头 0xAA 0x55 (摇杆帧)
         if (byte1 == 0xAA && byte2 == 0x55) {
+            // 摇杆帧需要 14 字节，不足则退出等下一轮
+            if (FIFO_Count(rx_fifo) < sizeof(JoystickFrame_t)) break;
+            
             uint8_t frame_buf[sizeof(JoystickFrame_t)];
             uint16_t p = t_head;
             
@@ -116,7 +123,7 @@ namespace communication{
             
             // 验证帧尾是否对应 0xDE
             if (pFrame->tail == 0xDE && pFrame->crc == crc8(frame_buf+2, sizeof(JoystickFrame_t) - 4)) {
-                // 提取解包好的 XYZ 数据 (均为 16位 uint16_t 数据)
+                // 提取解包好的摇杆数据 (均为 16位 uint16_t 数据)
                 rec_joystick[0] = pFrame->ch1;
                 rec_joystick[1] = pFrame->ch2;
                 rec_joystick[2] = pFrame->ch3;
@@ -130,7 +137,36 @@ namespace communication{
                 // 坏帧，跳过头部第一个错误字节，继续往后寻找
                 rx_fifo.head = (rx_fifo.head + 1) % RING_BUF_SIZE;
             }
+        }
+        // 查找帧头 0xAA 0x66 (设置帧：KFS位置)
+        else if (byte1 == 0xAA && byte2 == 0x66) {
+            uint8_t frame_buf[sizeof(SettingFrame_t)];
+            uint16_t p = t_head;
+            
+            // 复制疑似一帧的所有数据
+            for(int i = 0; i < sizeof(SettingFrame_t); i++) {
+                frame_buf[i] = rx_fifo.buffer[p];
+                p = (p + 1) % RING_BUF_SIZE;
+            }
+            
+            SettingFrame_t* pFrame = (SettingFrame_t*)frame_buf;
+            
+            // 验证帧尾 0xDE 与 CRC（CRC 覆盖 command + load1 + load2 共 3 字节）
+            if (pFrame->tail == 0xDE && pFrame->crc == crc8(frame_buf+2, sizeof(SettingFrame_t) - 4)) {
+                // 提取解包好的设置数据
+                rec_setting_command = pFrame->command;
+                rec_setting_load1 = pFrame->load1;
+                rec_setting_load2 = pFrame->load2;
+
+                // 将 FIFO 头部读取指针越过已经正确消费的这一帧
+                rx_fifo.head = p;
+                data_updated = true; // 标记数据已更新
             } else {
+                // 坏帧，跳过头部第一个错误字节，继续往后寻找
+                rx_fifo.head = (rx_fifo.head + 1) % RING_BUF_SIZE;
+            }
+        }
+        else {
                 // 没有找到帧头，抛弃头部第一字节，继续循环寻头
                 rx_fifo.head = (rx_fifo.head + 1) % RING_BUF_SIZE;
             }
@@ -164,11 +200,11 @@ namespace communication{
 
         uint8_t* ptr = (uint8_t*)&frame;
         for (int i = 0; i < sizeof(XYZFrame_t); i++) {
-            FIFO_Push(&tx_fifo, ptr[i]);
+            FIFO_Push(tx_fifo, ptr[i]);
         }
         
         // 尝试拉起发送：如果底部DMA空闲，且队列里有东西
-        if (tx_busy == 0 && FIFO_Count(&tx_fifo) > 0) {
+        if (tx_busy == 0 && FIFO_Count(tx_fifo) > 0) {
             if(HAL_GPIO_ReadPin(this->tx_aux_port, this->tx_aux_pin) == GPIO_PIN_SET)
             {
                 Comm_TxBufferToTxDMA(txhuart); 
@@ -182,11 +218,11 @@ void Communication::Comm_SendAnyDataToTxBuffer(const uint8_t* data, uint16_t len
 
         // __disable_irq(); 
         for (uint16_t i = 0; i < len; i++) {
-            FIFO_Push(&tx_fifo, data[i]);
+            FIFO_Push(tx_fifo, data[i]);
         }
         // __enable_irq();
 
-        if (tx_busy == 0 && FIFO_Count(&tx_fifo) > 0) {
+        if (tx_busy == 0 && FIFO_Count(tx_fifo) > 0) {
             if(HAL_GPIO_ReadPin(this->tx_aux_port, this->tx_aux_pin) == GPIO_PIN_SET) {
                 Comm_TxBufferToTxDMA(this->txhuart); 
             }
@@ -201,13 +237,13 @@ void Communication::Comm_SendAnyDataToTxBuffer(const uint8_t* data, uint16_t len
                 return;
             }
 
-            uint16_t count = FIFO_Count(&tx_fifo);
+            uint16_t count = FIFO_Count(tx_fifo);
             if (count > 0) {
                 if (count > DMA_BUF_SIZE) count = DMA_BUF_SIZE;
                 
                 // 将欲发送的队列数据腾出到 DMA 使用的固定线性数组中
                 for (uint16_t i = 0; i < count; i++) {
-                    FIFO_Pop(&tx_fifo, &dma_tx_buf[i]);
+                    FIFO_Pop(tx_fifo, dma_tx_buf[i]);
                 }
                 
                 // 【新增】将 D-Cache 里的数据主动推入 SRAM 供 DMA 读取
@@ -232,7 +268,7 @@ void Communication::Comm_SendAnyDataToTxBuffer(const uint8_t* data, uint16_t len
 
             // DMA 中断来了，将其固定缓存段里收到的数据复制到业务层的 RX 环形缓冲区中
             for (uint16_t i = 0; i < size; i++) {
-                FIFO_Push(&rx_fifo, dma_rx_buf[i]);
+                FIFO_Push(rx_fifo, dma_rx_buf[i]);
             }
             
             // 立即开启下一次 DMA 接收，防止漏包

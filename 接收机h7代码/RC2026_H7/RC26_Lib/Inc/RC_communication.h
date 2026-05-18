@@ -29,6 +29,16 @@ namespace communication{
         uint8_t tail;      // e.g. 0xDE
     } JoystickFrame_t;
 
+    //接收帧：接收设置好的KFS位置
+    typedef struct {
+        uint8_t header[2]; // e.g. 0xAA 0x66
+        uint8_t command;   // e.g. 0x01表示发送KFS位置
+        uint8_t load1;     // e.g. comand=0x01时，load1表示高四位为索引为1的位置，低四位为索引为0位置
+        uint8_t load2;     // e.g. comand=0x01时，load2表示高四位为索引为3的位置，低四位为索引为2位置
+        uint8_t crc;
+        uint8_t tail;      // e.g. 0xDE
+    } SettingFrame_t;
+
     // 发送帧：XYZ (3 x 16位)
     typedef struct {
         uint8_t header[2]; // e.g. 0x55 0xAA
@@ -116,16 +126,25 @@ namespace communication{
         /**
          * @brief 获取接收到的业务数据
          */
-        void GetRecvData(uint16_t* joystick, uint16_t* key) {
+        void GetRecvData(uint16_t* joystick, uint16_t& key) {
             for(int i = 0; i < 4; i++) joystick[i] = rec_joystick[i];
-            *key = rec_send_key;
+            key = rec_send_key;
+        }
+
+        /**
+         * @brief 获取接收到的设置帧数据
+         */
+        void GetSettingData(uint8_t& command, uint8_t& load1, uint8_t& load2) {
+            command = rec_setting_command;
+            load1 = rec_setting_load1;
+            load2 = rec_setting_load2;
         }
     private:
-        void FIFO_Push(comm_FIFO_t* fifo, uint8_t data);
+        void FIFO_Push(comm_FIFO_t& fifo, uint8_t data);
 
-        int FIFO_Pop(comm_FIFO_t* fifo, uint8_t* data);
+        int FIFO_Pop(comm_FIFO_t& fifo, uint8_t& data);
 
-        uint16_t FIFO_Count(comm_FIFO_t* fifo);
+        uint16_t FIFO_Count(comm_FIFO_t& fifo);
 
         uint8_t crc8(const uint8_t *data, uint8_t len);
         
@@ -155,6 +174,9 @@ namespace communication{
         uint8_t send_command2;
         uint16_t rec_joystick[4];
         uint16_t rec_send_key;
+        uint8_t rec_setting_command;
+        uint8_t rec_setting_load1;
+        uint8_t rec_setting_load2;
     protected:
     };
 }
