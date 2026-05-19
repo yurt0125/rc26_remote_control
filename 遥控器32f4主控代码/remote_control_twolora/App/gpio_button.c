@@ -59,12 +59,12 @@ void Button_Task_Loop(void)
 
                         // PC0-3 / PE13-14：数据设置界面按键，消抖确认后发送单次
                         switch (i) {
-                            case 6:  HMI_SendSettingFrame(2, 0, 0); break; // PE13
-                            case 7:  HMI_SendSettingFrame(3, 0, 0); break; // PE14
+                            case 4:  HMI_SendSettingFrame(2, 1, 0); break; // PE11
+                            case 5:  HMI_SendSettingFrame(3, 0, 0); break; // PE12
                             case 8:  HMI_SendSettingFrame(1, 1, 0); break; // PC0
-                            case 9:  HMI_SendSettingFrame(1, 2, 0); break; // PC1
-                            case 10: HMI_SendSettingFrame(1, 3, 0); break; // PC2
-                            case 11: HMI_SendSettingFrame(1, 4, 0); break; // PC3
+                            case 9:  HMI_SendSettingFrame(1, 3, 0); break; // PC1
+                            case 10: HMI_SendSettingFrame(1, 4, 0); break; // PC2
+                            case 11: HMI_SendSettingFrame(1, 2, 0); break; // PC3
                             default: break;
                         }
                     }

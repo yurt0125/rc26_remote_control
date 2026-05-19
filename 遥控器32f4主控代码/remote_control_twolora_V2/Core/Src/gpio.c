@@ -58,10 +58,8 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, TXSX1281_MD0_Pin|TXSX1281_MD1_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : key_3_Pin key_4_Pin key_5_Pin key_6_Pin
-                           Dswtich_1_Pin */
-  GPIO_InitStruct.Pin = key_3_Pin|key_4_Pin|key_5_Pin|key_6_Pin
-                          |Dswtich_1_Pin;
+  /*Configure GPIO pins : key_3_Pin key_4_Pin key_5_Pin key_6_Pin */
+  GPIO_InitStruct.Pin = key_3_Pin|key_4_Pin|key_5_Pin|key_6_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
@@ -72,12 +70,12 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Dswtich_2_Pin Dswtich_3_Pin Dswtich_4_Pin Dswtich_5_Pin
-                           Dswtich_6_Pin Dswtich_7_Pin Dswtich_8_Pin key_1_Pin
-                           key_2_Pin */
-  GPIO_InitStruct.Pin = Dswtich_2_Pin|Dswtich_3_Pin|Dswtich_4_Pin|Dswtich_5_Pin
-                          |Dswtich_6_Pin|Dswtich_7_Pin|Dswtich_8_Pin|key_1_Pin
-                          |key_2_Pin;
+  /*Configure GPIO pins : Dswtich_1_Pin Dswtich_2_Pin Dswtich_3_Pin Dswtich_4_Pin
+                           Dswtich_5_Pin Dswtich_6_Pin Dswtich_7_Pin Dswtich_8_Pin
+                           key_1_Pin key_2_Pin */
+  GPIO_InitStruct.Pin = Dswtich_1_Pin|Dswtich_2_Pin|Dswtich_3_Pin|Dswtich_4_Pin
+                          |Dswtich_5_Pin|Dswtich_6_Pin|Dswtich_7_Pin|Dswtich_8_Pin
+                          |key_1_Pin|key_2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);

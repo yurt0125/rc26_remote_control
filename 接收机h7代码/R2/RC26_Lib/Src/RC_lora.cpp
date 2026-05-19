@@ -1,5 +1,7 @@
 #include "RC_lora.h"
-
+uint16_t joystick[4];
+uint16_t key;
+uint8_t command, KFS1, KFS2;
 namespace communication {
 
 Lora_communication::Lora_communication(UART_HandleTypeDef* tx_huart, UART_HandleTypeDef* rx_huart,
@@ -35,6 +37,7 @@ void Lora_communication::Comm_TxUseTxDMA(UART_HandleTypeDef* huart, uint8_t* dat
 }
 
 void Lora_communication::Uart_Rx_It_Process(uint8_t* buf_, uint16_t len_) {
+		volatile int test = 1;
     // 串口收到数据，压入业务侧接收环形缓冲区
     Comm_RxDMAToRxBuffer(lora_rx_huart, len_);
 }
@@ -42,11 +45,11 @@ void Lora_communication::Uart_Rx_It_Process(uint8_t* buf_, uint16_t len_) {
 void Lora_communication::Task_Process() {
     // 循环解析收到的数据
     if (Comm_Task_Loop()) {
-        static uint16_t joystick[4];
-        static uint16_t key;
+//        uint16_t joystick[4];
+//        uint16_t key;
         GetRecvData(joystick, key);
-        static uint8_t command, load1, load2;
-        GetSettingData(command, load1, load2);
+//        static uint8_t command, KFS1, KFS2;
+        GetSettingData(command, KFS1, KFS2);
     }
 
 }
