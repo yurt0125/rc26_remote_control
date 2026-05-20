@@ -152,9 +152,11 @@ void Comm_Timer_Callback_Wrapper(void)
         frame.tail = 0xDE;
 
         uint8_t* ptr = (uint8_t*)&frame;
+        __disable_irq();
         for (int i = 0; i < sizeof(JoystickFrame_t); i++) {
             FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
         }
+        __enable_irq();
             
         // 如果底部DMA且模块空闲（AUX为高电平），且队列里有东西，则通知任务立即发送
         if (g_Comm.tx_busy == 0 && FIFO_Count(&g_Comm.tx_fifo) > 0) {
@@ -200,13 +202,13 @@ void Communication_SendData(const uint8_t* data, uint16_t len)
     }
 }
 
-void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t TX_Button_State)
+void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t TX_Button_state)
 {
     g_Comm.send_joystick[0] = ch1;
     g_Comm.send_joystick[1] = ch2;
     g_Comm.send_joystick[2] = ch3;
     g_Comm.send_joystick[3] = ch4;
-    g_Comm.send_key = TX_Button_State;
+    g_Comm.send_key = TX_Button_state;
 }
 
 // 发送 SettingFrame (0xAA 0x66) — 发送KFS位置等设置参数
