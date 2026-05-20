@@ -100,7 +100,7 @@ namespace communication{
          * @brief 将底层DMA接收到的无序缓存数据推入业务侧接收环形缓冲区
          * @param rxhuart 产生中断的接收UART句柄
          * @param size    本次DMA/空闲中断接收到的实际长度
-         * @note 时机/用法：必须在串口空闲中断 (UARTEx_RxEventCallback)  中第一时间调用，防止新一轮DMA覆盖旧数据。
+         * @note
          */
         void Comm_RxDMAToRxBuffer(UART_HandleTypeDef *rxhuart, uint16_t size);
 
@@ -139,6 +139,13 @@ namespace communication{
             load1 = rec_setting_load1;
             load2 = rec_setting_load2;
         }
+
+        /**
+         * @brief 发送完成回调，清除忙碌标志，解开软件锁
+         */
+        void Comm_UartTxCplt_Callback_Process() {
+            tx_busy = 0;
+        }
     private:
         void FIFO_Push(comm_FIFO_t& fifo, uint8_t data);
 
@@ -165,6 +172,7 @@ namespace communication{
         comm_FIFO_t tx_fifo;
 
         volatile uint8_t tx_busy; // 发送忙碌标志
+        
 
         /* 解析出来/待发送的业务数据 */
         uint16_t send_xyz[3]; 
