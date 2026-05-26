@@ -223,77 +223,77 @@
         <Ww>
           <count>13</count>
           <WinNumber>2</WinNumber>
-          <ItemText>tx_cnt,0x0A</ItemText>
+          <ItemText>last_tx_stamp,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>2</WinNumber>
-          <ItemText>rx_cnt,0x0A</ItemText>
+          <ItemText>tx_stamp,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>2</WinNumber>
-          <ItemText>last_tx_stamp,0x0A</ItemText>
+          <ItemText>rf_tx_cnt,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>2</WinNumber>
-          <ItemText>tx_stamp,0x0A</ItemText>
+          <ItemText>rf_tx_interval_us,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
           <WinNumber>2</WinNumber>
-          <ItemText>rf_tx_cnt,0x0A</ItemText>
+          <ItemText>g_Comm.recv_status,0x10</ItemText>
         </Ww>
         <Ww>
           <count>18</count>
           <WinNumber>2</WinNumber>
-          <ItemText>rf_tx_interval_us,0x0A</ItemText>
+          <ItemText>g_Comm.recv_mode</ItemText>
         </Ww>
         <Ww>
           <count>19</count>
           <WinNumber>2</WinNumber>
-          <ItemText>g_Comm.recv_status,0x10</ItemText>
+          <ItemText>g_Comm.recv_command1</ItemText>
         </Ww>
         <Ww>
           <count>20</count>
           <WinNumber>2</WinNumber>
-          <ItemText>g_Comm.recv_mode</ItemText>
+          <ItemText>g_Comm.recv_command2</ItemText>
         </Ww>
         <Ww>
           <count>21</count>
           <WinNumber>2</WinNumber>
-          <ItemText>g_Comm.recv_command1</ItemText>
+          <ItemText>tx_button_state,0x10</ItemText>
         </Ww>
         <Ww>
           <count>22</count>
           <WinNumber>2</WinNumber>
-          <ItemText>g_Comm.recv_command2</ItemText>
+          <ItemText>joystick_Buf[0],0x0A</ItemText>
         </Ww>
         <Ww>
           <count>23</count>
           <WinNumber>2</WinNumber>
-          <ItemText>tx_button_state,0x10</ItemText>
+          <ItemText>joystick_Buf[1],0x0A</ItemText>
         </Ww>
         <Ww>
           <count>24</count>
           <WinNumber>2</WinNumber>
-          <ItemText>joystick_Buf[0],0x0A</ItemText>
+          <ItemText>joystick_Buf[2],0x0A</ItemText>
         </Ww>
         <Ww>
           <count>25</count>
           <WinNumber>2</WinNumber>
-          <ItemText>joystick_Buf[1],0x0A</ItemText>
+          <ItemText>joystick_Buf[3],0x0A</ItemText>
         </Ww>
         <Ww>
           <count>26</count>
           <WinNumber>2</WinNumber>
-          <ItemText>joystick_Buf[2],0x0A</ItemText>
+          <ItemText>tx_button_state</ItemText>
         </Ww>
         <Ww>
           <count>27</count>
           <WinNumber>2</WinNumber>
-          <ItemText>joystick_Buf[3],0x0A</ItemText>
+          <ItemText>tx_cnt,0x0A</ItemText>
         </Ww>
       </WatchWindow2>
       <Tracepoint>

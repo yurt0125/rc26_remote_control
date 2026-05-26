@@ -106,14 +106,14 @@ Section Cross References
     freertos.o(.text.Button_task) refers to gpio_button.o(.text.Button_Task_Loop) for Button_Task_Loop
     freertos.o(.text.Button_task) refers to cmsis_os2.o(.text.osDelay) for osDelay
     freertos.o(.ARM.exidx.text.Button_task) refers to freertos.o(.text.Button_task) for [Anonymous Symbol]
-    freertos.o(.text.RXComunication_task) refers to usart.o(.bss.huart6) for huart6
     freertos.o(.text.RXComunication_task) refers to usart.o(.bss.huart3) for huart3
+    freertos.o(.text.RXComunication_task) refers to usart.o(.bss.huart6) for huart6
     freertos.o(.text.RXComunication_task) refers to communication.o(.text.Communication_Task_Init) for Communication_Task_Init
     freertos.o(.text.RXComunication_task) refers to communication.o(.text.Communication_Task_Loop) for Communication_Task_Loop
     freertos.o(.text.RXComunication_task) refers to cmsis_os2.o(.text.osDelay) for osDelay
     freertos.o(.ARM.exidx.text.RXComunication_task) refers to freertos.o(.text.RXComunication_task) for [Anonymous Symbol]
     freertos.o(.text.TxBufferToDMA_task) refers to communication.o(.text.Comm_Timer_Callback_Wrapper) for Comm_Timer_Callback_Wrapper
-    freertos.o(.text.TxBufferToDMA_task) refers to usart.o(.bss.huart6) for huart6
+    freertos.o(.text.TxBufferToDMA_task) refers to usart.o(.bss.huart3) for huart3
     freertos.o(.text.TxBufferToDMA_task) refers to communication.o(.text.TxBufferToDMA) for TxBufferToDMA
     freertos.o(.text.TxBufferToDMA_task) refers to tasks.o(.text.ulTaskNotifyTake) for ulTaskNotifyTake
     freertos.o(.ARM.exidx.text.TxBufferToDMA_task) refers to freertos.o(.text.TxBufferToDMA_task) for [Anonymous Symbol]

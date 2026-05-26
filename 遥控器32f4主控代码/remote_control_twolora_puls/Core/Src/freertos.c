@@ -225,7 +225,7 @@ void RXComunication_task(void *argument)
 {
   /* USER CODE BEGIN RXComunication_task */
   /* Infinite loop */
-  Communication_Task_Init(&huart6, &huart3);
+  Communication_Task_Init(&huart3, &huart6);
   for(;;)
   {
     Communication_Task_Loop();
@@ -249,11 +249,11 @@ void TxBufferToDMA_task(void *argument)
   DWT->CYCCNT = 0;
   DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
   Comm_Timer_Callback_Wrapper();
-	TxBufferToDMA(&huart6);
+	TxBufferToDMA(&huart3);
   for(;;)
   {
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-    TxBufferToDMA(&huart6);
+    TxBufferToDMA(&huart3);
     
     // //先拿当前拍数
     // uint32_t current_cyccnt = DWT->CYCCNT;
