@@ -2,6 +2,9 @@
 uint16_t joystick[4];
 uint16_t key;
 uint8_t command, KFS1, KFS2;
+uint16_t key_pressed_count;   // 当前帧中被按下的按键个数 (0~16)
+uint16_t key_down_count;     // 累计检测到的按键按下次数（上升沿计数）
+uint16_t key_last_status;    // 上一帧的按键状态，用于边沿检测
 namespace communication {
 
 Lora_communication::Lora_communication(UART_HandleTypeDef* tx_huart, UART_HandleTypeDef* rx_huart,
@@ -45,12 +48,25 @@ void Lora_communication::Uart_Rx_It_Process(uint8_t* buf_, uint16_t len_) {
 void Lora_communication::Task_Process() {
     // 循环解析收到的数据
     if (Comm_Task_Loop()) {
-//        uint16_t joystick[4];
-//        uint16_t key;
         GetRecvData(joystick, key);
-//        static uint8_t command, KFS1, KFS2;
         GetSettingData(command, KFS1, KFS2);
-    }
+
+        // 查询16个按键状态并统计按下个数（发送端已完成去抖）
+        uint16_t key_status = GetKeyStatus();
+        // key_pressed_count = 0;
+        for (uint8_t i = 0; i < 16; i++) {
+            if (key_status & (1 << i)) {
+                key_pressed_count++;
+            }
+        }
+        // 上升沿检测：只有从0变1时才累加按下次数（验证消抖用）
+        uint16_t rising_edges = key_status & (~key_last_status);
+        for (uint8_t i = 0; i < 16; i++) {
+            if (rising_edges & (1 << i)) {
+                key_down_count++;
+            }
+        }
+        key_last_status = key_status;    }
 
 }
 

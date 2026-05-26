@@ -14,4 +14,5 @@ extern uint32_t last_tx_stamp;
 extern uint32_t last_rx_stamp;
 
 extern volatile uint8_t hmi_state; // 启动界面:0  数据设置:1  数据显示:2  发送命令:3
+extern volatile uint8_t timer_tick_count;
 #endif

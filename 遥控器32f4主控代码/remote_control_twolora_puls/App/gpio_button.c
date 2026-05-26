@@ -45,8 +45,10 @@ static uint8_t Is_Button_Pressed(Button_t* btn) {
 
 void Button_Task_Loop(void)
 {
-    // 这里可以添加一些按键相关的循环处理代码
+    // 状态说明：
+    // 0:空闲等待按下  1:按下消抖中(20ms)  2:确认按住  3:释放消抖中(20ms)
     uint32_t current_tick = HAL_GetTick();
+    uint16_t new_button_state = 0;  // 先构建局部变量，最后一次性原子写入，避免 ISR 读到中间态
     
     for (int i = 0; i < BUTTON_COUNT; i++) {
         Button_t *btn = &Buttons[i];
@@ -60,11 +62,11 @@ void Button_Task_Loop(void)
                 }
                 break;
                 
-            case 1: // 消抖确认
+            case 1: // 按下消抖确认
                 if (is_pressed) {
                     if ((current_tick - btn->start_tick) >= BTN_DEBOUNCE_TIME) {
                         btn->event = BTN_EVENT_DOWN;
-                        btn->state = 2;
+                        btn->state = 2; // 确认按下，进入按住状态
 
                         // PC0-3 / PE13-14：数据设置界面按键，消抖确认后发送单次
                         switch (i) {
@@ -78,14 +80,26 @@ void Button_Task_Loop(void)
                         }
                     }
                 } else {
-                    btn->state = 0; // 抖动，重置状态
+                    btn->state = 0; // 按下抖动，重置
                 }
                 break;
                 
-            case 2: // 等待按键完全松开，避免重复发生事件
+            case 2: // 确认按住状态，等待释放
                 if (!is_pressed) {
-                    btn->event = BTN_EVENT_UP;
-                    btn->state = 0; // 完全松开，回到空闲状态
+                    btn->start_tick = current_tick;
+                    btn->state = 3; // 进入释放消抖
+                }
+                break;
+
+            case 3: // 释放消抖确认
+                if (!is_pressed) {
+                    if ((current_tick - btn->start_tick) >= BTN_DEBOUNCE_TIME) {
+                        btn->event = BTN_EVENT_UP;
+                        btn->state = 0; // 确认释放，回到空闲
+                    }
+                } else {
+                    // 释放期间发生抖动反弹，回到按住状态
+                    btn->state = 2;
                 }
                 break;
                 
@@ -94,13 +108,11 @@ void Button_Task_Loop(void)
                 break;
         }
         
-        uint16_t mask = 0x0001 << ((15 - i));
-
-        tx_button_state &= ~mask; // 清除旧状态
         if (Buttons[i].event == BTN_EVENT_DOWN) {
-            tx_button_state |= (0x01 << (15 - i));
-        } 
+            new_button_state |= (0x01 << (15 - i));
+        }
     }
 
+    tx_button_state = new_button_state; // 一次性原子写入，ISR 不会读到中间态
 }
 

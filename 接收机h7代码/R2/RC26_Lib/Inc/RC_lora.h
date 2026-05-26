@@ -20,6 +20,23 @@ public:
 
     void Init();
 
+    /**
+     * @brief 查询指定索引的按键是否被按下
+     * @param key_index 按键索引 (0~15)，对应 rec_send_key 的 bit0~bit15
+     * @return true 表示该按键按下，false 表示未按下
+     */
+    bool IsKeyPressed(uint8_t key_index) {
+        return Communication::IsKeyPressed(key_index);
+    }
+
+    /**
+     * @brief 获取全部16个按键的原始位图
+     * @return uint16_t 每一位代表一个按键状态
+     */
+    uint16_t GetKeyStatus(void) {
+        return Communication::GetKeyStatus();
+    }
+
 protected:
     virtual void Comm_TxUseTxDMA(UART_HandleTypeDef* huart, uint8_t* data, uint16_t size) override;
     virtual void Uart_Rx_It_Process(uint8_t* buf_, uint16_t len_) override;

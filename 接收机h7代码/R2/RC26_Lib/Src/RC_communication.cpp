@@ -272,17 +272,14 @@ void Communication::Comm_SendAnyDataToTxBuffer(const uint8_t* data, uint16_t len
     void Communication::Comm_RxDMAToRxBuffer(UART_HandleTypeDef *rxhuart_param, uint16_t size)
     {
         if (this->rxhuart == rxhuart_param) {
-            // 【新增】使 Cache 中对应的区域无效化，迫使 CPU 接下来直接去 SRAM 读取 DMA 传来的新数据
-            SCB_InvalidateDCache_by_Addr((uint32_t*)dma_rx_buf, DMA_BUF_SIZE);
+            // 注意：SCB_InvalidateDCache 和 HAL_UARTEx_ReceiveToIdle_DMA
+            // 已由 RC_serial.cpp 的 All_Uart_Rx_It_Process 统一处理，
+            // 此处重复调用会导致 DMA 连续重启两次，中间窗口期可能丢数据
 
             // DMA 中断来了，将其固定缓存段里收到的数据复制到业务层的 RX 环形缓冲区中
             for (uint16_t i = 0; i < size; i++) {
                 FIFO_Push(rx_fifo, dma_rx_buf[i]);
             }
-            
-            // 立即开启下一次 DMA 接收，防止漏包
-            HAL_UARTEx_ReceiveToIdle_DMA(rxhuart_param, dma_rx_buf, DMA_BUF_SIZE);
-            // __HAL_DMA_DISABLE_IT(rxhuart->hdmarx, DMA_IT_HT);
         }
     }
 }

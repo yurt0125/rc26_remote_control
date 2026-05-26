@@ -153,6 +153,27 @@ namespace communication{
             load2 = rec_setting_load2;
         }
 
+        /**
+         * @brief 查询指定索引的按键是否被按下
+         * @param key_index 按键索引 (0~15)，对应 rec_send_key 的 bit0~bit15
+         * @return true 表示该按键按下（对应位为1），false 表示未按下
+         * @note 时机/用法：在 Comm_Task_Loop 返回 true 后调用，获取最新按键状态。
+         *       典型用法：if (comm.IsKeyPressed(0)) { // KEY0 按下处理 }
+         */
+        bool IsKeyPressed(uint8_t key_index) {
+            if (key_index >= 16) return false;
+            return (rec_send_key >> key_index) & 0x01;
+        }
+
+        /**
+         * @brief 获取全部16个按键的原始位图
+         * @return uint16_t 每一位代表一个按键状态，bit0=KEY0, bit1=KEY1, ... bit15=KEY15
+         * @note 时机/用法：在 Comm_Task_Loop 返回 true 后调用，适合需要批量处理按键的场景。
+         */
+        uint16_t GetKeyStatus(void) {
+            return rec_send_key;
+        }
+
     private:
         void FIFO_Push(comm_FIFO_t& fifo, uint8_t data);
 
