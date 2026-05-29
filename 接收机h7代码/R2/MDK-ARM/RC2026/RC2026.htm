@@ -3,7 +3,7 @@
 <title>Static Call Graph - [RC2026\RC2026.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image RC2026\RC2026.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Tue May 26 21:23:19 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Fri May 29 14:20:51 2026
 <BR><P>
 <H3>Maximum Stack Usage =        416 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -960,8 +960,8 @@ Global Symbols
 <P><STRONG><a name="[125]"></a>malloc</STRONG> (Thumb, 94 bytes, Stack size 16 bytes, h1_alloc.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = malloc &rArr; __Heap_Full &rArr; __Heap_ProvideMemory &rArr; free
 </UL>
-<BR>[Calls]<UL><LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__Heap_Full
-<LI><a href="#[127]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_heap_descriptor
+<BR>[Calls]<UL><LI><a href="#[127]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_heap_descriptor
+<LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__Heap_Full
 </UL>
 <BR>[Called By]<UL><LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_atexit
 </UL>
@@ -1020,9 +1020,9 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[127]"></a>__rt_heap_descriptor</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, rt_heap_descriptor_intlibspace.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_init_alloc
-<LI><a href="#[125]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
+<BR><BR>[Called By]<UL><LI><a href="#[125]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
 <LI><a href="#[132]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_init_alloc
 </UL>
 
 <P><STRONG><a name="[343]"></a>__use_no_heap</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, hguard.o(.text), UNUSED)
@@ -3379,11 +3379,10 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rc_init.o(.text._GLOBAL__sub_I_RC_init.cpp)
 </UL>
-<P><STRONG><a name="[261]"></a>communication::Communication::Comm_Task_Loop()</STRONG> (Thumb, 334 bytes, Stack size 52 bytes, rc_communication.o(.text._ZN13communication13Communication14Comm_Task_LoopEv))
+<P><STRONG><a name="[261]"></a>communication::Communication::Comm_Task_Loop()</STRONG> (Thumb, 342 bytes, Stack size 52 bytes, rc_communication.o(.text._ZN13communication13Communication14Comm_Task_LoopEv))
 <BR><BR>[Stack]<UL><LI>Max Depth = 52<LI>Call Chain = communication::Communication::Comm_Task_Loop()
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;non-virtual thunk to communication::Lora_communication::Task_Process()
-<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Lora_communication::Task_Process()
+<BR>[Called By]<UL><LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Lora_communication::Task_Process()
 </UL>
 
 <P><STRONG><a name="[262]"></a>communication::Communication::Comm_RxDMAToRxBuffer(__UART_HandleTypeDef*, unsigned short)</STRONG> (Thumb, 68 bytes, Stack size 8 bytes, rc_communication.o(.text._ZN13communication13Communication20Comm_RxDMAToRxBufferEP20__UART_HandleTypeDeft))
@@ -3430,10 +3429,12 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rc_lora.o(.rodata._ZTVN13communication18Lora_communicationE)
 </UL>
-<P><STRONG><a name="[ac]"></a>communication::Lora_communication::Task_Process()</STRONG> (Thumb, 182 bytes, Stack size 8 bytes, rc_lora.o(.text._ZN13communication18Lora_communication12Task_ProcessEv))
+<P><STRONG><a name="[ac]"></a>communication::Lora_communication::Task_Process()</STRONG> (Thumb, 246 bytes, Stack size 8 bytes, rc_lora.o(.text._ZN13communication18Lora_communication12Task_ProcessEv))
 <BR><BR>[Stack]<UL><LI>Max Depth = 60<LI>Call Chain = communication::Lora_communication::Task_Process() &rArr; communication::Communication::Comm_Task_Loop()
 </UL>
 <BR>[Calls]<UL><LI><a href="#[261]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_Task_Loop()
+</UL>
+<BR>[Called By]<UL><LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;non-virtual thunk to communication::Lora_communication::Task_Process()
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rc_lora.o(.rodata._ZTVN13communication18Lora_communicationE)
 </UL>
@@ -5043,10 +5044,10 @@ Global Symbols
 <LI><a href="#[2d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;path::Path3::Get_Near_Point_T_Len_Dis_Tan_Nor_Vel_Cur_Lon_Head(vector2d::Vector2D, vector2d::Vector2D*, float*, float*, float*, vector2d::Vector2D*, vector2d::Vector2D*, float*, float*, path::LonConstr3*, path::HeadConstr3*) const
 </UL>
 
-<P><STRONG><a name="[b0]"></a>non-virtual thunk to communication::Lora_communication::Task_Process()</STRONG> (Thumb, 182 bytes, Stack size 8 bytes, rc_lora.o(.text._ZThn100_N13communication18Lora_communication12Task_ProcessEv))
-<BR><BR>[Stack]<UL><LI>Max Depth = 60<LI>Call Chain = non-virtual thunk to communication::Lora_communication::Task_Process() &rArr; communication::Communication::Comm_Task_Loop()
+<P><STRONG><a name="[b0]"></a>non-virtual thunk to communication::Lora_communication::Task_Process()</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, rc_lora.o(.text._ZThn100_N13communication18Lora_communication12Task_ProcessEv))
+<BR><BR>[Stack]<UL><LI>Max Depth = 60<LI>Call Chain = non-virtual thunk to communication::Lora_communication::Task_Process() &rArr; communication::Lora_communication::Task_Process() &rArr; communication::Communication::Comm_Task_Loop()
 </UL>
-<BR>[Calls]<UL><LI><a href="#[261]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Comm_Task_Loop()
+<BR>[Calls]<UL><LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Lora_communication::Task_Process()
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rc_lora.o(.rodata._ZTVN13communication18Lora_communicationE)
 </UL>

@@ -141,6 +141,18 @@ void HMI_Task_Loop(void)
                 g_HMI.page_id = pf->page_id;
                 hmi_state = pf->page_id;
 
+                // 离开数据显示页面时，清空发送队列并中止 DMA
+                // 防止残留 DataFrame 发到其他页面导致屏幕协议错乱、按键失效
+                if (prev_state == 2 && hmi_state != 2) {
+                    __disable_irq();
+                    g_HMI.tx_fifo.head = g_HMI.tx_fifo.tail;
+                    __enable_irq();
+                    HAL_UART_AbortTransmit(g_HMI.huart);
+                    g_HMI.tx_busy = 0;  // Abort 不会触发 TxCplt，必须手动清除
+                    // 注意：不要在此处调用 ReceiveToIdle_DMA，否则 gState 变为 BUSY_RX，
+                    // 导致后续 HAL_UART_Transmit_DMA 因 gState != READY 而静默失败
+                }
+
                 // 切到数据显示页面时，若有缓存数据则主动刷新一帧
                 if (prev_state != 2 && hmi_state == 2 && g_HMI.last_data_valid) {
                     HMI_SendDataFrame(g_HMI.data_send_x, g_HMI.data_send_y, g_HMI.data_send_z,
@@ -263,6 +275,14 @@ void HMI_SendDataFrame(int16_t x, int16_t y, int16_t z,
 
     // 仅在数据显示页面才实际发送到屏幕
     if (hmi_state != 2) return;
+
+    // 限制发送频率：周期不小于 50ms (限制在约 20Hz 刷新率)
+    static uint32_t last_send_tick = 0;
+    uint32_t current_tick = HAL_GetTick();
+    if ((current_tick - last_send_tick) < 50) {
+        return;
+    }
+    last_send_tick = current_tick;
 
     DataFrame_t frame;
     frame.header[0]      = 0x55;

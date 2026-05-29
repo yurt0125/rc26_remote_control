@@ -37,6 +37,14 @@ public:
         return Communication::GetKeyStatus();
     }
 
+    /**
+     * @brief 获取接收到的 page 值
+     * @return uint8_t 当前帧的 page 字段
+     */
+    uint8_t GetPage(void) {
+        return Communication::GetPage();
+    }
+
 protected:
     virtual void Comm_TxUseTxDMA(UART_HandleTypeDef* huart, uint8_t* data, uint16_t size) override;
     virtual void Uart_Rx_It_Process(uint8_t* buf_, uint16_t len_) override;

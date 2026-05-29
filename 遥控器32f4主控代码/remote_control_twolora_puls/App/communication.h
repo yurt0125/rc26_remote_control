@@ -51,6 +51,7 @@ typedef struct {
     uint16_t ch3;
     uint16_t ch4;
     uint16_t key;
+    uint8_t page;
     uint8_t crc;
     uint8_t tail;      // e.g. 0xDE
 } JoystickFrame_t;
@@ -99,6 +100,7 @@ typedef struct {
     /* 解析出来/待发送的业务数据 */
     uint16_t send_joystick[4]; 
     uint16_t send_key;
+    uint8_t send_page;
     int16_t recv_x;
     int16_t recv_y;
     int16_t recv_z;
@@ -117,7 +119,7 @@ void Communication_Task_Loop(void);
 void Communication_SendData(const uint8_t* data, uint16_t len);
 
 // 业务层接口：设置当前要发送的摇杆和按键数据
-void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t key);
+void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t key, uint8_t page);
 
 // 发送 SettingFrame (0xAA 0x66) — 发送KFS位置等设置参数
 void Communication_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load2);
