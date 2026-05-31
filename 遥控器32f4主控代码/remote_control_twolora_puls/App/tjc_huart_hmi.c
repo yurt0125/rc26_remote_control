@@ -167,7 +167,7 @@ void HMI_Task_Loop(void)
                     g_HMI.setting_rx_command  = sf->command;
                     g_HMI.setting_rx_load[0]  = sf->load1;
                     g_HMI.setting_rx_load[1]  = sf->load2;
-                    Communication_SendSettingFrame(g_HMI.setting_rx_command, g_HMI.setting_rx_load[0], g_HMI.setting_rx_load[1]);
+                    Communication_SendSettingFrame(1, g_HMI.setting_rx_load[0], g_HMI.setting_rx_load[1]);
                 }
                 break;
             }

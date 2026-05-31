@@ -26,7 +26,7 @@ public:
      * @return true 表示该按键按下，false 表示未按下
      */
     bool IsKeyPressed(uint8_t key_index) {
-        return Communication::IsKeyPressed(key_index);
+        return Communication::GetRecvKeyData(key_index);
     }
 
     /**
@@ -34,7 +34,7 @@ public:
      * @return uint16_t 每一位代表一个按键状态
      */
     uint16_t GetKeyStatus(void) {
-        return Communication::GetKeyStatus();
+        return Communication::GetRecvAllKeyData();
     }
 
     /**
@@ -75,4 +75,3 @@ private:
 }
 
 #endif // __cplusplus
-

@@ -55,9 +55,9 @@ lidar::LiDAR lidar_1(huart8);
 
 // Lora通讯 
 communication::Lora_communication lora_comm(
-    &huart4, &huart2,    // 替换为真实的发送和接收UART外设句柄，如 &huart2, &huart3
-    GPIOG, GPIO_PIN_6,   // 替换为真实的发送AUX引脚端口和PIN
-    GPIOG, GPIO_PIN_5,   // 替换为真实的接收AUX引脚端口和PIN
+    &huart2, &huart4,    // 替换为真实的发送和接收UART外设句柄，如 &huart2, &huart3
+    GPIOG, GPIO_PIN_5,   // 替换为真实的发送AUX引脚端口和PIN
+    GPIOG, GPIO_PIN_6,   // 替换为真实的接收AUX引脚端口和PIN
     &tim7_1khz           // 传入前面已初始化的硬件定时器对象 (1ms周期)
 );
 

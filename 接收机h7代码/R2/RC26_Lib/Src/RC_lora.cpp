@@ -1,7 +1,7 @@
 #include "RC_lora.h"
 uint16_t joystick[4];
 uint16_t key;
-uint8_t command, KFS1, KFS2;
+uint8_t KFS1, KFS2,KFS3;
 uint8_t page;
 uint16_t key_pressed_count;   // 当前帧中被按下的按键个数 (0~16)
 uint16_t key_down_count;     // 累计检测到的按键按下次数（上升沿计数）
@@ -53,14 +53,18 @@ void Lora_communication::Uart_Rx_It_Process(uint8_t* buf_, uint16_t len_) {
 void Lora_communication::Task_Process() {
     // 循环解析收到的数据
     if (Comm_Task_Loop()) {
-        GetRecvData(joystick, key);
+        GetRecvJoystickData(joystick);
+        key = GetRecvAllKeyData();
 				page = GetPage();
 				joystick1=joystick[0];
 				joystick2=joystick[1];
 				joystick3=joystick[2];
 				joystick4=joystick[3];			
-        GetSettingData(command, KFS1, KFS2);
 
+        KFS1 = GetRecvFKFSData(0);
+        KFS2 = GetRecvFKFSData(1);
+        KFS3 = GetRecvFKFSData(2);
+        
         // 查询16个按键状态并统计按下个数（发送端已完成去抖）
         uint16_t key_status = GetKeyStatus();
         // key_pressed_count = 0;
@@ -83,7 +87,7 @@ void Lora_communication::Task_Process() {
 void Lora_communication::Tim_It_Process() {
     // 这个回调依附于底层的硬件中断（比如你传进来的 tim7_1khz 1ms产生一次中断）
     timer_tick_count++;
-    if (timer_tick_count >= 1) { // 计数达到 1ms 
+    if (timer_tick_count >= 2) { // 计数达到 1ms 
         timer_tick_count = 0;
         Comm_SendAxisDataToTxBuffer(1, 2, 5 ,1,1,1,0xBB,0xCC,0xDD);
     }

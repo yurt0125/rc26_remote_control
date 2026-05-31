@@ -9,22 +9,22 @@
 // 按键数组实例，包含 PE7-14（机器人控制） 和 PC0-3（十字按键）
 Button_t Buttons[BUTTON_COUNT] = {
     //端口，引脚，有效电平，状态，计时器，事件 //对应数据池位数
-    {GPIOE, GPIO_PIN_0,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit16
-    {GPIOE, GPIO_PIN_5,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit15
-    {GPIOE, GPIO_PIN_2,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit14
-    {GPIOE, GPIO_PIN_4,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit13
-    {GPIOC, GPIO_PIN_0,  GPIO_PIN_RESET, 0, 0, BTN_EVENT_UP},//tx_button_statebit12
-    {GPIOC, GPIO_PIN_1,  GPIO_PIN_RESET, 0, 0, BTN_EVENT_UP},//tx_button_statebit11
-    {GPIOC, GPIO_PIN_2,  GPIO_PIN_RESET, 0, 0, BTN_EVENT_UP},//tx_button_statebit10
-    {GPIOC, GPIO_PIN_3,  GPIO_PIN_RESET, 0, 0, BTN_EVENT_UP},//tx_button_statebit9
-    {GPIOE, GPIO_PIN_7,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit8
-    {GPIOE, GPIO_PIN_9,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit7
-    {GPIOE, GPIO_PIN_12,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit6
-    {GPIOE, GPIO_PIN_14, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP}, //tx_button_statebit5
-    {GPIOA, GPIO_PIN_8, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit4
-    {GPIOA, GPIO_PIN_9, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit3
-    {GPIOB, GPIO_PIN_6, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit2
-    {GPIOB, GPIO_PIN_7, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP} //tx_button_statebit1
+    {GPIOE, GPIO_PIN_0,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit15
+    {GPIOE, GPIO_PIN_5,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit14
+    {GPIOE, GPIO_PIN_2,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit13
+    {GPIOE, GPIO_PIN_4,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit12
+    {GPIOC, GPIO_PIN_0,  GPIO_PIN_RESET, 0, 0, BTN_EVENT_UP},//tx_button_statebit11
+    {GPIOC, GPIO_PIN_1,  GPIO_PIN_RESET, 0, 0, BTN_EVENT_UP},//tx_button_statebit10
+    {GPIOC, GPIO_PIN_2,  GPIO_PIN_RESET, 0, 0, BTN_EVENT_UP},//tx_button_statebit9
+    {GPIOC, GPIO_PIN_3,  GPIO_PIN_RESET, 0, 0, BTN_EVENT_UP},//tx_button_statebit8
+    {GPIOE, GPIO_PIN_7,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit7
+    {GPIOE, GPIO_PIN_9,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit6
+    {GPIOE, GPIO_PIN_12,  GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit5
+    {GPIOE, GPIO_PIN_14, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP}, //tx_button_statebit4
+    {GPIOA, GPIO_PIN_8, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit3
+    {GPIOA, GPIO_PIN_9, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit2
+    {GPIOB, GPIO_PIN_6, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP},//tx_button_statebit1
+    {GPIOB, GPIO_PIN_7, GPIO_PIN_SET, 0, 0, BTN_EVENT_UP} //tx_button_statebit0
 };
 
 void Button_Task_Init(void)
@@ -71,13 +71,13 @@ void Button_Task_Loop(void)
                         // PC0-3 / PE13-14：数据设置界面按键，消抖确认后发送单次
                         switch (i) {
                             case 0:  HMI_SendSettingFrame(2, 1, 0); break; // 设置R1KFS
-                            case 1:  HMI_SendSettingFrame(6, 0, 0); break; // 重置
-													  case 2:  HMI_SendSettingFrame(3, 0, 0); break; // 撤销
-														case 3:  HMI_SendSettingFrame(5, 0, 0); break; // 发送
-                            case 4:  HMI_SendSettingFrame(1, 1, 0); break; // PC0
-                            case 5:  HMI_SendSettingFrame(1, 3, 0); break; // PC1
-                            case 6:  HMI_SendSettingFrame(1, 4, 0); break; // PC2
-                            case 7:  HMI_SendSettingFrame(1, 2, 0); break; // PC3
+                            case 2:  HMI_SendSettingFrame(6, 0, 0); break; // 重置
+													  case 3:  HMI_SendSettingFrame(3, 0, 0); break; // 撤销
+														case 1:  HMI_SendSettingFrame(5, 0, 0); break; // 发送
+                            case 4:  HMI_SendSettingFrame(1, 2, 0); break; // PC0
+                            case 5:  HMI_SendSettingFrame(1, 4, 0); break; // PC1
+                            case 6:  HMI_SendSettingFrame(1, 3, 0); break; // PC2
+                            case 7:  HMI_SendSettingFrame(1, 1, 0); break; // PC3
                             default: break;
                         }
                     }
