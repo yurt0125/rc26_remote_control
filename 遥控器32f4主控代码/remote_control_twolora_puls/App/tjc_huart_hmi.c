@@ -162,12 +162,15 @@ void HMI_Task_Loop(void)
                 break;
             }
             case 2: { // SettingFrame (0x55 0xBB) — 仅数据设置界面(page 1)
-                if (hmi_state == 1) {
+								uint8_t hmi_state_withmask=hmi_state&0x0F;
+                if (hmi_state_withmask == 1) {
                     SettingFrame_t* sf = (SettingFrame_t*)frame_buf;
                     g_HMI.setting_rx_command  = sf->command;
                     g_HMI.setting_rx_load[0]  = sf->load1;
                     g_HMI.setting_rx_load[1]  = sf->load2;
-                    Communication_SendSettingFrame(1, g_HMI.setting_rx_load[0], g_HMI.setting_rx_load[1]);
+										KFS_load1=g_HMI.setting_rx_load[0];
+										KFS_load2=g_HMI.setting_rx_load[1];
+                    Communication_SendSettingFrame(g_HMI.setting_rx_command, g_HMI.setting_rx_load[0], g_HMI.setting_rx_load[1]);
                 }
                 break;
             }
@@ -184,15 +187,15 @@ void HMI_Task_Loop(void)
             //     }
             //     break;
             // }
-            case 4: { // CommandFrame (0x55 0xDD) — 仅发送命令界面(page 3)
-                if (hmi_state == 3) {
-                    CommandFrame_t* cf = (CommandFrame_t*)frame_buf;
-                    g_HMI.rx_command = cf->command;
-                    g_HMI.rx_load[0] = cf->load1;
-                    g_HMI.rx_load[1] = cf->load2;
-                }
-                break;
-            }
+//            case 4: { // CommandFrame (0x55 0xDD) — 仅发送命令界面(page 3)
+//                if (hmi_state == 3) {
+//                    CommandFrame_t* cf = (CommandFrame_t*)frame_buf;
+//                    g_HMI.rx_command = cf->command;
+//                    g_HMI.rx_load[0] = cf->load1;
+//                    g_HMI.rx_load[1] = cf->load2;
+//                }
+//                break;
+//            }
         }
 
         // 消费完整一帧，移动 head 到帧尾之后
@@ -230,7 +233,8 @@ void HMI_Task_Loop(void)
 // 发送 SettingFrame (0x55 0xBB) — 仅数据设置界面(page 1) 发送
 void HMI_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load2)
 {
-    if (hmi_state != 1) return;
+		uint8_t hmi_state_withmask=hmi_state&0x0F;
+    if (hmi_state_withmask != 1) return;
 
     SettingFrame_t frame;
     frame.header[0] = 0x55;

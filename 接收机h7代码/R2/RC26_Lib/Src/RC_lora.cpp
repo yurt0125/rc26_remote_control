@@ -1,7 +1,10 @@
 #include "RC_lora.h"
 uint16_t joystick[4];
 uint16_t key;
-uint8_t KFS1, KFS2,KFS3;
+uint8_t KFS1_1, KFS1_2, KFS1_3;
+uint8_t KFS2_1, KFS2_2, KFS2_3, KFS2_4;
+uint8_t KFSf_1;
+uint8_t color;
 uint8_t page;
 uint16_t key_pressed_count;   // 当前帧中被按下的按键个数 (0~16)
 uint16_t key_down_count;     // 累计检测到的按键按下次数（上升沿计数）
@@ -56,15 +59,25 @@ void Lora_communication::Task_Process() {
         GetRecvJoystickData(joystick);
         key = GetRecvAllKeyData();
 				page = GetPage();
+			
+				color = GetColor();
+			
 				joystick1=joystick[0];
 				joystick2=joystick[1];
 				joystick3=joystick[2];
 				joystick4=joystick[3];			
 
-        KFS1 = GetRecvFKFSData(0);
-        KFS2 = GetRecvFKFSData(1);
-        KFS3 = GetRecvFKFSData(2);
-        
+        KFS1_1 = GetRecvFKFS1Data(1);
+        KFS1_2 = GetRecvFKFS1Data(2);
+        KFS1_3 = GetRecvFKFS1Data(3);
+
+        KFS2_1 = GetRecvFKFS2Data(1);
+        KFS2_2 = GetRecvFKFS2Data(2);
+        KFS2_3 = GetRecvFKFS2Data(3);
+        KFS2_4 = GetRecvFKFS2Data(4);
+
+        KFSf_1 = GetRecvFKFSfData(1);
+
         // 查询16个按键状态并统计按下个数（发送端已完成去抖）
         uint16_t key_status = GetKeyStatus();
         // key_pressed_count = 0;
