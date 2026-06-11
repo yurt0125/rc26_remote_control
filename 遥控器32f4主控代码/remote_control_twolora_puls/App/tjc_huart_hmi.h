@@ -47,9 +47,14 @@ typedef struct {
     uint8_t mode;
     uint8_t send_command1;
     uint8_t send_command2;
+    uint8_t KFS_want_place1;//（高四位为索引为1的位置，低四位为索引为0位置）
+    uint8_t KFS_want_place2;//（低四位为索引为2位置）
+    uint8_t spear;     //0x00-0x07分别表示不同的武器头夹取状态
+    uint8_t KFS_Keepplace; //KFS存储区
     uint8_t tail;      // e.g. 0x0C
 } DataFrame_t;
 
+//Command Frame
 typedef struct {
     uint8_t header[2]; // e.g. 0x55 0xDD
     uint8_t command;
@@ -87,6 +92,10 @@ typedef struct {
     uint8_t  data_send_status;
     uint8_t  data_send_mode;
     uint8_t  data_send_command[2];
+    uint8_t  data_send_KFS_want_place1;
+    uint8_t  data_send_KFS_want_place2;
+    uint8_t  data_send_spear;
+    uint8_t  data_send_KFS_Keepplace;
 
     // CommandFrame (0x55 0xDD) 接收存储
     uint8_t rx_command;
@@ -105,7 +114,9 @@ void HMI_Task_Loop(void);
 void HMI_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load2);
 void HMI_SendDataFrame(int16_t x, int16_t y, int16_t z,
                        uint8_t status, uint8_t mode,
-                       uint8_t send_cmd1, uint8_t send_cmd2);
+                       uint8_t send_cmd1, uint8_t send_cmd2,
+                       uint8_t KFS_want_place1, uint8_t KFS_want_place2,
+                       uint8_t spear, uint8_t KFS_Keepplace);
 
 // HAL 相关的回调接口
 // void HMI_Timer_Callback_Wrapper(void);

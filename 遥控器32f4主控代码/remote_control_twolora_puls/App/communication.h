@@ -66,6 +66,16 @@ typedef struct {
     uint8_t tail;      // e.g. 0xDE
 } CommSettingFrame_t;
 
+//发送帧： 串口屏发送的命令，转发给机器人
+typedef struct {
+    uint8_t header[2]; // e.g. 0xAA 0x66
+    uint8_t command;   //0-99分别表示不同的命令，在机器人自己查表
+    uint8_t load1;     //发送的次数，累计值，8位 0-255
+    uint8_t load2;     //置空，保留扩展
+    uint8_t crc;
+    uint8_t tail;      // e.g. 0xDE
+} CommandFrame_t;
+
 // 接收帧：XYZ (3 x 16位 有符号)
 typedef struct {
     uint8_t header[2]; // e.g. 0x55 0xAA
@@ -76,6 +86,10 @@ typedef struct {
     uint8_t mode;
     uint8_t command1;
     uint8_t command2;
+    uint8_t KFS_want_place1;//（高四位为索引为1的位置，低四位为索引为0位置）
+    uint8_t KFS_want_place2;//（低四位为索引为2位置）
+    uint8_t spear;     //0x00-0x07分别表示不同的武器头夹取状态
+    uint8_t KFS_Keepplace; //KFS存储区
     uint8_t crc;
     uint8_t tail;      // e.g. 0xED
 } XYZFrame_t;
@@ -108,6 +122,10 @@ typedef struct {
     uint8_t recv_mode;
     uint8_t recv_command1;
     uint8_t recv_command2;
+    uint8_t recv_KFS_want_place1;
+    uint8_t recv_KFS_want_place2;
+    uint8_t recv_spear;
+    uint8_t recv_KFS_Keepplace;
 } CommContext;
 
 extern CommContext g_Comm;
@@ -123,6 +141,9 @@ void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch
 
 // 发送 SettingFrame (0xAA 0x66) — 发送KFS位置等设置参数
 void Communication_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load2);
+
+// 发送 CommandFrame — 转发串口屏命令到机器人
+void Communication_SendCommandFrame(uint8_t command, uint8_t load1, uint8_t load2);
 
 //真正通过DMA发送数据的函数，任务调用
 void TxBufferToDMA(UART_HandleTypeDef *txhuart);

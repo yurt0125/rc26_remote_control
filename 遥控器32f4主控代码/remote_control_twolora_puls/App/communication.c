@@ -115,6 +115,10 @@ void Communication_Task_Loop(void)
                 g_Comm.recv_mode = pFrame->mode;
                 g_Comm.recv_command1 = pFrame->command1;
                 g_Comm.recv_command2 = pFrame->command2;
+                g_Comm.recv_KFS_want_place1 = pFrame->KFS_want_place1;
+                g_Comm.recv_KFS_want_place2 = pFrame->KFS_want_place2;
+                g_Comm.recv_spear = pFrame->spear;
+                g_Comm.recv_KFS_Keepplace = pFrame->KFS_Keepplace;
 
                 // 将 FIFO 头部读取指针越过已经正确消费的这一帧
                 g_Comm.rx_fifo.head = p; 
@@ -122,7 +126,9 @@ void Communication_Task_Loop(void)
 				rx_cnt++;
                 HMI_SendDataFrame(g_Comm.recv_x, g_Comm.recv_y, g_Comm.recv_z,
                                   g_Comm.recv_status, g_Comm.recv_mode,
-                                  g_Comm.recv_command1, g_Comm.recv_command2);
+                                  g_Comm.recv_command1, g_Comm.recv_command2,
+                                  g_Comm.recv_KFS_want_place1, g_Comm.recv_KFS_want_place2,
+                                  g_Comm.recv_spear, g_Comm.recv_KFS_Keepplace);
             } else {
                 // 坏帧，跳过头部第一个错误字节，继续往后寻找
                 g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
@@ -228,6 +234,41 @@ void Communication_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load
     uint8_t* ptr = (uint8_t*)&frame;
     __disable_irq();
     for (int i = 0; i < sizeof(CommSettingFrame_t); i++) {
+        FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
+    }
+    __enable_irq();
+
+    // 如果底部DMA空闲（AUX为高电平），且队列里有东西，则通知发送任务
+    if (g_Comm.tx_busy == 0 && FIFO_Count(&g_Comm.tx_fifo) > 0) {
+        if(HAL_GPIO_ReadPin(TXSX1281_AUX_GPIO_Port, TXSX1281_AUX_Pin) == GPIO_PIN_SET)
+        {
+            extern osThreadId_t TxBufferToDMAHandle;
+            if (xPortIsInsideInterrupt()) {
+                BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+                vTaskNotifyGiveFromISR((TaskHandle_t)TxBufferToDMAHandle, &xHigherPriorityTaskWoken);
+                portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+            } else {
+                xTaskNotifyGive((TaskHandle_t)TxBufferToDMAHandle);
+            }
+        }
+    }
+}
+
+// 发送 CommandFrame (0xAA 0x66) — 转发串口屏命令到机器人
+void Communication_SendCommandFrame(uint8_t command, uint8_t load1, uint8_t load2)
+{
+    CommandFrame_t frame;
+    frame.header[0] = 0xAA;
+    frame.header[1] = 0x66;
+    frame.command   = command;
+    frame.load1     = load1;
+    frame.load2     = load2;
+    frame.crc       = crc8((uint8_t*)&frame + 2, sizeof(CommandFrame_t) - 4);
+    frame.tail      = 0xDE;
+
+    uint8_t* ptr = (uint8_t*)&frame;
+    __disable_irq();
+    for (int i = 0; i < sizeof(CommandFrame_t); i++) {
         FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
     }
     __enable_irq();

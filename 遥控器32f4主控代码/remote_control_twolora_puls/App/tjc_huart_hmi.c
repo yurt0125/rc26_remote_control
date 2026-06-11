@@ -157,7 +157,9 @@ void HMI_Task_Loop(void)
                 if (prev_state != 2 && hmi_state == 2 && g_HMI.last_data_valid) {
                     HMI_SendDataFrame(g_HMI.data_send_x, g_HMI.data_send_y, g_HMI.data_send_z,
                                       g_HMI.data_send_status, g_HMI.data_send_mode,
-                                      g_HMI.data_send_command[0], g_HMI.data_send_command[1]);
+                                      g_HMI.data_send_command[0], g_HMI.data_send_command[1],
+                                      g_HMI.data_send_KFS_want_place1, g_HMI.data_send_KFS_want_place2,
+                                      g_HMI.data_send_spear, g_HMI.data_send_KFS_Keepplace);
                 }
                 break;
             }
@@ -187,15 +189,16 @@ void HMI_Task_Loop(void)
             //     }
             //     break;
             // }
-//            case 4: { // CommandFrame (0x55 0xDD) — 仅发送命令界面(page 3)
-//                if (hmi_state == 3) {
-//                    CommandFrame_t* cf = (CommandFrame_t*)frame_buf;
-//                    g_HMI.rx_command = cf->command;
-//                    g_HMI.rx_load[0] = cf->load1;
-//                    g_HMI.rx_load[1] = cf->load2;
-//                }
-//                break;
-//            }
+            case 4: { // CommandFrame (0x55 0xDD) — 仅发送命令界面(page 3)
+               if (hmi_state == 3) {
+                   CommandFrame_t* cf = (CommandFrame_t*)frame_buf;
+                   g_HMI.rx_command = cf->command;
+                   g_HMI.rx_load[0] = cf->load1;
+                   g_HMI.rx_load[1] = cf->load2;
+                   Communication_SendCommandFrame(g_HMI.rx_command, g_HMI.rx_load[0], g_HMI.rx_load[1]);
+               }
+               break;
+           }
         }
 
         // 消费完整一帧，移动 head 到帧尾之后
@@ -263,18 +266,24 @@ void HMI_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load2)
 // 发送 DataFrame (0x55 0xCC) — 仅数据显示界面(page 2) 发送
 void HMI_SendDataFrame(int16_t x, int16_t y, int16_t z,
                        uint8_t status, uint8_t mode,
-                       uint8_t send_cmd1, uint8_t send_cmd2)
+                       uint8_t send_cmd1, uint8_t send_cmd2,
+                       uint8_t KFS_want_place1, uint8_t KFS_want_place2,
+                       uint8_t spear, uint8_t KFS_Keepplace)
 {
     // 无条件缓存最新一帧数据，供切回页面时刷新
     __disable_irq();
-    g_HMI.data_send_x          = x;
-    g_HMI.data_send_y          = y;
-    g_HMI.data_send_z          = z;
-    g_HMI.data_send_status     = status;
-    g_HMI.data_send_mode       = mode;
-    g_HMI.data_send_command[0] = send_cmd1;
-    g_HMI.data_send_command[1] = send_cmd2;
-    g_HMI.last_data_valid      = 1;
+    g_HMI.data_send_x                = x;
+    g_HMI.data_send_y                = y;
+    g_HMI.data_send_z                = z;
+    g_HMI.data_send_status           = status;
+    g_HMI.data_send_mode             = mode;
+    g_HMI.data_send_command[0]       = send_cmd1;
+    g_HMI.data_send_command[1]       = send_cmd2;
+    g_HMI.data_send_KFS_want_place1  = KFS_want_place1;
+    g_HMI.data_send_KFS_want_place2  = KFS_want_place2;
+    g_HMI.data_send_spear            = spear;
+    g_HMI.data_send_KFS_Keepplace    = KFS_Keepplace;
+    g_HMI.last_data_valid            = 1;
     __enable_irq();
 
     // 仅在数据显示页面才实际发送到屏幕
@@ -289,18 +298,20 @@ void HMI_SendDataFrame(int16_t x, int16_t y, int16_t z,
     last_send_tick = current_tick;
 
     DataFrame_t frame;
-    frame.header[0]      = 0x55;
-    frame.header[1]      = 0xCC;
-    frame.x              = x;
-    frame.y              = y;
-    frame.z              = z;
-    frame.status         = status;
-    frame.mode           = mode;
-    frame.send_command1  = send_cmd1;
-    frame.send_command2  = send_cmd2;
-    frame.tail           = 0x0C;
-
-    uint8_t* ptr = (uint8_t*)&frame;
+    frame.header[0]        = 0x55;
+    frame.header[1]        = 0xCC;
+    frame.x                = x;
+    frame.y                = y;
+    frame.z                = z;
+    frame.status           = status;
+    frame.mode             = mode;
+    frame.send_command1    = send_cmd1;
+    frame.send_command2    = send_cmd2;
+    frame.KFS_want_place1  = KFS_want_place1;
+    frame.KFS_want_place2  = KFS_want_place2;
+    frame.spear            = spear;
+    frame.KFS_Keepplace    = KFS_Keepplace;
+    frame.tail             = 0x0C;
     for (int i = 0; i < sizeof(DataFrame_t); i++) {
         FIFO_Push(&g_HMI.tx_fifo, ptr[i]);
     }
