@@ -74,10 +74,10 @@ void Button_Task_Loop(void)
                             case 2:  HMI_SendSettingFrame(6, 0, 0); break; // 重置
 													  case 3:  HMI_SendSettingFrame(3, 0, 0); break; // 撤销
 														case 1:  HMI_SendSettingFrame(5, 0, 0); break; // 发送
-                            case 4:  HMI_SendSettingFrame(1, 2, 0); break; // PC0
-                            case 5:  HMI_SendSettingFrame(1, 4, 0); break; // PC1
-                            case 6:  HMI_SendSettingFrame(1, 3, 0); break; // PC2
-                            case 7:  HMI_SendSettingFrame(1, 1, 0); break; // PC3
+                            case 4:  HMI_SendSettingFrame(1, 1, 0); break; // PC0
+                            case 5:  HMI_SendSettingFrame(1, 3, 0); break; // PC1
+                            case 6:  HMI_SendSettingFrame(1, 4, 0); break; // PC2
+                            case 7:  HMI_SendSettingFrame(1, 2, 0); break; // PC3
                             default: break;
                         }
                     }

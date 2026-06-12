@@ -254,21 +254,21 @@ void Communication_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load
     }
 }
 
-// 发送 CommandFrame (0xAA 0x66) — 转发串口屏命令到机器人
+// 发送 CommandFrame (0xAA 0x77) — 转发串口屏命令到机器人
 void Communication_SendCommandFrame(uint8_t command, uint8_t load1, uint8_t load2)
 {
-    CommandFrame_t frame;
+    CommCommandFrame_t frame;
     frame.header[0] = 0xAA;
-    frame.header[1] = 0x66;
+    frame.header[1] = 0x77;
     frame.command   = command;
     frame.load1     = load1;
     frame.load2     = load2;
-    frame.crc       = crc8((uint8_t*)&frame + 2, sizeof(CommandFrame_t) - 4);
+    frame.crc       = crc8((uint8_t*)&frame + 2, sizeof(CommCommandFrame_t) - 4);
     frame.tail      = 0xDE;
 
     uint8_t* ptr = (uint8_t*)&frame;
     __disable_irq();
-    for (int i = 0; i < sizeof(CommandFrame_t); i++) {
+    for (int i = 0; i < sizeof(CommCommandFrame_t); i++) {
         FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
     }
     __enable_irq();

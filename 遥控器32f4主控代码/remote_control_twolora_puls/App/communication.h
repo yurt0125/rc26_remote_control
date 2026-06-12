@@ -68,13 +68,13 @@ typedef struct {
 
 //发送帧： 串口屏发送的命令，转发给机器人
 typedef struct {
-    uint8_t header[2]; // e.g. 0xAA 0x66
+    uint8_t header[2]; // 0xAA 0x77
     uint8_t command;   //0-99分别表示不同的命令，在机器人自己查表
     uint8_t load1;     //发送的次数，累计值，8位 0-255
     uint8_t load2;     //置空，保留扩展
     uint8_t crc;
     uint8_t tail;      // e.g. 0xDE
-} CommandFrame_t;
+} CommCommandFrame_t;
 
 // 接收帧：XYZ (3 x 16位 有符号)
 typedef struct {

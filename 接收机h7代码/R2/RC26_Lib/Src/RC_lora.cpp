@@ -4,6 +4,9 @@ uint16_t key;
 uint8_t KFS1_1, KFS1_2, KFS1_3;
 uint8_t KFS2_1, KFS2_2, KFS2_3, KFS2_4;
 uint8_t KFSf_1;
+uint8_t recv_command_command;
+uint8_t recv_command_load1;
+uint8_t recv_command_load2;
 uint8_t color;
 uint8_t page;
 uint16_t key_pressed_count;   // 当前帧中被按下的按键个数 (0~16)
@@ -13,6 +16,12 @@ uint16_t joystick1;
 uint16_t joystick2;
 uint16_t joystick3;
 uint16_t joystick4;			
+uint8_t KFS_want1;
+uint8_t KFS_want2;
+uint8_t spear;
+int16_t Axis_x;
+int16_t Axis_y;
+int16_t Axis_yaw;
 namespace communication {
 
 Lora_communication::Lora_communication(UART_HandleTypeDef* tx_huart, UART_HandleTypeDef* rx_huart,
@@ -32,6 +41,17 @@ Lora_communication::Lora_communication(UART_HandleTypeDef* tx_huart, UART_Handle
     lora_rx_huart = rx_huart;
     lora_aux_port = tx_aux_gpio_port;
     lora_aux_pin = tx_aux_gpio_pin;
+
+    // 初始化发送数据为默认值
+    send_x = 0; send_y = 0; send_z = 0;
+    send_gripper_status = 0;
+    send_suction_cup_status = 0;
+    send_automatic_status = 0;
+    send_mode = 0;
+    chosen_command = 0; chosen_command_cnt = 0;
+    send_kfs_want_place1 = 0; send_kfs_want_place2 = 0;
+    send_spear = 0;
+    send_kfs_keepplace = 0;
 }
 
 Lora_communication::~Lora_communication() {
@@ -56,6 +76,9 @@ void Lora_communication::Uart_Rx_It_Process(uint8_t* buf_, uint16_t len_) {
 void Lora_communication::Task_Process() {
     // 循环解析收到的数据
     if (Comm_Task_Loop()) {
+				SetSendAxisData(Axis_x,Axis_y,Axis_yaw);
+				SetSendWantKFSData(KFS_want1,KFS_want2);
+				SetSendSpearData(spear);
         GetRecvJoystickData(joystick);
         key = GetRecvAllKeyData();
 				page = GetPage();
@@ -77,6 +100,9 @@ void Lora_communication::Task_Process() {
         KFS2_4 = GetRecvFKFS2Data(4);
 
         KFSf_1 = GetRecvFKFSfData(1);
+
+        // 读取命令帧数据（串口屏转发）
+        GetChosenCommandAndCnt(recv_command_command, recv_command_load1, recv_command_load2);
 
         // 查询16个按键状态并统计按下个数（发送端已完成去抖）
         uint16_t key_status = GetKeyStatus();
@@ -102,7 +128,11 @@ void Lora_communication::Tim_It_Process() {
     timer_tick_count++;
     if (timer_tick_count >= 2) { // 计数达到 1ms 
         timer_tick_count = 0;
-        Comm_SendAxisDataToTxBuffer(1, 2, 5 ,1,1,1,0xBB,0xCC,0xDD);
+        GetChosenCommandAndCnt(chosen_command, chosen_command_cnt, recv_command_load2);
+        Comm_SendAxisDataToTxBuffer(send_x, send_y, send_z,
+            send_gripper_status, send_suction_cup_status, send_automatic_status,
+            send_mode, chosen_command, chosen_command_cnt,
+            send_kfs_want_place1, send_kfs_want_place2, send_spear, send_kfs_keepplace);
     }
 }
 

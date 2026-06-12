@@ -312,6 +312,7 @@ void HMI_SendDataFrame(int16_t x, int16_t y, int16_t z,
     frame.spear            = spear;
     frame.KFS_Keepplace    = KFS_Keepplace;
     frame.tail             = 0x0C;
+    uint8_t *ptr = (uint8_t *)&frame;
     for (int i = 0; i < sizeof(DataFrame_t); i++) {
         FIFO_Push(&g_HMI.tx_fifo, ptr[i]);
     }

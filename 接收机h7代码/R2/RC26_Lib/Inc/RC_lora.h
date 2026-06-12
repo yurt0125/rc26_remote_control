@@ -45,6 +45,50 @@ public:
         return Communication::GetPage();
     }
 
+    /**
+     * @brief 获取接收到的命令帧数据（串口屏转发）
+     * @param command 存放命令的变量
+     * @param load1 存放负载1的变量（累计次数）
+     * @param load2 存放负载2的变量（保留扩展）
+     */
+    void GetChosenCommandAndCnt(uint8_t& command, uint8_t& load1, uint8_t& load2) {
+        Communication::GetRecvCommandFrameData(command, load1, load2);
+    }
+
+    // ---- 发送数据 setter 接口（外部调用修改发送参数）----
+
+    void SetSendAxisData(uint16_t x, uint16_t y, uint16_t z) {
+        send_x = x; send_y = y; send_z = z;
+    }
+
+    void SetSendStatus(uint8_t gripper_status, uint8_t suction_cup_status, uint8_t automatic_status) {
+        send_gripper_status = gripper_status;
+        send_suction_cup_status = suction_cup_status;
+        send_automatic_status = automatic_status;
+    }
+
+    void SetSendMode(uint8_t mode) { send_mode = mode; }
+
+    void SetSendCommand(uint8_t command1, uint8_t command2) {
+        chosen_command = command1; chosen_command_cnt = command2;
+    }
+
+    void SetSendWantKFSData(uint8_t KFS_want_place1, uint8_t KFS_want_place2) {
+        send_kfs_want_place1 = KFS_want_place1;
+        send_kfs_want_place2 = KFS_want_place2;
+        
+    }
+		
+		void SetSendSpearData(uint8_t spear)
+		{
+        send_spear = spear;			
+		}
+		
+		void SetSendKeepKFSData(uint8_t KFS_Keepplace)
+		{
+        send_kfs_keepplace = KFS_Keepplace;			
+		}
+
 protected:
     virtual void Comm_TxUseTxDMA(UART_HandleTypeDef* huart, uint8_t* data, uint16_t size) override;
     virtual void Uart_Rx_It_Process(uint8_t* buf_, uint16_t len_) override;
@@ -70,6 +114,17 @@ private:
     // 【修改】强制向 32 字节对齐
     alignas(32) uint8_t tx_dma_buffer[DMA_BUF_SIZE];
     alignas(32) uint8_t rx_dma_buffer[DMA_BUF_SIZE];
+
+    // ---- 待发送的数据（由外部 setter 修改，定时器中断中发送）----
+    uint16_t send_x, send_y, send_z;
+    uint8_t send_gripper_status;
+    uint8_t send_suction_cup_status;
+    uint8_t send_automatic_status;
+    uint8_t send_mode;
+    uint8_t chosen_command, chosen_command_cnt, recv_command_load2;
+    uint8_t send_kfs_want_place1, send_kfs_want_place2;
+    uint8_t send_spear;
+    uint8_t send_kfs_keepplace;
 };
 
 }
