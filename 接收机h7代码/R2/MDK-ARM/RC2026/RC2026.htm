@@ -3,7 +3,7 @@
 <title>Static Call Graph - [RC2026\RC2026.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image RC2026\RC2026.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Fri Jun 12 22:43:06 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Sat Jun 13 01:37:40 2026
 <BR><P>
 <H3>Maximum Stack Usage =        416 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -3412,7 +3412,7 @@ Global Symbols
 <LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Lora_communication::Tim_It_Process()
 </UL>
 
-<P><STRONG><a name="[263]"></a>communication::Communication::Communication__sub_object(__UART_HandleTypeDef*, __UART_HandleTypeDef*, unsigned char*, unsigned char*, unsigned char*, unsigned char*, GPIO_TypeDef*, unsigned short, GPIO_TypeDef*, unsigned short)</STRONG> (Thumb, 112 bytes, Stack size 0 bytes, rc_communication.o(.text._ZN13communication13CommunicationC2EP20__UART_HandleTypeDefS2_PhS3_S3_S3_P12GPIO_TypeDeftS5_t))
+<P><STRONG><a name="[263]"></a>communication::Communication::Communication__sub_object(__UART_HandleTypeDef*, __UART_HandleTypeDef*, unsigned char*, unsigned char*, unsigned char*, unsigned char*, GPIO_TypeDef*, unsigned short, GPIO_TypeDef*, unsigned short)</STRONG> (Thumb, 116 bytes, Stack size 0 bytes, rc_communication.o(.text._ZN13communication13CommunicationC2EP20__UART_HandleTypeDefS2_PhS3_S3_S3_P12GPIO_TypeDeftS5_t))
 <BR><BR>[Called By]<UL><LI><a href="#[240]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Lora_communication::Lora_communication(__UART_HandleTypeDef*, __UART_HandleTypeDef*, GPIO_TypeDef*, unsigned short, GPIO_TypeDef*, unsigned short, tim::Tim*)
 </UL>
 
@@ -3467,7 +3467,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[139]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;All_Init
 </UL>
 
-<P><STRONG><a name="[240]"></a>communication::Lora_communication::Lora_communication(__UART_HandleTypeDef*, __UART_HandleTypeDef*, GPIO_TypeDef*, unsigned short, GPIO_TypeDef*, unsigned short, tim::Tim*)</STRONG> (Thumb, 276 bytes, Stack size 96 bytes, rc_lora.o(.text._ZN13communication18Lora_communicationC2EP20__UART_HandleTypeDefS2_P12GPIO_TypeDeftS4_tPN3tim3TimE))
+<P><STRONG><a name="[240]"></a>communication::Lora_communication::Lora_communication(__UART_HandleTypeDef*, __UART_HandleTypeDef*, GPIO_TypeDef*, unsigned short, GPIO_TypeDef*, unsigned short, tim::Tim*)</STRONG> (Thumb, 280 bytes, Stack size 96 bytes, rc_lora.o(.text._ZN13communication18Lora_communicationC2EP20__UART_HandleTypeDefS2_P12GPIO_TypeDeftS4_tPN3tim3TimE))
 <BR><BR>[Stack]<UL><LI>Max Depth = 328<LI>Call Chain = communication::Lora_communication::Lora_communication(__UART_HandleTypeDef*, __UART_HandleTypeDef*, GPIO_TypeDef*, unsigned short, GPIO_TypeDef*, unsigned short, tim::Tim*) &rArr; task::ManagedTask::ManagedTask__sub_object(char const*, unsigned char, unsigned short, task::TaskType, unsigned char) &rArr; osThreadNew &rArr; xTaskCreate &rArr; pvPortMalloc &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[263]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::Communication__sub_object(__UART_HandleTypeDef*, __UART_HandleTypeDef*, unsigned char*, unsigned char*, unsigned char*, unsigned char*, GPIO_TypeDef*, unsigned short, GPIO_TypeDef*, unsigned short)
@@ -3479,7 +3479,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_GLOBAL__sub_I_RC_init.cpp
 </UL>
 
-<P><STRONG><a name="[34d]"></a>communication::Lora_communication::Lora_communication__sub_object(__UART_HandleTypeDef*, __UART_HandleTypeDef*, GPIO_TypeDef*, unsigned short, GPIO_TypeDef*, unsigned short, tim::Tim*)</STRONG> (Thumb, 276 bytes, Stack size 96 bytes, rc_lora.o(.text._ZN13communication18Lora_communicationC2EP20__UART_HandleTypeDefS2_P12GPIO_TypeDeftS4_tPN3tim3TimE), UNUSED)
+<P><STRONG><a name="[34d]"></a>communication::Lora_communication::Lora_communication__sub_object(__UART_HandleTypeDef*, __UART_HandleTypeDef*, GPIO_TypeDef*, unsigned short, GPIO_TypeDef*, unsigned short, tim::Tim*)</STRONG> (Thumb, 280 bytes, Stack size 96 bytes, rc_lora.o(.text._ZN13communication18Lora_communicationC2EP20__UART_HandleTypeDefS2_P12GPIO_TypeDeftS4_tPN3tim3TimE), UNUSED)
 
 <P><STRONG><a name="[a3]"></a>communication::Lora_communication::~Lora_communication()</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, rc_lora.o(.text._ZN13communication18Lora_communicationD2Ev))
 <BR><BR>[Calls]<UL><LI><a href="#[268]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;communication::Communication::~Communication__sub_object()

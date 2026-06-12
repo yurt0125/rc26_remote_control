@@ -117,6 +117,7 @@ void HMI_SendDataFrame(int16_t x, int16_t y, int16_t z,
                        uint8_t send_cmd1, uint8_t send_cmd2,
                        uint8_t KFS_want_place1, uint8_t KFS_want_place2,
                        uint8_t spear, uint8_t KFS_Keepplace);
+void HMI_ButtonTransmitFrame(uint8_t command, uint8_t load1, uint8_t load2);
 
 // HAL 相关的回调接口
 // void HMI_Timer_Callback_Wrapper(void);

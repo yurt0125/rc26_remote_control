@@ -425,7 +425,7 @@
         <Ww>
           <count>22</count>
           <WinNumber>2</WinNumber>
-          <ItemText>recv_command_command</ItemText>
+          <ItemText>recv_command_command,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>23</count>

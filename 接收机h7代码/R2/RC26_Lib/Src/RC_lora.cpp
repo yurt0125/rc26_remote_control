@@ -4,7 +4,7 @@ uint16_t key;
 uint8_t KFS1_1, KFS1_2, KFS1_3;
 uint8_t KFS2_1, KFS2_2, KFS2_3, KFS2_4;
 uint8_t KFSf_1;
-uint8_t recv_command_command;
+uint8_t recv_command_command=1;
 uint8_t recv_command_load1;
 uint8_t recv_command_load2;
 uint8_t color;
@@ -48,7 +48,7 @@ Lora_communication::Lora_communication(UART_HandleTypeDef* tx_huart, UART_Handle
     send_suction_cup_status = 0;
     send_automatic_status = 0;
     send_mode = 0;
-    chosen_command = 0; chosen_command_cnt = 0;
+    chosen_command = 1; chosen_command_cnt = 0;
     send_kfs_want_place1 = 0; send_kfs_want_place2 = 0;
     send_spear = 0;
     send_kfs_keepplace = 0;

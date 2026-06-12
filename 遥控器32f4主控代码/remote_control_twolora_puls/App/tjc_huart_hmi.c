@@ -39,6 +39,10 @@ void HMI_Task_Init(UART_HandleTypeDef *huart)
     
     // 挂载 DMA 接收空闲中断至 DMA 专用连续缓冲区
     HAL_UARTEx_ReceiveToIdle_DMA(g_HMI.huart, g_HMI.dma_rx_buf, DMA_BUF_SIZE);
+    for(int i=1; i<=9; i++)
+    {
+    Communication_SendCommandFrame(i,0,0);
+    }
 }
 
 static void HMI_StartTx(void)
@@ -190,7 +194,7 @@ void HMI_Task_Loop(void)
             //     break;
             // }
             case 4: { // CommandFrame (0x55 0xDD) — 仅发送命令界面(page 3)
-               if (hmi_state == 3) {
+               if (hmi_state == 3||hmi_state == 2) { // 发送命令界面(page 3) 和 数据显示界面(page 2) 都可接收 CommandFrame
                    CommandFrame_t* cf = (CommandFrame_t*)frame_buf;
                    g_HMI.rx_command = cf->command;
                    g_HMI.rx_load[0] = cf->load1;
@@ -263,6 +267,35 @@ void HMI_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load2)
     }
 }
 
+// 发送 DataFrame (0x55 0xEE) — 仅数据显示界面(page 2)和命令发送界面(page 3) 发送
+void HMI_ButtonTransmitFrame(uint8_t command, uint8_t load1, uint8_t load2)
+{
+    if (hmi_state != 2 && hmi_state != 3) return;
+
+    SettingFrame_t frame;
+    frame.header[0] = 0x55;
+    frame.header[1] = 0xEE;
+    frame.command   = command;
+    frame.load1     = load1;
+    frame.load2     = load2;
+    frame.tail      = 0x0E;
+
+    // __disable_irq();
+    // g_HMI.setting_tx_command  = command;
+    // g_HMI.setting_tx_load[0]  = load1;
+    // g_HMI.setting_tx_load[1]  = load2;
+    // __enable_irq();
+
+    uint8_t* ptr = (uint8_t*)&frame;
+    for (int i = 0; i < sizeof(SettingFrame_t); i++) {
+        FIFO_Push(&g_HMI.tx_fifo, ptr[i]);
+    }
+
+    if (g_HMI.tx_busy == 0) {
+        HMI_StartTx();
+    }
+}
+
 // 发送 DataFrame (0x55 0xCC) — 仅数据显示界面(page 2) 发送
 void HMI_SendDataFrame(int16_t x, int16_t y, int16_t z,
                        uint8_t status, uint8_t mode,
@@ -289,10 +322,10 @@ void HMI_SendDataFrame(int16_t x, int16_t y, int16_t z,
     // 仅在数据显示页面才实际发送到屏幕
     if (hmi_state != 2) return;
 
-    // 限制发送频率：周期不小于 50ms (限制在约 20Hz 刷新率)
+    // 限制发送频率：周期不小于 100ms (限制在约 10Hz 刷新率)
     static uint32_t last_send_tick = 0;
     uint32_t current_tick = HAL_GetTick();
-    if ((current_tick - last_send_tick) < 50) {
+    if ((current_tick - last_send_tick) < 100) {
         return;
     }
     last_send_tick = current_tick;
