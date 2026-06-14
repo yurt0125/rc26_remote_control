@@ -233,8 +233,10 @@ void Communication_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load
 
     uint8_t* ptr = (uint8_t*)&frame;
     __disable_irq();
-    for (int i = 0; i < sizeof(CommSettingFrame_t); i++) {
-        FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
+    for (int repeat = 0; repeat < 3; repeat++) {
+        for (int i = 0; i < sizeof(CommSettingFrame_t); i++) {
+            FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
+        }
     }
     __enable_irq();
 
@@ -268,8 +270,10 @@ void Communication_SendCommandFrame(uint8_t command, uint8_t load1, uint8_t load
 
     uint8_t* ptr = (uint8_t*)&frame;
     __disable_irq();
-    for (int i = 0; i < sizeof(CommCommandFrame_t); i++) {
-        FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
+    for (int repeat = 0; repeat < 3; repeat++) {
+        for (int i = 0; i < sizeof(CommCommandFrame_t); i++) {
+            FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
+        }
     }
     __enable_irq();
 

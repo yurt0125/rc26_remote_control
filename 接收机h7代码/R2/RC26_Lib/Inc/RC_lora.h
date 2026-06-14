@@ -20,6 +20,8 @@ public:
 
     void Init();
 
+    // ---- 读取数据 getter 接口（外部调用获取接收参数）----
+
     /**
      * @brief 查询指定索引的按键是否被按下
      * @param key_index 按键索引 (0~15)，对应 rec_send_key 的 bit0~bit15
@@ -76,18 +78,17 @@ public:
     void SetSendWantKFSData(uint8_t KFS_want_place1, uint8_t KFS_want_place2) {
         send_kfs_want_place1 = KFS_want_place1;
         send_kfs_want_place2 = KFS_want_place2;
-        
     }
 		
-		void SetSendSpearData(uint8_t spear)
-		{
+	void SetSendSpearData(uint8_t spear)
+	{
         send_spear = spear;			
-		}
+	}
 		
-		void SetSendKeepKFSData(uint8_t KFS_Keepplace)
-		{
+	void SetSendKeepKFSData(uint8_t KFS_Keepplace)
+	{
         send_kfs_keepplace = KFS_Keepplace;			
-		}
+	}
 
 protected:
     virtual void Comm_TxUseTxDMA(UART_HandleTypeDef* huart, uint8_t* data, uint16_t size) override;
