@@ -20,8 +20,8 @@ typedef struct{
     // ---- 摇杆归一化值（-1.0 ~ 1.0）----
     float left_x;   //摇杆
     float left_y;
-    float right_x;
     float right_y;
+    float right_x;
     // ---- 按键位图与页面 ----
     uint16_t key;         // 16位按键原始位图
     uint8_t page;         // 显示屏页面
