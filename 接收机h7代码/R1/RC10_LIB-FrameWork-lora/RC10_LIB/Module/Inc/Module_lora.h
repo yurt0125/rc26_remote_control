@@ -148,11 +148,15 @@ public:
 
     void send_claw_status(bool claw1, bool claw2, bool claw3);
 
-    void send_sucker_status(bool sucker1, bool sucker2);
+    void send_sucker_status(bool sucker1);
 
-    void send_auto_status(bool auto_status);
+    void send_mode(uint8_t mode);
+    
 
-    void send_command(int8_t cmd);
+
+    void send_auto_status(bool auto_status);//
+
+    void send_command(int8_t cmd);//
 
 
     /**
