@@ -18,7 +18,7 @@
 
 
 // 时间参数定义 (单位: ms)
-#define BTN_DEBOUNCE_TIME     20    // 消抖时间
+#define BTN_DEBOUNCE_TIME     10    // 消抖时间
 
 
 // 按键事件枚举

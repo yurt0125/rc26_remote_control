@@ -126,6 +126,11 @@ typedef struct {
     uint8_t recv_KFS_want_place2;
     uint8_t recv_spear;
     uint8_t recv_KFS_Keepplace;
+
+    /* 按键统计（发送侧） */
+    uint16_t key_pressed_count;   // 当前帧被按下的按键个数
+    uint16_t key_down_count;      // 累计上升沿次数
+    uint16_t key_last_status;     // 上一帧按键状态
 } CommContext;
 
 extern CommContext g_Comm;

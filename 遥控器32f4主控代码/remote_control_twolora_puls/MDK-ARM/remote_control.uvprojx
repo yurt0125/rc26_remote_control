@@ -659,6 +659,11 @@
               <FileType>1</FileType>
               <FilePath>..\App\gpio_button.c</FilePath>
             </File>
+            <File>
+              <FileName>gpio_button.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\App\gpio_button.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

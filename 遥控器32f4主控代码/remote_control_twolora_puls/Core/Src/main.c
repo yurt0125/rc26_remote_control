@@ -247,7 +247,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   else if (htim->Instance == TIM1)
   {
     timer_tick_count++;
-    if (timer_tick_count >= 2) { // 计数达到 2ms ，可调大此处做发送节流
+    if (timer_tick_count >= 15) { // 计数达到 2ms ，可调大此处做发送节流
         timer_tick_count = 0;
         Comm_Timer_Callback_Wrapper();
     }

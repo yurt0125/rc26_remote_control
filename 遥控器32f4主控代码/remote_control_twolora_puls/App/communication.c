@@ -75,6 +75,9 @@ void Communication_Task_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rx
     g_Comm.send_joystick[3] = 0xF0DE;
 
     g_Comm.send_key = 0x3412;
+    g_Comm.key_pressed_count = 0;
+    g_Comm.key_down_count = 0;
+    g_Comm.key_last_status = 0;
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
     
@@ -145,6 +148,25 @@ void Comm_Timer_Callback_Wrapper(void)
     if(g_Comm.tx_busy==0)
     {
         Communication_SetJoystickAndKeyData(joystick_Buf[0],joystick_Buf[1],joystick_Buf[2],joystick_Buf[3],tx_button_state, hmi_state);
+
+        // ---- 按键统计 (移植自接收工程) ----
+        {
+            uint16_t key_status = g_Comm.send_key;
+            g_Comm.key_pressed_count = 0;
+            for (uint8_t i = 0; i < 16; ++i) {
+                if (key_status & (1U << i)) {
+                    g_Comm.key_pressed_count++;
+                }
+            }
+            uint16_t rising_edges = (uint16_t)(key_status & (~g_Comm.key_last_status));
+            for (uint8_t i = 0; i < 16; ++i) {
+                if (rising_edges & (1U << i)) {
+                    g_Comm.key_down_count++;
+                }
+            }
+            g_Comm.key_last_status = key_status;
+        }
+
 		JoystickFrame_t frame;
         frame.header[0] = 0xAA;
         frame.header[1] = 0x55;

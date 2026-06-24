@@ -322,10 +322,10 @@ void HMI_SendDataFrame(int16_t x, int16_t y, int16_t z,
     // 仅在数据显示页面才实际发送到屏幕
     if (hmi_state != 2) return;
 
-    // 限制发送频率：周期不小于 100ms (限制在约 10Hz 刷新率)
+    // 限制发送频率：周期不小于 50ms (限制在约 20Hz 刷新率)
     static uint32_t last_send_tick = 0;
     uint32_t current_tick = HAL_GetTick();
-    if ((current_tick - last_send_tick) < 100) {
+    if ((current_tick - last_send_tick) < 50) {
         return;
     }
     last_send_tick = current_tick;
@@ -393,7 +393,10 @@ void HMI_UartRx_Callback_Wrapper(UART_HandleTypeDef *huart, uint16_t size)
 void HMI_UartError_Callback_Wrapper(UART_HandleTypeDef *huart)
 {
     if (g_HMI.huart == huart) {
-        // 如果断线或者产生溢出错误，需解挂并重启接收以自我恢复
+        // UART 出错时强制复位发送状态，防止 tx_busy 卡死导致屏幕冻结
+        g_HMI.tx_busy = 0;
+        HAL_UART_AbortTransmit(g_HMI.huart);
+        // 重启接收 DMA
         HAL_UARTEx_ReceiveToIdle_DMA(g_HMI.huart, g_HMI.dma_rx_buf, DMA_BUF_SIZE);
     }
 }
