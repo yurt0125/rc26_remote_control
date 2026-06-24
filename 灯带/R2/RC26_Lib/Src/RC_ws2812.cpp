@@ -12,6 +12,9 @@ namespace ws2812
 
 Ws2812B* g_ws2812b_instance = nullptr;
 
+// DMA 缓冲区
+uint8_t Ws2812B::spi_buf[WS2812B_AMOUNT * 24 + RESET_BYTES];
+
 Ws2812B::Ws2812B(SPI_HandleTypeDef* hspi_)
     : task::ManagedTask("Ws2812b", 20, 128, task::TASK_DELAY, 1)
     , hspi(hspi_)
@@ -22,9 +25,9 @@ Ws2812B::Ws2812B(SPI_HandleTypeDef* hspi_)
     // 初始化颜色缓存
     for (uint8_t i = 0; i < WS2812B_AMOUNT; i++)
     {
-        color_cache[i].R = 0x10;
-        color_cache[i].G = 0x10;
-        color_cache[i].B = 0x10;
+        color_cache[i].R = 0x00;
+        color_cache[i].G = 0x00;
+        color_cache[i].B = 0x00;
     }
 
     // 初始化 SPI 缓冲
@@ -84,7 +87,10 @@ void Ws2812B::Task_Process()
         {
             Error_Handler();
         }
-        return;  // 初始化完成后直接返回，下个周期再处理
+        // 初始化完成后刷一次初始颜色
+        ApplyColor(current_color);
+        SpiSend();
+        return;
     }
 
     Signal signal;
@@ -93,95 +99,59 @@ void Ws2812B::Task_Process()
     // 非阻塞接收队列消息
     if (xQueueReceive(signal_queue, &signal, 0) == pdPASS)
     {
-        // 快速抢占：偶数 flag 时收到 FAIL 信号，立即跳转
-        if (flag % 2 == 0 && signal == Signal::FAIL)
+        if (signal == Signal::FLASH_ONCE)
         {
-            flag = 1;
-            LedFail();
-            start_time = current_time;
-        }
-
-        switch (flag)
-        {
-        case 0:
-            if (signal == Signal::NORMAL)
-            {
-                LedNormal();
-            }
-            else if (signal == Signal::WAIT)
-            {
-                LedWait();
-            }
-            else if (signal == Signal::SUCCESS)
-            {
-                flag = 2;
-                LedSuccess();
-                start_time = current_time;
-            }
-            else if (signal == Signal::FAIL)
+            // 闪烁：从常亮状态切换到绿色
+            if (flag == 0)
             {
                 flag = 1;
-                LedFail();
+                ApplyColor(Signal::GREEN);
                 start_time = current_time;
             }
-            break;
+        }
+        else
+        {
+            // 颜色信号：切换到对应颜色并常亮
+            current_color = signal;
+            flag = 0;
+            ApplyColor(signal);
         }
     }
 
-    // 定时状态转移（不依赖队列消息也能推进）
+    // 定时状态转移：双闪序列 (绿→原色→绿→原色)
     switch (flag)
     {
-    case 2:
+    case 1:  // 绿色 → 恢复颜色
         if (current_time - start_time > TIME_INTERVAL)
         {
-            flag = 4;
-            LedOff();
+            flag = 2;
+            ApplyColor(current_color);
             start_time = current_time;
         }
         break;
 
-    case 4:
-        if (current_time - start_time > TIME_INTERVAL)
-        {
-            flag = 6;
-            LedSuccess();
-            start_time = current_time;
-        }
-        break;
-
-    case 6:
-        if (current_time - start_time > TIME_INTERVAL)
-        {
-            flag = 0;
-            LedOff();
-            start_time = current_time;
-        }
-        break;
-
-    case 1:
+    case 2:  // 恢复 → 第二次绿色
         if (current_time - start_time > TIME_INTERVAL)
         {
             flag = 3;
-            LedOff();
+            ApplyColor(Signal::GREEN);
             start_time = current_time;
         }
         break;
 
-    case 3:
+    case 3:  // 绿色 → 恢复颜色
         if (current_time - start_time > TIME_INTERVAL)
         {
-            flag = 5;
-            LedFail();
+            flag = 4;
+            ApplyColor(current_color);
             start_time = current_time;
         }
         break;
 
-    case 5:
+    case 4:  // 恢复 → 常亮
         if (current_time - start_time > TIME_INTERVAL)
         {
             flag = 0;
-            LedOff();
-            start_time = current_time;
         }
         break;
 
@@ -194,7 +164,9 @@ void Ws2812B::Task_Process()
 
 void Ws2812B::SpiSend()
 {
-    static const uint8_t reset_buf[RESET_BYTES] = {0};
+    // 上一次 DMA 还没完成，跳过本轮
+    if (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY)
+        return;
 
     // 将颜色缓存编码为 SPI 数据
     for (uint8_t iLED = 0; iLED < WS2812B_AMOUNT; iLED++)
@@ -202,11 +174,18 @@ void Ws2812B::SpiSend()
         EncodeLed(iLED, color_cache[iLED].R, color_cache[iLED].G, color_cache[iLED].B);
     }
 
-    // 阻塞发送 LED 数据，确保发完
-    HAL_SPI_Transmit(hspi, spi_buf, sizeof(spi_buf), HAL_MAX_DELAY);
+    // 在 LED 数据后填充复位字节
+    uint8_t* pReset = &spi_buf[WS2812B_AMOUNT * 24];
+    for (uint8_t i = 0; i < RESET_BYTES; i++)
+    {
+        pReset[i] = 0x00;
+    }
 
-    // 阻塞发送复位信号（大于 50us 的低电平）
-    HAL_SPI_Transmit(hspi, (uint8_t*)reset_buf, RESET_BYTES, HAL_MAX_DELAY);
+    // 刷新 DCache，确保 DMA 读到最新数据（STM32H7 必需）
+    SCB_CleanDCache_by_Addr((uint32_t*)spi_buf, WS2812B_AMOUNT * 24 + RESET_BYTES);
+
+    // DMA 一次性发送 LED 数据 + 复位信号
+    HAL_SPI_Transmit_DMA(hspi, spi_buf, WS2812B_AMOUNT * 24 + RESET_BYTES);
 }
 
 // 设置全部灯为指定颜色
@@ -220,42 +199,55 @@ void Ws2812B::SetAllColor(uint8_t r, uint8_t g, uint8_t b)
     }
 }
 
-void Ws2812B::LedFail()
+void Ws2812B::ApplyColor(Signal color)
 {
-    SetAllColor(0x08, 0x00, 0x00); // red
-}
-
-void Ws2812B::LedWait()
-{
-    SetAllColor(0x03, 0x03, 0x03); // white
-}
-
-void Ws2812B::LedSuccess()
-{
-    SetAllColor(0x00, 0x08, 0x00); // green
-}
-
-void Ws2812B::LedNormal()
-{
-    SetAllColor(0x00, 0x00, 0x08); // blue
+    switch (color)
+    {
+    case Signal::RED:   SetAllColor(0xFF, 0x00, 0x00); break;
+    case Signal::GREEN: SetAllColor(0x00, 0xFF, 0x00); break;
+    case Signal::BLUE:  SetAllColor(0x00, 0x00, 0xFF); break;
+    case Signal::WHITE: SetAllColor(0xFF, 0xFF, 0xFF); break;
+    default: break;
+    }
 }
 
 void Ws2812B::LedOff()
 {
-    SetAllColor(0x00, 0x00, 0x00); // off
+    SetAllColor(0x00, 0x00, 0x00);
 }
 
-void Ws2812B::SendFail()
+void Ws2812B::SetRed()
 {
-    if (signal_queue == nullptr) return;  // 队列尚未创建，忽略
-    Signal signal = Signal::FAIL;
+    if (signal_queue == nullptr) return;
+    Signal signal = Signal::RED;
     xQueueSend(signal_queue, &signal, 0);
 }
 
-void Ws2812B::SendSuccess()
+void Ws2812B::SetGreen()
 {
-    if (signal_queue == nullptr) return;  // 队列尚未创建，忽略
-    Signal signal = Signal::SUCCESS;
+    if (signal_queue == nullptr) return;
+    Signal signal = Signal::GREEN;
+    xQueueSend(signal_queue, &signal, 0);
+}
+
+void Ws2812B::SetBlue()
+{
+    if (signal_queue == nullptr) return;
+    Signal signal = Signal::BLUE;
+    xQueueSend(signal_queue, &signal, 0);
+}
+
+void Ws2812B::SetWhite()
+{
+    if (signal_queue == nullptr) return;
+    Signal signal = Signal::WHITE;
+    xQueueSend(signal_queue, &signal, 0);
+}
+
+void Ws2812B::FlashOnce()
+{
+    if (signal_queue == nullptr) return;
+    Signal signal = Signal::FLASH_ONCE;
     xQueueSend(signal_queue, &signal, 0);
 }
 
@@ -265,20 +257,34 @@ void Ws2812B::SendSuccess()
 // C 兼容接口
 extern "C" {
 
-void WS2812B_Send_SUCCESS(void)
+void WS2812B_SetRed(void)
 {
     if (ws2812::g_ws2812b_instance != nullptr)
-    {
-        ws2812::g_ws2812b_instance->SendSuccess();
-    }
+        ws2812::g_ws2812b_instance->SetRed();
 }
 
-void WS2812B_Send_FAIL(void)
+void WS2812B_SetGreen(void)
 {
     if (ws2812::g_ws2812b_instance != nullptr)
-    {
-        ws2812::g_ws2812b_instance->SendFail();
-    }
+        ws2812::g_ws2812b_instance->SetGreen();
+}
+
+void WS2812B_SetBlue(void)
+{
+    if (ws2812::g_ws2812b_instance != nullptr)
+        ws2812::g_ws2812b_instance->SetBlue();
+}
+
+void WS2812B_SetWhite(void)
+{
+    if (ws2812::g_ws2812b_instance != nullptr)
+        ws2812::g_ws2812b_instance->SetWhite();
+}
+
+void WS2812B_FlashOnce(void)
+{
+    if (ws2812::g_ws2812b_instance != nullptr)
+        ws2812::g_ws2812b_instance->FlashOnce();
 }
 
 } // extern "C"

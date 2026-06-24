@@ -186,16 +186,24 @@ void Main_Task(void *argument)
 //	graph_plan.Plan(start, dst);
 //	
 
-//	// === 灯带测试：启动时闪一次绿灯 ===
-	static bool ws2812_test_once = true;
-	if (ws2812_test_once)
-	{
-		ws2812_test_once = false;
-		LED.SendSuccess();
-	}
+	// === 灯带测试：启动时亮绿灯 ===
+	// static bool ws2812_test_once = true;
+	// if (ws2812_test_once)
+	// {
+	// 	ws2812_test_once = false;
+	// 	LED.SetGreen();
+	// }
 
 	for (;;)
 	{
+		// === 灯带测试：每 2 秒自动闪烁一次 ===
+		static uint32_t flash_test_time = 0;
+		if (timer::Timer::Get_DeltaTime(flash_test_time) > 2000000)
+		{
+			flash_test_time = timer::Timer::Get_TimeStamp();
+			LED.FlashOnce();
+		}
+		
 //		wave.Set_Amplitude(a);
 //		target = wave.Get_Signal();
 

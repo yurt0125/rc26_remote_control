@@ -27,13 +27,14 @@ namespace ws2812
         uint8_t B;
     };
 
-    // 信号/状态类型
+    // 信号类型
     enum class Signal : uint8_t
     {
-        NORMAL,
-        WAIT,
-        SUCCESS,
-        FAIL
+        RED,
+        GREEN,
+        BLUE,
+        WHITE,
+        FLASH_ONCE
     };
 
     class Ws2812B : public task::ManagedTask
@@ -42,9 +43,14 @@ namespace ws2812
         Ws2812B(SPI_HandleTypeDef* hspi_);
         ~Ws2812B() = default;
 
-        // 公共接口：向队列发送信号
-        void SendFail();
-        void SendSuccess();
+        // 公共接口：设置常亮颜色
+        void SetRed();
+        void SetGreen();
+        void SetBlue();
+        void SetWhite();
+
+        // 公共接口：当前颜色闪烁一次（灭→恢复）
+        void FlashOnce();
 
         // 设置全部灯为指定颜色
         void SetAllColor(uint8_t r, uint8_t g, uint8_t b);
@@ -59,8 +65,11 @@ namespace ws2812
         // FreeRTOS 队列句柄
         QueueHandle_t signal_queue;
 
-        // SPI 数据缓存 (每颗灯珠 24 字节)
-        uint8_t spi_buf[WS2812B_AMOUNT * 24];
+        // 常量
+        static constexpr uint8_t RESET_BYTES = 100;
+
+        // SPI 数据缓存 (DMA 需要放在 AXI SRAM)
+        static uint8_t spi_buf[WS2812B_AMOUNT * 24 + RESET_BYTES];
 
         // 灯条颜色显存
         ColorCache color_cache[WS2812B_AMOUNT];
@@ -71,22 +80,17 @@ namespace ws2812
         // 通过 SPI DMA 发送灯条数据
         void SpiSend();
 
-        // LED 显示函数
-        void LedFail();
-        void LedWait();
-        void LedSuccess();
-        void LedNormal();
+        // LED 内部函数
+        void ApplyColor(Signal color);
         void LedOff();
 
         // 状态机变量
-        uint8_t flag = 0;
+        uint8_t flag = 0;           // 0=常亮; 1=闪烁灭; 2=闪烁恢复
         uint32_t start_time = 0;
+        Signal current_color = Signal::RED;   // 初始颜色
 
         // 闪烁间隔 (系统 tick)
         static constexpr uint32_t TIME_INTERVAL = 80000;
-
-        // 复位信号字节数
-        static constexpr uint8_t RESET_BYTES = 100;
     };
 
     // 全局实例指针，供 C 兼容接口使用
@@ -97,8 +101,11 @@ extern "C" {
 #endif
 
 // C 兼容接口
-void WS2812B_Send_SUCCESS(void);
-void WS2812B_Send_FAIL(void);
+void WS2812B_SetRed(void);
+void WS2812B_SetGreen(void);
+void WS2812B_SetBlue(void);
+void WS2812B_SetWhite(void);
+void WS2812B_FlashOnce(void);
 
 #ifdef __cplusplus
 }
