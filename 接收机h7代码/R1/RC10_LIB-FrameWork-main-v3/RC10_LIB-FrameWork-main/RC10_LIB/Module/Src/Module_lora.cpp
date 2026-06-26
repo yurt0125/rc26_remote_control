@@ -3,6 +3,8 @@
 #include "main.h"
 #include <cmath>
 namespace {
+constexpr uint32_t LORA_LINK_TIMEOUT_MS = 200U;
+
 static inline float NormalizeJoystick(uint16_t raw, float center, float span, float deadzone = 0.05f, bool invert = false)
 {
     float value = (static_cast<float>(raw) - center) / span;
@@ -96,6 +98,10 @@ Lora_communication::Lora_communication(UART_HandleTypeDef* tx_huart, UART_Handle
     send_spear = 0;
     send_kfs_keepplace = 0;
     timer_tick_count=0;
+    last_joystick_rx_tick = HAL_GetTick();
+    last_joystick_frame_count = 0;
+    link_lost = true;
+    airjoy_data.link_lost = 1;
 }
 
 Lora_communication::~Lora_communication() {
@@ -110,10 +116,11 @@ void Lora_communication::Init() {
 
 
 /* ========== 虚函数实现 ========== */
-void Lora_communication::Comm_TxUseTxDMA(UART_HandleTypeDef* huart, uint8_t* data, uint16_t size) {
+HAL_StatusTypeDef Lora_communication::Comm_TxUseTxDMA(UART_HandleTypeDef* huart, uint8_t* data, uint16_t size) {
     if (huart != nullptr && huart == lora_tx_huart) {
-        HAL_UART_Transmit_DMA(huart, data, size);
+        return HAL_UART_Transmit_DMA(huart, data, size);
     }
+    return HAL_ERROR;
 }
 
 void Lora_communication::Task_Process() {
@@ -177,6 +184,7 @@ void Lora_communication::Task_Process() {
         airjoy_data.RT = GetRecvKeyData(12) ? 1U : 0U;  //这里原本T和B是和现在相反的，但因为和我想要的逻辑反了，所以我就自己改了
 
         uint16_t key_status = key;
+        airjoy_data.key_pressed_count = 0;
         for (uint8_t i = 0; i < 16; ++i) {
             if (key_status & (1U << i)) {
                 airjoy_data.key_pressed_count++;
@@ -209,6 +217,36 @@ void Lora_communication::Task_Process() {
         airjoy_data.KFSf_1 = kfs_data.fake_kfs;
         airjoy_data.color  = kfs_data.color;
     }
+
+    uint32_t joystick_frame_count = GetRecvJoystickFrameCount();
+    if (joystick_frame_count != last_joystick_frame_count) {
+        last_joystick_frame_count = joystick_frame_count;
+        last_joystick_rx_tick = HAL_GetTick();
+        link_lost = false;
+    } else if ((HAL_GetTick() - last_joystick_rx_tick) > LORA_LINK_TIMEOUT_MS) {
+        link_lost = true;
+        airjoy_data.left_x = 0.0f;
+        airjoy_data.left_y = 0.0f;
+        airjoy_data.right_x = 0.0f;
+        airjoy_data.right_y = 0.0f;
+        airjoy_data.key = 0;
+        airjoy_data.key_pressed_count = 0;
+        airjoy_data.SWA = 1;
+        airjoy_data.SWB = 1;
+        airjoy_data.SWC = 1;
+        airjoy_data.SWD = 1;
+        airjoy_data.SWE = 1;
+        airjoy_data.SWF = 1;
+        airjoy_data.LB = 0;
+        airjoy_data.RB = 0;
+        airjoy_data.LT = 0;
+        airjoy_data.RT = 0;
+        airjoy_data.d_pad_up = 0;
+        airjoy_data.d_pad_down = 0;
+        airjoy_data.d_pad_left = 0;
+        airjoy_data.d_pad_right = 0;
+    }
+    airjoy_data.link_lost = link_lost ? 1U : 0U;
 }
 
 void Lora_communication::send_robot_pos(float x, float y, float yaw)
@@ -291,6 +329,7 @@ void Lora_communication::update_airjoy_data(RC10_AirJoy_Data_S * data)
 
     data->recv_command_command = airjoy_data.recv_command_command;
     data->recv_command_cnt  = airjoy_data.recv_command_cnt;
+    data->link_lost = airjoy_data.link_lost;
 
 
 }
@@ -315,6 +354,7 @@ void Lora_communication::EXTI_Prosess() {
 
 /* ========== 静态回调 ========== */
 void Lora_communication::RxCallback(uint8_t* buf, uint16_t len) {
+    (void)buf;
     if (s_instance) {
         s_instance->Comm_RxDMAToRxBuffer(s_instance->lora_rx_huart, len);
     }

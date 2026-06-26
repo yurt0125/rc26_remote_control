@@ -110,6 +110,8 @@ typedef struct {
     comm_FIFO_t tx_fifo;
 
     volatile uint8_t tx_busy; // 发送忙碌标志
+    volatile uint16_t tx_error_cnt;
+    volatile uint16_t rx_error_cnt;
 
     /* 解析出来/待发送的业务数据 */
     uint16_t send_joystick[4]; 

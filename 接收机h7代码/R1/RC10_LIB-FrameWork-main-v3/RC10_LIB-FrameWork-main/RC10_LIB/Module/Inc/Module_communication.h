@@ -15,6 +15,7 @@ namespace communication{
     uint8_t* buffer;
     volatile uint16_t head;
     volatile uint16_t tail;
+    volatile uint16_t drop_cnt;
     } comm_FIFO_t;
 
     /* 强制一字节对齐的数据帧 */
@@ -151,7 +152,7 @@ namespace communication{
          * @param size  待发送字节数
          * @note 时机/用法：用户需继承此 Communication 类，重写并在内部实现 `HAL_UART_Transmit_DMA(huart, data, size);` 等平台相关底层操作。
          */
-        virtual void Comm_TxUseTxDMA(UART_HandleTypeDef * huart, uint8_t* data, uint16_t size)=0;
+        virtual HAL_StatusTypeDef Comm_TxUseTxDMA(UART_HandleTypeDef * huart, uint8_t* data, uint16_t size)=0;
 
         /**
          * @brief 获取接收到的业务数据
@@ -194,6 +195,22 @@ namespace communication{
                 sum += recv_command_cnts[i];
             }
             return static_cast<uint8_t>(sum);
+        }
+
+        uint32_t GetRecvJoystickFrameCount() const {
+            return joystick_frame_count;
+        }
+
+        uint16_t GetRxDropCnt() const {
+            return rx_fifo.drop_cnt;
+        }
+
+        uint16_t GetTxDropCnt() const {
+            return tx_fifo.drop_cnt;
+        }
+
+        uint16_t GetTxErrorCnt() const {
+            return tx_error_cnt;
         }
 
         /**
@@ -302,7 +319,9 @@ namespace communication{
         comm_FIFO_t tx_fifo;
 
         volatile uint8_t tx_busy; // 发送忙碌标志
-        
+        volatile uint16_t tx_error_cnt;
+        uint32_t joystick_frame_count;
+
         /* 解析出来/待发送的业务数据 */
         uint16_t send_xyz[3]; 
         uint8_t send_mode;

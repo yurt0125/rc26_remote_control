@@ -52,6 +52,7 @@ typedef struct{
     // ---- 串口屏命令帧 ----
     uint8_t recv_command_command;
     uint8_t recv_command_cnt;
+    uint8_t link_lost;
 
 }RC10_AirJoy_Data_S;
 
@@ -75,6 +76,7 @@ public:
     const KFS_DATA_S& GetKFSData() const { return kfs_data; }
 
     void update_airjoy_data(RC10_AirJoy_Data_S * data);
+    bool is_link_lost() const { return link_lost; }
 
     void send_robot_pos(float x, float y, float yaw);
 
@@ -129,7 +131,7 @@ public:
 
 
 protected:
-    virtual void Comm_TxUseTxDMA(UART_HandleTypeDef* huart, uint8_t* data, uint16_t size) override;
+    virtual HAL_StatusTypeDef Comm_TxUseTxDMA(UART_HandleTypeDef* huart, uint8_t* data, uint16_t size) override;
     void EXTI_Prosess();        //  protectedֻ All_EXTI_Prosess
     static void RxCallback(uint8_t* buf, uint16_t len);
 
@@ -146,6 +148,9 @@ private:
     GPIO_TypeDef* lora_aux_port;
     uint16_t lora_aux_pin;
     uint32_t timer_tick_count;
+    uint32_t last_joystick_rx_tick;
+    uint32_t last_joystick_frame_count;
+    bool link_lost;
     
     uint8_t tx_ring_buffer[RING_BUF_SIZE];
     uint8_t rx_ring_buffer[RING_BUF_SIZE];

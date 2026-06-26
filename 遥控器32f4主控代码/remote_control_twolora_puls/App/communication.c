@@ -7,6 +7,20 @@
 
 CommContext g_Comm = {0};
 
+static uint32_t Comm_EnterCritical(void)
+{
+    uint32_t primask = __get_PRIMASK();
+    __disable_irq();
+    return primask;
+}
+
+static void Comm_ExitCritical(uint32_t primask)
+{
+    if (primask == 0U) {
+        __enable_irq();
+    }
+}
+
 /* ================= 环形缓冲区 (FIFO) 操作 ================= */
 // 数据存入尾部 (tail)
 static void FIFO_Push(comm_FIFO_t* fifo, uint8_t data) {
@@ -60,6 +74,17 @@ uint8_t crc8(const uint8_t *data, uint8_t len) {
     return crc;
 }
 
+static HAL_StatusTypeDef Comm_StartRxDma(void)
+{
+    HAL_StatusTypeDef status = HAL_UARTEx_ReceiveToIdle_DMA(g_Comm.rxhuart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
+    if (status == HAL_OK && g_Comm.rxhuart->hdmarx != NULL) {
+        __HAL_DMA_DISABLE_IT(g_Comm.rxhuart->hdmarx, DMA_IT_HT);
+    } else if (status != HAL_OK) {
+        g_Comm.rx_error_cnt++;
+    }
+    return status;
+}
+
 void Communication_Task_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rxhuart)
 {
     g_Comm.txhuart = txhuart;
@@ -67,6 +92,8 @@ void Communication_Task_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rx
     g_Comm.tx_busy = 0;
     g_Comm.rx_fifo.drop_cnt = 0;
     g_Comm.tx_fifo.drop_cnt = 0;
+    g_Comm.tx_error_cnt = 0;
+    g_Comm.rx_error_cnt = 0;
     
     // 初始化一些摇杆测试数据
     g_Comm.send_joystick[0] = 0x3412;
@@ -82,8 +109,7 @@ void Communication_Task_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rx
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
     
     // 挂载 DMA 接收空闲中断至 DMA 专用连续缓冲区
-    HAL_UARTEx_ReceiveToIdle_DMA(g_Comm.rxhuart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
-    __HAL_DMA_DISABLE_IT(g_Comm.rxhuart->hdmarx, DMA_IT_HT);
+    Comm_StartRxDma();
 }
 
 void Communication_Task_Loop(void)
@@ -181,11 +207,11 @@ void Comm_Timer_Callback_Wrapper(void)
         frame.tail = 0xDE;
 
         uint8_t* ptr = (uint8_t*)&frame;
-        __disable_irq();
+        uint32_t primask = Comm_EnterCritical();
         for (int i = 0; i < sizeof(JoystickFrame_t); i++) {
             FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
         }
-        __enable_irq();
+        Comm_ExitCritical(primask);
             
         // 如果底部DMA且模块空闲（AUX为高电平），且队列里有东西，则通知任务立即发送
         if (g_Comm.tx_busy == 0 && FIFO_Count(&g_Comm.tx_fifo) > 0) {
@@ -210,11 +236,11 @@ void Communication_SendData(const uint8_t* data, uint16_t len)
 {
     if (data == NULL || len == 0) return;
 
-    __disable_irq(); 
+    uint32_t primask = Comm_EnterCritical();
     for (uint16_t i = 0; i < len; i++) {
         FIFO_Push(&g_Comm.tx_fifo, data[i]);
     }
-    __enable_irq();
+    Comm_ExitCritical(primask);
 
     if (g_Comm.tx_busy == 0 && FIFO_Count(&g_Comm.tx_fifo) > 0) {
         if(HAL_GPIO_ReadPin(TXSX1281_AUX_GPIO_Port, TXSX1281_AUX_Pin) == GPIO_PIN_SET)
@@ -254,13 +280,13 @@ void Communication_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load
     frame.tail      = 0xDE;
 
     uint8_t* ptr = (uint8_t*)&frame;
-    __disable_irq();
+    uint32_t primask = Comm_EnterCritical();
     for (int repeat = 0; repeat < 3; repeat++) {
         for (int i = 0; i < sizeof(CommSettingFrame_t); i++) {
             FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
         }
     }
-    __enable_irq();
+    Comm_ExitCritical(primask);
 
     // 如果底部DMA空闲（AUX为高电平），且队列里有东西，则通知发送任务
     if (g_Comm.tx_busy == 0 && FIFO_Count(&g_Comm.tx_fifo) > 0) {
@@ -291,13 +317,13 @@ void Communication_SendCommandFrame(uint8_t command, uint8_t load1, uint8_t load
     frame.tail      = 0xDE;
 
     uint8_t* ptr = (uint8_t*)&frame;
-    __disable_irq();
+    uint32_t primask = Comm_EnterCritical();
     for (int repeat = 0; repeat < 3; repeat++) {
         for (int i = 0; i < sizeof(CommCommandFrame_t); i++) {
             FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
         }
     }
-    __enable_irq();
+    Comm_ExitCritical(primask);
 
     // 如果底部DMA空闲（AUX为高电平），且队列里有东西，则通知发送任务
     if (g_Comm.tx_busy == 0 && FIFO_Count(&g_Comm.tx_fifo) > 0) {
@@ -320,7 +346,7 @@ void TxBufferToDMA(UART_HandleTypeDef *txhuart)
     if (txhuart != g_Comm.txhuart) return;
 
     // 关中断：防止 DMA 完成 ISR 或 AUX EXTI 与任务并发操作 FIFO
-    __disable_irq();
+    uint32_t primask = Comm_EnterCritical();
 
     uint16_t count = FIFO_Count(&g_Comm.tx_fifo);
     if (count > 0) {
@@ -331,13 +357,22 @@ void TxBufferToDMA(UART_HandleTypeDef *txhuart)
         }
 
         g_Comm.tx_busy = 1;
-        HAL_UART_Transmit_DMA(g_Comm.txhuart, g_Comm.dma_tx_buf, count);
-        tx_cnt++;
     } else {
         g_Comm.tx_busy = 0;
     }
 
-    __enable_irq();
+    Comm_ExitCritical(primask);
+
+    if (count > 0) {
+        if (HAL_UART_Transmit_DMA(g_Comm.txhuart, g_Comm.dma_tx_buf, count) == HAL_OK) {
+            tx_cnt++;
+        } else {
+            uint32_t fail_primask = Comm_EnterCritical();
+            g_Comm.tx_busy = 0;
+            g_Comm.tx_error_cnt++;
+            Comm_ExitCritical(fail_primask);
+        }
+    }
 }
 
 void Comm_UartRx_Callback_Wrapper(UART_HandleTypeDef *rxhuart, uint16_t size)
@@ -349,8 +384,7 @@ void Comm_UartRx_Callback_Wrapper(UART_HandleTypeDef *rxhuart, uint16_t size)
         }
         
         // 立即开启下一次 DMA 接收，防止漏包
-        HAL_UARTEx_ReceiveToIdle_DMA(g_Comm.rxhuart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
-        __HAL_DMA_DISABLE_IT(g_Comm.rxhuart->hdmarx, DMA_IT_HT);
+        Comm_StartRxDma();
     }
 }
 
@@ -360,7 +394,7 @@ void Comm_UartError_Callback_Wrapper(UART_HandleTypeDef *errorhuart)
 {
     if (g_Comm.rxhuart == errorhuart) {
         // 如果断线或者产生溢出错误，需解挂并重启接收以自我恢复
-        HAL_UARTEx_ReceiveToIdle_DMA(g_Comm.rxhuart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
+        Comm_StartRxDma();
     }
     else if (g_Comm.txhuart == errorhuart)
     {
