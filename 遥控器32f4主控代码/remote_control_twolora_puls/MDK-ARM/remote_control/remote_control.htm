@@ -3,7 +3,7 @@
 <title>Static Call Graph - [remote_control\remote_control.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image remote_control\remote_control.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Tue Jun 23 13:24:46 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Thu Jun 25 20:11:29 2026
 <BR><P>
 <H3>Maximum Stack Usage =        184 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1155,10 +1155,11 @@ Global Symbols
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_DMA_Abort
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_Task_Loop
+<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_UartError_Callback_Wrapper
 </UL>
 
 <P><STRONG><a name="[cb]"></a>HAL_UART_ErrorCallback</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, main.o(.text.HAL_UART_ErrorCallback))
-<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = HAL_UART_ErrorCallback &rArr; HMI_UartError_Callback_Wrapper &rArr; HAL_UARTEx_ReceiveToIdle_DMA &rArr; HAL_DMA_Start_IT
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = HAL_UART_ErrorCallback &rArr; HMI_UartError_Callback_Wrapper &rArr; HAL_UARTEx_ReceiveToIdle_DMA &rArr; HAL_DMA_Start_IT
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_UartError_Callback_Wrapper
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Comm_UartError_Callback_Wrapper
@@ -1288,10 +1289,11 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Display_task
 </UL>
 
-<P><STRONG><a name="[cc]"></a>HMI_UartError_Callback_Wrapper</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, tjc_huart_hmi.o(.text.HMI_UartError_Callback_Wrapper))
-<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = HMI_UartError_Callback_Wrapper &rArr; HAL_UARTEx_ReceiveToIdle_DMA &rArr; HAL_DMA_Start_IT
+<P><STRONG><a name="[cc]"></a>HMI_UartError_Callback_Wrapper</STRONG> (Thumb, 44 bytes, Stack size 8 bytes, tjc_huart_hmi.o(.text.HMI_UartError_Callback_Wrapper))
+<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = HMI_UartError_Callback_Wrapper &rArr; HAL_UARTEx_ReceiveToIdle_DMA &rArr; HAL_DMA_Start_IT
 </UL>
-<BR>[Calls]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UARTEx_ReceiveToIdle_DMA
+<BR>[Calls]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_AbortTransmit
+<LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UARTEx_ReceiveToIdle_DMA
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_ErrorCallback
 </UL>
@@ -2066,7 +2068,7 @@ Local Symbols
 <BR>[Address Reference Count : 1]<UL><LI> stm32f4xx_hal_uart.o(.text.HAL_UART_Transmit_DMA)
 </UL>
 <P><STRONG><a name="[62]"></a>UART_DMAError</STRONG> (Thumb, 380 bytes, Stack size 0 bytes, stm32f4xx_hal_uart.o(.text.UART_DMAError))
-<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = UART_DMAError &rArr; HAL_UART_ErrorCallback &rArr; HMI_UartError_Callback_Wrapper &rArr; HAL_UARTEx_ReceiveToIdle_DMA &rArr; HAL_DMA_Start_IT
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = UART_DMAError &rArr; HAL_UART_ErrorCallback &rArr; HMI_UartError_Callback_Wrapper &rArr; HAL_UARTEx_ReceiveToIdle_DMA &rArr; HAL_DMA_Start_IT
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_ErrorCallback
 </UL>
@@ -2099,7 +2101,7 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[63]"></a>UART_DMAAbortOnError</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_uart.o(.text.UART_DMAAbortOnError))
-<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = UART_DMAAbortOnError &rArr; HAL_UART_ErrorCallback &rArr; HMI_UartError_Callback_Wrapper &rArr; HAL_UARTEx_ReceiveToIdle_DMA &rArr; HAL_DMA_Start_IT
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = UART_DMAAbortOnError &rArr; HAL_UART_ErrorCallback &rArr; HMI_UartError_Callback_Wrapper &rArr; HAL_UARTEx_ReceiveToIdle_DMA &rArr; HAL_DMA_Start_IT
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_ErrorCallback
 </UL>
