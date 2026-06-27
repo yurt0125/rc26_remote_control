@@ -12,6 +12,7 @@ static volatile uint8_t g_comm_initialized = 0;
 volatile uint16_t g_comm_rx_drop_cnt = 0;
 volatile uint16_t g_comm_tx_drop_cnt = 0;
 volatile uint16_t g_comm_tx_error_cnt = 0;
+volatile uint16_t g_comm_tx_timeout_recovery_cnt = 0;
 volatile uint16_t g_comm_rx_error_cnt = 0;
 volatile uint16_t g_comm_rx_crc_error_cnt = 0;
 
@@ -59,6 +60,7 @@ static void Communication_UpdateCounterSnapshot(void)
     g_comm_rx_drop_cnt      = Communication_GetRxDropCnt();
     g_comm_tx_drop_cnt      = Communication_GetTxDropCnt();
     g_comm_tx_error_cnt     = Communication_GetTxErrorCnt();
+    g_comm_tx_timeout_recovery_cnt = Communication_GetTxTimeoutRecoveryCnt();
     g_comm_rx_error_cnt     = Communication_GetRxErrorCnt();
     g_comm_rx_crc_error_cnt = Communication_GetRxCrcErrorCnt();
 }
@@ -129,6 +131,8 @@ void Communication_Task_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rx
     g_Comm.txhuart = txhuart;
     g_Comm.rxhuart = rxhuart;
     g_Comm.tx_busy = 0;
+    g_Comm.tx_busy_start_tick = 0;
+    g_Comm.tx_timeout_recovery_cnt = 0;
     g_Comm.rx_fifo.head = 0;
     g_Comm.rx_fifo.tail = 0;
     g_Comm.tx_fifo.head = 0;
@@ -160,6 +164,26 @@ void Communication_Task_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rx
 
 void Communication_Task_Loop(void)
 {
+    if (g_Comm.tx_busy != 0U &&
+        (HAL_GetTick() - g_Comm.tx_busy_start_tick) >= COMM_TX_BUSY_TIMEOUT_MS) {
+        uint8_t should_retry;
+
+        (void)HAL_UART_AbortTransmit(g_Comm.txhuart);
+
+        uint32_t primask = Comm_EnterCritical();
+        g_Comm.tx_busy = 0U;
+        g_Comm.tx_busy_start_tick = 0U;
+        g_Comm.tx_timeout_recovery_cnt++;
+        should_retry = (FIFO_Count(&g_Comm.tx_fifo) > 0U) ? 1U : 0U;
+        Comm_ExitCritical(primask);
+        Communication_UpdateCounterSnapshot();
+
+        if (should_retry != 0U &&
+            HAL_GPIO_ReadPin(TXSX1281_AUX_GPIO_Port, TXSX1281_AUX_Pin) == GPIO_PIN_SET) {
+            TxBufferToDMA(g_Comm.txhuart);
+        }
+    }
+
 #if COMM_TEST_BLOCK_RX_PARSE
     // 测试期间停止消费 RX FIFO，但仍刷新全局快照，便于观察 FIFO 溢出计数。
     Communication_UpdateCounterSnapshot();
@@ -427,6 +451,11 @@ uint16_t Communication_GetTxErrorCnt(void)
     return g_Comm.tx_error_cnt;
 }
 
+uint16_t Communication_GetTxTimeoutRecoveryCnt(void)
+{
+    return g_Comm.tx_timeout_recovery_cnt;
+}
+
 uint16_t Communication_GetRxErrorCnt(void)
 {
     return g_Comm.rx_error_cnt;
@@ -454,8 +483,10 @@ void TxBufferToDMA(UART_HandleTypeDef *txhuart)
         }
 
         g_Comm.tx_busy = 1;
+        g_Comm.tx_busy_start_tick = HAL_GetTick();
     } else {
         g_Comm.tx_busy = 0;
+        g_Comm.tx_busy_start_tick = 0U;
     }
 
     Comm_ExitCritical(primask);
@@ -478,6 +509,7 @@ void TxBufferToDMA(UART_HandleTypeDef *txhuart)
         } else {
             uint32_t fail_primask = Comm_EnterCritical();
             g_Comm.tx_busy = 0;
+            g_Comm.tx_busy_start_tick = 0U;
             g_Comm.tx_error_cnt++;
             Comm_ExitCritical(fail_primask);
             Communication_UpdateCounterSnapshot();
@@ -510,6 +542,7 @@ void Comm_UartError_Callback_Wrapper(UART_HandleTypeDef *errorhuart)
     {
         // 发送过程中出错，直接标记发送空闲，等待下次发送触发
         g_Comm.tx_busy = 0;
+        g_Comm.tx_busy_start_tick = 0U;
     }
 }
 

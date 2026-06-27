@@ -260,6 +260,7 @@ void Lora_communication::Task_Process() {
     airjoy_data.rx_drop_cnt      = GetRxDropCnt();
     airjoy_data.tx_drop_cnt      = GetTxDropCnt();
     airjoy_data.tx_error_cnt     = GetTxErrorCnt();
+    airjoy_data.tx_timeout_recovery_cnt = GetTxTimeoutRecoveryCnt();
     airjoy_data.rx_crc_error_cnt = GetRxCrcErrorCnt();
 }
 
@@ -349,6 +350,7 @@ void Lora_communication::update_airjoy_data(RC10_AirJoy_Data_S * data)
     data->rx_drop_cnt      = airjoy_data.rx_drop_cnt;
     data->tx_drop_cnt      = airjoy_data.tx_drop_cnt;
     data->tx_error_cnt     = airjoy_data.tx_error_cnt;
+    data->tx_timeout_recovery_cnt = airjoy_data.tx_timeout_recovery_cnt;
     data->rx_crc_error_cnt = airjoy_data.rx_crc_error_cnt;
 
 }
