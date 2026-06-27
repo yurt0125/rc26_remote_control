@@ -32,6 +32,15 @@ static inline void CleanDCacheRange(uint8_t* addr, uint16_t len)
     uintptr_t end = (reinterpret_cast<uintptr_t>(addr) + len + 31U) & ~static_cast<uintptr_t>(31U);
     SCB_CleanDCache_by_Addr(reinterpret_cast<uint32_t*>(start), static_cast<int32_t>(end - start));
 }
+
+static inline uint8_t MaybeCorruptTxCrc(uint8_t crc)
+{
+#if COMM_TEST_CORRUPT_TX_CRC
+    return static_cast<uint8_t>(crc ^ 0xFFU);
+#else
+    return crc;
+#endif
+}
 }
 
 namespace communication{
@@ -62,6 +71,7 @@ namespace communication{
 
         this->tx_busy = 0; // 初始状态为非忙碌
         this->tx_error_cnt = 0;
+        this->rx_crc_error_cnt = 0;
         this->joystick_frame_count = 0;
 
         send_xyz[0]=0;
@@ -169,6 +179,9 @@ namespace communication{
 
     bool Communication::Comm_Task_Loop(void)
     {
+#if COMM_TEST_BLOCK_RX_PARSE
+        return false;
+#endif
         bool data_updated = false;
         uint32_t primask = EnterCritical();
         // 不断处理 RX FIFO 里面收到的数据，直到剩余数据不足最小帧长度
@@ -195,7 +208,9 @@ namespace communication{
             JoystickFrame_t* pFrame = (JoystickFrame_t*)frame_buf;
             
             // 验证帧尾是否对应 0xDE
-            if (pFrame->tail == 0xDE && pFrame->crc == crc8(frame_buf+2, sizeof(JoystickFrame_t) - 4)) {
+            bool tail_ok = (pFrame->tail == 0xDE);
+            bool crc_ok = (pFrame->crc == crc8(frame_buf+2, sizeof(JoystickFrame_t) - 4));
+            if (tail_ok && crc_ok) {
                 // 提取解包好的摇杆数据 (均为 16位 uint16_t 数据)
                 rec_joystick[0] = pFrame->ch1;
                 rec_joystick[1] = pFrame->ch2;
@@ -210,6 +225,9 @@ namespace communication{
                 joystick_frame_count++;
                 data_updated = true; // 标记数据已更新
             } else {
+                if (tail_ok && !crc_ok) {
+                    rx_crc_error_cnt++;
+                }
                 // 坏帧，跳过头部第一个错误字节，继续往后寻找
                 rx_fifo.head = (rx_fifo.head + 1) % RING_BUF_SIZE;
             }
@@ -228,7 +246,9 @@ namespace communication{
             SettingFrame_t* pFrame = (SettingFrame_t*)frame_buf;
             
             // 验证帧尾 0xDE 与 CRC（CRC 覆盖 command + load1 + load2 共 3 字节）
-            if (pFrame->tail == 0xDE && pFrame->crc == crc8(frame_buf+2, sizeof(SettingFrame_t) - 4)) {
+            bool tail_ok = (pFrame->tail == 0xDE);
+            bool crc_ok = (pFrame->crc == crc8(frame_buf+2, sizeof(SettingFrame_t) - 4));
+            if (tail_ok && crc_ok) {
                 // 提取解包好的设置数据
                 switch(pFrame->command) {
                     case 0x04: // KFS1位置设置
@@ -270,6 +290,9 @@ namespace communication{
                 rx_cnt++;
                 data_updated = true; // 标记数据已更新
             } else {
+                if (tail_ok && !crc_ok) {
+                    rx_crc_error_cnt++;
+                }
                 // 坏帧，跳过头部第一个错误字节，继续往后寻找
                 rx_fifo.head = (rx_fifo.head + 1) % RING_BUF_SIZE;
             }
@@ -286,18 +309,24 @@ namespace communication{
 
             CommandFrame_t* pCmdFrame = (CommandFrame_t*)frame_buf;
 
-            if (pCmdFrame->tail == 0xDE && pCmdFrame->crc == crc8(frame_buf+2, sizeof(CommandFrame_t) - 4)) {
+            bool tail_ok = (pCmdFrame->tail == 0xDE);
+            bool crc_ok = (pCmdFrame->crc == crc8(frame_buf+2, sizeof(CommandFrame_t) - 4));
+            if (tail_ok && crc_ok) {
                 rec_command_command = pCmdFrame->command;
                 rec_command_load1 = pCmdFrame->load1;
                 rec_command_load2 = pCmdFrame->load2;
+                // load1 即遥控器端该命令的累计发送次数，直接同步，避免三帧重复导致重复计数
                 if (pCmdFrame->command < 9U) {
-                    recv_command_cnts[pCmdFrame->command]++;
+                    recv_command_cnts[pCmdFrame->command] = pCmdFrame->load1;
                 }
 
                 rx_fifo.head = p;
                 rx_cnt++;
                 data_updated = true;
             } else {
+                if (tail_ok && !crc_ok) {
+                    rx_crc_error_cnt++;
+                }
                 rx_fifo.head = (rx_fifo.head + 1) % RING_BUF_SIZE;
             }
         }
@@ -344,7 +373,7 @@ namespace communication{
             frame.KFS_want_place2 = send_KFS_want_place2;
             frame.spear = send_spear;
             frame.KFS_Keepplace = send_KFS_Keepplace;
-            frame.crc = crc8((uint8_t*)&frame + 2, sizeof(XYZFrame_t) - 4);
+            frame.crc = MaybeCorruptTxCrc(crc8((uint8_t*)&frame + 2, sizeof(XYZFrame_t) - 4));
             frame.tail = 0xED;
 
             uint8_t* ptr = (uint8_t*)&frame;

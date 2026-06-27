@@ -7,6 +7,20 @@
 #define RING_BUF_SIZE 256
 #define DMA_BUF_SIZE  64
 
+//测试通过 本机rx_drop_cnt累加
+#ifndef COMM_TEST_BLOCK_RX_PARSE
+// 置 1：停止消费 RX FIFO，但 DMA 接收回调仍继续写入。
+// 现象：遥控数据停止更新；FIFO 填满后 rx_fifo.drop_cnt 持续增加。
+#define COMM_TEST_BLOCK_RX_PARSE 0
+#endif
+
+//测试通过，遥控器rx_crc_error_cnt累加
+#ifndef COMM_TEST_CORRUPT_TX_CRC
+// 置 1：将所有发送 XYZ 帧的正确 CRC 按位取反。
+// 现象：遥控器拒绝这些帧，遥控器的 rx_crc_error_cnt 持续增加。
+#define COMM_TEST_CORRUPT_TX_CRC 0
+#endif
+
 #ifdef __cplusplus
 
 
@@ -213,6 +227,10 @@ namespace communication{
             return tx_error_cnt;
         }
 
+        uint16_t GetRxCrcErrorCnt() const {
+            return rx_crc_error_cnt;
+        }
+
         /**
          * @brief [已废弃] 设置待发送的KFS相关数据，已合并至 Comm_SendAxisDataToTxBuffer 参数中
          * @deprecated 请直接在 Comm_SendAxisDataToTxBuffer 调用时传入 KFS 参数，无需单独调用此函数
@@ -320,6 +338,7 @@ namespace communication{
 
         volatile uint8_t tx_busy; // 发送忙碌标志
         volatile uint16_t tx_error_cnt;
+        volatile uint16_t rx_crc_error_cnt;
         uint32_t joystick_frame_count;
 
         /* 解析出来/待发送的业务数据 */

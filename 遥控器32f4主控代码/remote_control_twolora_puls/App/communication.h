@@ -13,6 +13,34 @@
 #define RING_BUF_SIZE 256
 #define DMA_BUF_SIZE  64
 
+//测试通过 本机rx_drop_cnt累加
+#ifndef COMM_TEST_BLOCK_RX_PARSE
+// 置 1：停止消费 RX FIFO，但 DMA 接收回调仍继续写入。
+// 现象：接收数据停止更新；FIFO 填满后 rx_fifo.drop_cnt 持续增加。
+#define COMM_TEST_BLOCK_RX_PARSE 0
+#endif
+
+//测试通过 接收机rx_crc_error_cnt累加
+#ifndef COMM_TEST_CORRUPT_TX_CRC
+// 置 1：将所有发送帧的正确 CRC 按位取反，持续发送 CRC 错误帧。
+// 现象：接收机拒绝这些帧，接收机的 rx_crc_error_cnt 持续增加。
+#define COMM_TEST_CORRUPT_TX_CRC 0
+#endif
+
+//测试通过 本机tx_error_cnt=1
+#ifndef COMM_TEST_FORCE_TX_DMA_FAIL_ONCE
+// 置 1：第一次启动 TX DMA 时模拟返回 HAL_BUSY，之后恢复真实 HAL 调用。
+// 现象：tx_error_cnt 增加 1，tx_busy 被清零，后续发送仍可继续。
+#define COMM_TEST_FORCE_TX_DMA_FAIL_ONCE 0
+#endif
+
+//测试通过 本机rx_error_cnt=1
+#ifndef COMM_TEST_FORCE_RX_DMA_START_FAIL_ONCE
+// 置 1：第一次启动 RX DMA 时模拟返回 HAL_BUSY，之后恢复真实 HAL 调用。
+// 现象：rx_error_cnt 增加 1；需要再次调用 RX DMA 启动函数才能开始接收。
+#define COMM_TEST_FORCE_RX_DMA_START_FAIL_ONCE 0
+#endif
+
 /*时序图
 AUX低电平代表busy，高电平代码空闲
 
@@ -112,6 +140,7 @@ typedef struct {
     volatile uint8_t tx_busy; // 发送忙碌标志
     volatile uint16_t tx_error_cnt;
     volatile uint16_t rx_error_cnt;
+    volatile uint16_t rx_crc_error_cnt;
 
     /* 解析出来/待发送的业务数据 */
     uint16_t send_joystick[4]; 
@@ -153,6 +182,19 @@ void Communication_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load
 void Communication_SendCommandFrame(uint8_t command, uint8_t load1, uint8_t load2);
 
 //真正通过DMA发送数据的函数，任务调用
+uint16_t Communication_GetRxDropCnt(void);
+uint16_t Communication_GetTxDropCnt(void);
+uint16_t Communication_GetTxErrorCnt(void);
+uint16_t Communication_GetRxErrorCnt(void);
+uint16_t Communication_GetRxCrcErrorCnt(void);
+
+// 通信统计快照全局变量，由 Communication_Task_Loop() 周期性更新
+extern volatile uint16_t g_comm_rx_drop_cnt;
+extern volatile uint16_t g_comm_tx_drop_cnt;
+extern volatile uint16_t g_comm_tx_error_cnt;
+extern volatile uint16_t g_comm_rx_error_cnt;
+extern volatile uint16_t g_comm_rx_crc_error_cnt;
+
 void TxBufferToDMA(UART_HandleTypeDef *txhuart);
 
 // HAL 中断相关的回调接口

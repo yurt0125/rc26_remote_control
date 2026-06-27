@@ -6,6 +6,14 @@
 #include "cmsis_os.h"
 
 CommContext g_Comm = {0};
+static volatile uint8_t g_comm_initialized = 0;
+
+// 通信统计快照全局变量，由 Communication_Task_Loop() 周期性更新
+volatile uint16_t g_comm_rx_drop_cnt = 0;
+volatile uint16_t g_comm_tx_drop_cnt = 0;
+volatile uint16_t g_comm_tx_error_cnt = 0;
+volatile uint16_t g_comm_rx_error_cnt = 0;
+volatile uint16_t g_comm_rx_crc_error_cnt = 0;
 
 static uint32_t Comm_EnterCritical(void)
 {
@@ -46,6 +54,15 @@ static uint16_t FIFO_Count(comm_FIFO_t* fifo) {
 }
 /* ========================================================= */
 
+static void Communication_UpdateCounterSnapshot(void)
+{
+    g_comm_rx_drop_cnt      = Communication_GetRxDropCnt();
+    g_comm_tx_drop_cnt      = Communication_GetTxDropCnt();
+    g_comm_tx_error_cnt     = Communication_GetTxErrorCnt();
+    g_comm_rx_error_cnt     = Communication_GetRxErrorCnt();
+    g_comm_rx_crc_error_cnt = Communication_GetRxCrcErrorCnt();
+}
+
 //0xD5
 static const uint8_t crc8_dvb_table[256] = {
     0x00, 0xD5, 0x7F, 0xAA, 0xFE, 0x2B, 0x81, 0x54, 0x29, 0xFC, 0x56, 0x83, 0xD7, 0x02, 0xA8, 0x7D,
@@ -74,26 +91,54 @@ uint8_t crc8(const uint8_t *data, uint8_t len) {
     return crc;
 }
 
+static uint8_t Comm_MaybeCorruptTxCrc(uint8_t crc)
+{
+#if COMM_TEST_CORRUPT_TX_CRC
+    return (uint8_t)(crc ^ 0xFFU);
+#else
+    return crc;
+#endif
+}
+
 static HAL_StatusTypeDef Comm_StartRxDma(void)
 {
+#if COMM_TEST_FORCE_RX_DMA_START_FAIL_ONCE
+    static uint8_t force_rx_dma_fail_once = 1U;
+    HAL_StatusTypeDef status;
+    if (force_rx_dma_fail_once) {
+        force_rx_dma_fail_once = 0U;
+        status = HAL_BUSY;
+    } else {
+        status = HAL_UARTEx_ReceiveToIdle_DMA(g_Comm.rxhuart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
+    }
+#else
     HAL_StatusTypeDef status = HAL_UARTEx_ReceiveToIdle_DMA(g_Comm.rxhuart, g_Comm.dma_rx_buf, DMA_BUF_SIZE);
+#endif
     if (status == HAL_OK && g_Comm.rxhuart->hdmarx != NULL) {
         __HAL_DMA_DISABLE_IT(g_Comm.rxhuart->hdmarx, DMA_IT_HT);
     } else if (status != HAL_OK) {
         g_Comm.rx_error_cnt++;
+        Communication_UpdateCounterSnapshot();
     }
     return status;
 }
 
 void Communication_Task_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rxhuart)
 {
+    g_comm_initialized = 0;
     g_Comm.txhuart = txhuart;
     g_Comm.rxhuart = rxhuart;
     g_Comm.tx_busy = 0;
+    g_Comm.rx_fifo.head = 0;
+    g_Comm.rx_fifo.tail = 0;
+    g_Comm.tx_fifo.head = 0;
+    g_Comm.tx_fifo.tail = 0;
     g_Comm.rx_fifo.drop_cnt = 0;
     g_Comm.tx_fifo.drop_cnt = 0;
     g_Comm.tx_error_cnt = 0;
     g_Comm.rx_error_cnt = 0;
+    g_Comm.rx_crc_error_cnt = 0;
+    Communication_UpdateCounterSnapshot();
     
     // 初始化一些摇杆测试数据
     g_Comm.send_joystick[0] = 0x3412;
@@ -110,10 +155,16 @@ void Communication_Task_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rx
     
     // 挂载 DMA 接收空闲中断至 DMA 专用连续缓冲区
     Comm_StartRxDma();
+    g_comm_initialized = 1;
 }
 
 void Communication_Task_Loop(void)
 {
+#if COMM_TEST_BLOCK_RX_PARSE
+    // 测试期间停止消费 RX FIFO，但仍刷新全局快照，便于观察 FIFO 溢出计数。
+    Communication_UpdateCounterSnapshot();
+    return;
+#endif
     // 不断处理 RX FIFO 里面收到的数据，直到剩余数据不足一帧长度
     while (FIFO_Count(&g_Comm.rx_fifo) >= sizeof(XYZFrame_t)) {
         
@@ -135,7 +186,10 @@ void Communication_Task_Loop(void)
             XYZFrame_t* pFrame = (XYZFrame_t*)frame_buf;
             
             // 验证帧尾是否对应 0xED
-            if (pFrame->tail == 0xED && pFrame->crc == crc8(frame_buf+2, sizeof(XYZFrame_t) - 4)) {
+            uint8_t expected_crc = crc8(frame_buf+2, sizeof(XYZFrame_t) - 4);
+            uint8_t tail_ok = (pFrame->tail == 0xED);
+            uint8_t crc_ok = (pFrame->crc == expected_crc);
+            if (tail_ok && crc_ok) {
                 // 提取解包好的 XYZ 数据 (均为 16位 uint16_t 数据)
                 g_Comm.recv_x = pFrame->x;
                 g_Comm.recv_y = pFrame->y;
@@ -159,6 +213,9 @@ void Communication_Task_Loop(void)
                                   g_Comm.recv_KFS_want_place1, g_Comm.recv_KFS_want_place2,
                                   g_Comm.recv_spear, g_Comm.recv_KFS_Keepplace);
             } else {
+                if (tail_ok && !crc_ok) {
+                    g_Comm.rx_crc_error_cnt++;
+                }
                 // 坏帧，跳过头部第一个错误字节，继续往后寻找
                 g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
             }
@@ -167,10 +224,19 @@ void Communication_Task_Loop(void)
             g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
         }
     }
+
+    // 周期性快照通信统计信息至全局变量
+    g_comm_rx_drop_cnt      = Communication_GetRxDropCnt();
+    g_comm_tx_drop_cnt      = Communication_GetTxDropCnt();
+    g_comm_tx_error_cnt     = Communication_GetTxErrorCnt();
+    g_comm_rx_error_cnt     = Communication_GetRxErrorCnt();
+    g_comm_rx_crc_error_cnt = Communication_GetRxCrcErrorCnt();
 }
 
 void Comm_Timer_Callback_Wrapper(void)
 {
+    if (!g_comm_initialized) return;
+
     if(g_Comm.tx_busy==0)
     {
         Communication_SetJoystickAndKeyData(joystick_Buf[0],joystick_Buf[1],joystick_Buf[2],joystick_Buf[3],tx_button_state, hmi_state);
@@ -203,7 +269,7 @@ void Comm_Timer_Callback_Wrapper(void)
         frame.ch4 = g_Comm.send_joystick[3];
         frame.key = g_Comm.send_key;
         frame.page = g_Comm.send_page;
-        frame.crc = crc8((uint8_t*)&frame + 2, sizeof(JoystickFrame_t) - 4);
+        frame.crc = Comm_MaybeCorruptTxCrc(crc8((uint8_t*)&frame + 2, sizeof(JoystickFrame_t) - 4));
         frame.tail = 0xDE;
 
         uint8_t* ptr = (uint8_t*)&frame;
@@ -235,6 +301,7 @@ void Comm_Timer_Callback_Wrapper(void)
 void Communication_SendData(const uint8_t* data, uint16_t len)
 {
     if (data == NULL || len == 0) return;
+    if (!g_comm_initialized) return;
 
     uint32_t primask = Comm_EnterCritical();
     for (uint16_t i = 0; i < len; i++) {
@@ -270,13 +337,15 @@ void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch
 // 发送 SettingFrame (0xAA 0x66) — 发送KFS位置等设置参数
 void Communication_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load2)
 {
+    if (!g_comm_initialized) return;
+
     CommSettingFrame_t frame;
     frame.header[0] = 0xAA;
     frame.header[1] = 0x66;
     frame.command   = command;
     frame.load1     = load1;
     frame.load2     = load2;
-    frame.crc       = crc8((uint8_t*)&frame + 2, sizeof(CommSettingFrame_t) - 4);
+    frame.crc       = Comm_MaybeCorruptTxCrc(crc8((uint8_t*)&frame + 2, sizeof(CommSettingFrame_t) - 4));
     frame.tail      = 0xDE;
 
     uint8_t* ptr = (uint8_t*)&frame;
@@ -307,13 +376,15 @@ void Communication_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load
 // 发送 CommandFrame (0xAA 0x77) — 转发串口屏命令到机器人
 void Communication_SendCommandFrame(uint8_t command, uint8_t load1, uint8_t load2)
 {
+    if (!g_comm_initialized) return;
+
     CommCommandFrame_t frame;
     frame.header[0] = 0xAA;
     frame.header[1] = 0x77;
     frame.command   = command;
     frame.load1     = load1;
     frame.load2     = load2;
-    frame.crc       = crc8((uint8_t*)&frame + 2, sizeof(CommCommandFrame_t) - 4);
+    frame.crc       = Comm_MaybeCorruptTxCrc(crc8((uint8_t*)&frame + 2, sizeof(CommCommandFrame_t) - 4));
     frame.tail      = 0xDE;
 
     uint8_t* ptr = (uint8_t*)&frame;
@@ -341,8 +412,34 @@ void Communication_SendCommandFrame(uint8_t command, uint8_t load1, uint8_t load
     }
 }
 
+uint16_t Communication_GetRxDropCnt(void)
+{
+    return g_Comm.rx_fifo.drop_cnt;
+}
+
+uint16_t Communication_GetTxDropCnt(void)
+{
+    return g_Comm.tx_fifo.drop_cnt;
+}
+
+uint16_t Communication_GetTxErrorCnt(void)
+{
+    return g_Comm.tx_error_cnt;
+}
+
+uint16_t Communication_GetRxErrorCnt(void)
+{
+    return g_Comm.rx_error_cnt;
+}
+
+uint16_t Communication_GetRxCrcErrorCnt(void)
+{
+    return g_Comm.rx_crc_error_cnt;
+}
+
 void TxBufferToDMA(UART_HandleTypeDef *txhuart)
 {
+    if (!g_comm_initialized) return;
     if (txhuart != g_Comm.txhuart) return;
 
     // 关中断：防止 DMA 完成 ISR 或 AUX EXTI 与任务并发操作 FIFO
@@ -364,13 +461,26 @@ void TxBufferToDMA(UART_HandleTypeDef *txhuart)
     Comm_ExitCritical(primask);
 
     if (count > 0) {
-        if (HAL_UART_Transmit_DMA(g_Comm.txhuart, g_Comm.dma_tx_buf, count) == HAL_OK) {
+#if COMM_TEST_FORCE_TX_DMA_FAIL_ONCE
+        static uint8_t force_tx_dma_fail_once = 1U;
+        HAL_StatusTypeDef status;
+        if (force_tx_dma_fail_once) {
+            force_tx_dma_fail_once = 0U;
+            status = HAL_BUSY;
+        } else {
+            status = HAL_UART_Transmit_DMA(g_Comm.txhuart, g_Comm.dma_tx_buf, count);
+        }
+#else
+        HAL_StatusTypeDef status = HAL_UART_Transmit_DMA(g_Comm.txhuart, g_Comm.dma_tx_buf, count);
+#endif
+        if (status == HAL_OK) {
             tx_cnt++;
         } else {
             uint32_t fail_primask = Comm_EnterCritical();
             g_Comm.tx_busy = 0;
             g_Comm.tx_error_cnt++;
             Comm_ExitCritical(fail_primask);
+            Communication_UpdateCounterSnapshot();
         }
     }
 }
