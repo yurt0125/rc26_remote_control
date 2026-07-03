@@ -18,9 +18,9 @@ uint8_t Ws2812B::spi_buf[WS2812B_AMOUNT * 24 + RESET_BYTES];
 Ws2812B::Ws2812B(SPI_HandleTypeDef* hspi_)
     : task::ManagedTask("Ws2812b", 20, 128, task::TASK_DELAY, 1)
     , hspi(hspi_)
-    , flag(0)
-    , start_time(0)
     , signal_queue(nullptr)
+    , flash_state(FlashState::STEADY)
+    , start_time(0)
 {
     // 初始化颜色缓存
     for (uint8_t i = 0; i < WS2812B_AMOUNT; i++)
@@ -82,7 +82,7 @@ void Ws2812B::Task_Process()
     // 延迟初始化：首次运行时创建队列（此时 RTOS 已启动）
     if (signal_queue == nullptr)
     {
-        signal_queue = xQueueCreate(10, sizeof(Signal));
+        signal_queue = xQueueCreate(10, sizeof(Command));
         if (signal_queue == nullptr)
         {
             Error_Handler();
@@ -93,65 +93,91 @@ void Ws2812B::Task_Process()
         return;
     }
 
-    Signal signal;
+    Command command;
     uint32_t current_time = timer::Timer::Get_TimeStamp();
 
     // 非阻塞接收队列消息
-    if (xQueueReceive(signal_queue, &signal, 0) == pdPASS)
+    if (xQueueReceive(signal_queue, &command, 0) == pdPASS)
     {
-        if (signal == Signal::FLASH_ONCE)
+        switch (command.type)
         {
-            // 闪烁：从常亮状态切换到绿色
-            if (flag == 0)
-            {
-                flag = 1;
-                ApplyColor(Signal::GREEN);
-                start_time = current_time;
-            }
-        }
-        else
-        {
-            // 颜色信号：切换到对应颜色并常亮
-            current_color = signal;
-            flag = 0;
-            ApplyColor(signal);
+        case CommandType::SET_COLOR:
+            current_color = command.color1;
+            flash_state = FlashState::STEADY;
+            ApplyColor(current_color);
+            break;
+
+        case CommandType::FLASH_ONCE:
+            flash_color1 = command.color1;
+            flash_color2 = command.color2;
+            flash_state = FlashState::ONCE_COLOR1_FIRST;
+            ApplyColor(flash_color1);
+            start_time = current_time;
+            break;
+
+        case CommandType::FLASH_CONTINUOUS:
+            flash_color1 = command.color1;
+            flash_color2 = command.color2;
+            flash_state = FlashState::CONTINUOUS_COLOR1;
+            ApplyColor(flash_color1);
+            start_time = current_time;
+            break;
         }
     }
 
-    // 定时状态转移：双闪序列 (绿→原色→绿→原色)
-    switch (flag)
+    // 定时状态转移：单次双闪或持续双色闪烁
+    switch (flash_state)
     {
-    case 1:  // 绿色 → 恢复颜色
+    case FlashState::ONCE_COLOR1_FIRST:
         if (current_time - start_time > TIME_INTERVAL)
         {
-            flag = 2;
+            flash_state = FlashState::ONCE_COLOR2_FIRST;
+            ApplyColor(flash_color2);
+            start_time = current_time;
+        }
+        break;
+
+    case FlashState::ONCE_COLOR2_FIRST:
+        if (current_time - start_time > TIME_INTERVAL)
+        {
+            flash_state = FlashState::ONCE_COLOR1_SECOND;
+            ApplyColor(flash_color1);
+            start_time = current_time;
+        }
+        break;
+
+    case FlashState::ONCE_COLOR1_SECOND:
+        if (current_time - start_time > TIME_INTERVAL)
+        {
+            flash_state = FlashState::ONCE_COLOR2_SECOND;
+            ApplyColor(flash_color2);
+            start_time = current_time;
+        }
+        break;
+
+    case FlashState::ONCE_COLOR2_SECOND:
+        if (current_time - start_time > TIME_INTERVAL)
+        {
+            flash_state = FlashState::STEADY;
             ApplyColor(current_color);
+        }
+        break;
+
+    case FlashState::CONTINUOUS_COLOR1:
+        if (current_time - start_time > TIME_INTERVAL)
+        {
+            flash_state = FlashState::CONTINUOUS_COLOR2;
+            ApplyColor(flash_color2);
             start_time = current_time;
         }
         break;
 
-    case 2:  // 恢复 → 第二次绿色
+    case FlashState::CONTINUOUS_COLOR2:
         if (current_time - start_time > TIME_INTERVAL)
         {
-            flag = 3;
-            ApplyColor(Signal::GREEN);
+            flash_state = FlashState::CONTINUOUS_COLOR1;
+            ApplyColor(flash_color1);
             start_time = current_time;
-        }
-        break;
-
-    case 3:  // 绿色 → 恢复颜色
-        if (current_time - start_time > TIME_INTERVAL)
-        {
-            flag = 4;
-            ApplyColor(current_color);
-            start_time = current_time;
-        }
-        break;
-
-    case 4:  // 恢复 → 常亮
-        if (current_time - start_time > TIME_INTERVAL)
-        {
-            flag = 0;
         }
         break;
 
@@ -199,14 +225,16 @@ void Ws2812B::SetAllColor(uint8_t r, uint8_t g, uint8_t b)
     }
 }
 
-void Ws2812B::ApplyColor(Signal color)
+void Ws2812B::ApplyColor(Color color)
 {
     switch (color)
     {
-    case Signal::RED:   SetAllColor(0xFF, 0x00, 0x00); break;
-    case Signal::GREEN: SetAllColor(0x00, 0xFF, 0x00); break;
-    case Signal::BLUE:  SetAllColor(0x00, 0x00, 0xFF); break;
-    case Signal::WHITE: SetAllColor(0xFF, 0xFF, 0xFF); break;
+    case Color::RED:    SetAllColor((uint8_t)(0.972 * WS2812B_BRIGHTNESS), (uint8_t)(0.709 * WS2812B_BRIGHTNESS), 0x00); break;
+    case Color::GREEN:  SetAllColor(0x00, WS2812B_BRIGHTNESS, 0x00); break;
+    case Color::BLUE:   SetAllColor(0x00, 0x00, WS2812B_BRIGHTNESS); break;
+    case Color::WHITE:  SetAllColor(WS2812B_BRIGHTNESS, WS2812B_BRIGHTNESS, WS2812B_BRIGHTNESS); break;
+    case Color::YELLOW: SetAllColor(WS2812B_BRIGHTNESS, WS2812B_BRIGHTNESS, 0x00); break;
+    case Color::NONE:   LedOff(); break;
     default: break;
     }
 }
@@ -216,42 +244,78 @@ void Ws2812B::LedOff()
     SetAllColor(0x00, 0x00, 0x00);
 }
 
-void Ws2812B::SetRed()
+void Ws2812B::SetColor(Color color)
 {
     if (signal_queue == nullptr) return;
-    Signal signal = Signal::RED;
-    xQueueSend(signal_queue, &signal, 0);
+    Command command = {CommandType::SET_COLOR, color, Color::NONE};
+    xQueueSend(signal_queue, &command, 0);
+}
+
+void Ws2812B::SetRed()
+{
+    SetColor(Color::RED);
 }
 
 void Ws2812B::SetGreen()
 {
-    if (signal_queue == nullptr) return;
-    Signal signal = Signal::GREEN;
-    xQueueSend(signal_queue, &signal, 0);
+    SetColor(Color::GREEN);
 }
 
 void Ws2812B::SetBlue()
 {
-    if (signal_queue == nullptr) return;
-    Signal signal = Signal::BLUE;
-    xQueueSend(signal_queue, &signal, 0);
+    SetColor(Color::BLUE);
 }
 
 void Ws2812B::SetWhite()
 {
-    if (signal_queue == nullptr) return;
-    Signal signal = Signal::WHITE;
-    xQueueSend(signal_queue, &signal, 0);
+    SetColor(Color::WHITE);
 }
 
-void Ws2812B::FlashOnce()
+void Ws2812B::SetYellow()
+{
+    SetColor(Color::YELLOW);
+}
+
+void Ws2812B::SetNone()
+{
+    SetColor(Color::NONE);
+}
+
+void Ws2812B::SendFlashCommand(CommandType type, Color color1, Color color2)
 {
     if (signal_queue == nullptr) return;
-    Signal signal = Signal::FLASH_ONCE;
-    xQueueSend(signal_queue, &signal, 0);
+    Command command = {type, color1, color2};
+    xQueueSend(signal_queue, &command, 0);
+}
+
+void Ws2812B::FlashOnce(Color color1, Color color2)
+{
+    SendFlashCommand(CommandType::FLASH_ONCE, color1, color2);
+}
+
+void Ws2812B::FlashContinuous(Color color1, Color color2)
+{
+    SendFlashCommand(CommandType::FLASH_CONTINUOUS, color1, color2);
 }
 
 } // namespace ws2812
+
+namespace
+{
+ws2812::Color WS2812B_ToCppColor(WS2812B_Color color)
+{
+    switch (color)
+    {
+    case WS2812B_COLOR_RED:    return ws2812::Color::RED;
+    case WS2812B_COLOR_GREEN:  return ws2812::Color::GREEN;
+    case WS2812B_COLOR_BLUE:   return ws2812::Color::BLUE;
+    case WS2812B_COLOR_WHITE:  return ws2812::Color::WHITE;
+    case WS2812B_COLOR_YELLOW: return ws2812::Color::YELLOW;
+    case WS2812B_COLOR_NONE:   return ws2812::Color::NONE;
+    default:                   return ws2812::Color::NONE;
+    }
+}
+}
 
 /*--------------------------------------------------------------------------*/
 // C 兼容接口
@@ -281,12 +345,30 @@ void WS2812B_SetWhite(void)
         ws2812::g_ws2812b_instance->SetWhite();
 }
 
-void WS2812B_FlashOnce(void)
+void WS2812B_SetYellow(void)
 {
     if (ws2812::g_ws2812b_instance != nullptr)
-        ws2812::g_ws2812b_instance->FlashOnce();
+        ws2812::g_ws2812b_instance->SetYellow();
+}
+
+void WS2812B_SetNone(void)
+{
+    if (ws2812::g_ws2812b_instance != nullptr)
+        ws2812::g_ws2812b_instance->SetNone();
+}
+
+void WS2812B_FlashOnce(WS2812B_Color color1, WS2812B_Color color2)
+{
+    if (ws2812::g_ws2812b_instance != nullptr)
+        ws2812::g_ws2812b_instance->FlashOnce(WS2812B_ToCppColor(color1),
+                                              WS2812B_ToCppColor(color2));
+}
+
+void WS2812B_FlashContinuous(WS2812B_Color color1, WS2812B_Color color2)
+{
+    if (ws2812::g_ws2812b_instance != nullptr)
+        ws2812::g_ws2812b_instance->FlashContinuous(WS2812B_ToCppColor(color1),
+                                                    WS2812B_ToCppColor(color2));
 }
 
 } // extern "C"
-
-

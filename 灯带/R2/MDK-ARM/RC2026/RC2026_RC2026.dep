@@ -1,6 +1,6 @@
 Dependencies for Project 'RC2026', Target 'RC2026': (DO NOT MODIFY !)
 CompilerVersion: 6240000::V6.24::ARMCLANG
-F (startup_stm32h723xx.s)(0x6A3B8F54)(--target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -masm=auto  -Wa,armasm,--diag_suppress=A1950W -c-gdwarf-4 -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/ARM/DSP/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-Wa,armasm,--pd,"__UVISION_VERSION SETA 543" -Wa,armasm,--pd,"STM32H723xx SETA 1" -Wa,armasm,--pd,"_RTE_ SETA 1"-o rc2026/startup_stm32h723xx.o)
+F (startup_stm32h723xx.s)(0x6A3BCD66)(--target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -masm=auto  -Wa,armasm,--diag_suppress=A1950W -c-gdwarf-4 -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/ARM/DSP/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-Wa,armasm,--pd,"__UVISION_VERSION SETA 543" -Wa,armasm,--pd,"STM32H723xx SETA 1" -Wa,armasm,--pd,"_RTE_ SETA 1"-o rc2026/startup_stm32h723xx.o)
 F (../USB_DEVICE/App/usb_device.c)(0x6A06D97E)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/usb_device.o -MMD)
 I (..\USB_DEVICE\App\usb_device.h)(0x6A06D97E)
 I (..\Drivers\CMSIS\Device\ST\STM32H7xx\Include\stm32h7xx.h)(0x68CC613F)
@@ -138,7 +138,7 @@ I (..\RC26_Api\Inc\RC_cdc.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -1202,7 +1202,7 @@ I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_ll_usb.h)(0x68CC613E)
 I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_pcd_ex.h)(0x68CC613E)
 F (../Middlewares/Third_Party/FreeRTOS/Source/croutine.c)(0x68CC609D)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/croutine.o -MMD)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -1213,7 +1213,7 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\include\list.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\croutine.h)(0x68CC609D)
 F (../Middlewares/Third_Party/FreeRTOS/Source/event_groups.c)(0x68CC609D)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/event_groups.o -MMD)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -1225,7 +1225,7 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\include\timers.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\event_groups.h)(0x68CC609D)
 F (../Middlewares/Third_Party/FreeRTOS/Source/list.c)(0x68CC609D)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/list.o -MMD)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -1234,7 +1234,7 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\include\mpu_wrappers.h)(0x68CC609D
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\list.h)(0x68CC609D)
 F (../Middlewares/Third_Party/FreeRTOS/Source/queue.c)(0x68CC609D)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/queue.o -MMD)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -1245,7 +1245,7 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\include\list.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\queue.h)(0x68CC609D)
 F (../Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c)(0x68CC609D)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/stream_buffer.o -MMD)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -1256,7 +1256,7 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\include\list.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\stream_buffer.h)(0x68CC609D)
 F (../Middlewares/Third_Party/FreeRTOS/Source/tasks.c)(0x68CC609D)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/tasks.o -MMD)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -1268,7 +1268,7 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\include\timers.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\stack_macros.h)(0x68CC609D)
 F (../Middlewares/Third_Party/FreeRTOS/Source/timers.c)(0x68CC609D)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/timers.o -MMD)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -1283,7 +1283,7 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.h)(0x68CC6
 I (..\Drivers\CMSIS\Include\cmsis_compiler.h)(0x68CC60A2)
 I (..\Drivers\CMSIS\Include\cmsis_armclang.h)(0x68CC60A2)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -1334,7 +1334,7 @@ I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_ll_usb.h)(0x68CC613E)
 I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_pcd_ex.h)(0x68CC613E)
 F (../Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c)(0x68CC609D)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/heap_4.o -MMD)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -1344,7 +1344,7 @@ I (..\Middlewares\Third_Party\FreeRTOS\Source\include\task.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\list.h)(0x68CC609D)
 F (../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/port.c)(0x68CC609D)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/port.o -MMD)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -1560,7 +1560,7 @@ I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_ll_usb.h)(0x68CC613E)
 I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_pcd_ex.h)(0x68CC613E)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -1644,7 +1644,7 @@ I (..\RC26_Lib\Inc\RC_nonlinear_pid.h)(0x6A0420D3)
 I (..\RC26_Path\Inc\RC_head_ctrl.h)(0x6A0420D3)
 I (..\RC26_Lib\Inc\RC_auto_lift.h)(0x6A0420D3)
 I (..\RC26_Path\Inc\RC_event3.h)(0x6A0420D3)
-I (..\RC26_Lib\Inc\RC_ws2812.h)(0x6A3BBD3D)
+I (..\RC26_Lib\Inc\RC_ws2812.h)(0x6A439D0D)
 I (..\RC26_Path\Inc\RC_traj_plan3.h)(0x6A0420D3)
 I (..\RC26_Path\Inc\RC_path3.h)(0x6A0420D3)
 I (..\RC26_Path\Inc\RC_curve.h)(0x6A0420D3)
@@ -1700,7 +1700,7 @@ I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_ll_usb.h)(0x68CC613E)
 I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_pcd_ex.h)(0x68CC613E)
 F (../Core/Src/freertos.c)(0x6A06D97C)(-xc -std=gnu11 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/freertos.o -MMD)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -2090,7 +2090,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -2141,7 +2141,7 @@ I (..\RC26_Api\Inc\RC_cdc.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -2280,7 +2280,7 @@ F (..\RC26_Api\Src\RC_task.cpp)(0x6A0420D3)(-xc++ -std=gnu++17 --target=arm-arm-
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -2367,7 +2367,7 @@ I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_ll_usb.h)(0x68CC613E)
 I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_pcd_ex.h)(0x68CC613E)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -2450,7 +2450,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -2546,7 +2546,7 @@ I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_pcd.h)(0x68CC613E)
 I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_ll_usb.h)(0x68CC613E)
 I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_pcd_ex.h)(0x68CC613E)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -2801,7 +2801,7 @@ I (..\Core\Inc\gpio.h)(0x6A06D978)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -2951,7 +2951,7 @@ I (..\Core\Inc\tim.h)(0x6A06D97D)
 I (..\RC26_Api\Inc\RC_tim.h)(0x6A0420D3)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -2971,7 +2971,7 @@ I (..\RC26_Lib\Inc\RC_storage.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -3119,7 +3119,7 @@ I (..\Core\Inc\tim.h)(0x6A06D97D)
 I (..\RC26_Api\Inc\RC_tim.h)(0x6A0420D3)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -3303,7 +3303,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -3355,7 +3355,7 @@ I (..\RC26_User\Inc\RC_data_pool.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -3486,7 +3486,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -3650,7 +3650,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -3736,7 +3736,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -3798,7 +3798,7 @@ I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_pcd_ex.h)(0x68CC613E)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -3932,7 +3932,7 @@ I (..\RC26_Api\Inc\RC_serial.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -3945,9 +3945,9 @@ I (..\RC26_Api\Inc\RC_gpio_exti.h)(0x6A0420D3)
 I (..\Core\Inc\gpio.h)(0x6A06D978)
 I (..\RC26_Api\Inc\RC_tim.h)(0x6A0420D3)
 I (..\Core\Inc\tim.h)(0x6A06D97D)
-F (..\RC26_Lib\Inc\RC_ws2812.h)(0x6A3BBD3D)()
-F (..\RC26_Lib\Src\RC_ws2812.cpp)(0x6A3BBD0A)(-xc++ -std=gnu++17 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar -fno-exceptions-gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/rc_ws2812.o -MMD)
-I (..\RC26_Lib\Inc\RC_ws2812.h)(0x6A3BBD3D)
+F (..\RC26_Lib\Inc\RC_ws2812.h)(0x6A439D0D)()
+F (..\RC26_Lib\Src\RC_ws2812.cpp)(0x6A439D32)(-xc++ -std=gnu++17 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar -fno-exceptions-gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/rc_ws2812.o -MMD)
+I (..\RC26_Lib\Inc\RC_ws2812.h)(0x6A439D0D)
 I (..\Core\Inc\spi.h)(0x6A3B3B43)
 I (..\Core\Inc\main.h)(0x6A073750)
 I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal.h)(0x68CC613E)
@@ -3986,7 +3986,7 @@ I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_pcd.h)(0x68CC613E)
 I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_ll_usb.h)(0x68CC613E)
 I (..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_pcd_ex.h)(0x68CC613E)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -4069,7 +4069,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -4151,7 +4151,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -4234,7 +4234,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -4317,7 +4317,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -4400,7 +4400,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -4482,7 +4482,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -4564,7 +4564,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -4582,7 +4582,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -4727,7 +4727,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -4809,7 +4809,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -4879,7 +4879,7 @@ I (..\RC26_User\Inc\RC_data_pool.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -5254,7 +5254,7 @@ I (..\RC26_User\Inc\RC_data_pool.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -5277,7 +5277,7 @@ I (..\RC26_Path\Inc\RC_path_plan3.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -5435,7 +5435,7 @@ I (..\Core\Inc\tim.h)(0x6A06D97D)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -5481,7 +5481,7 @@ I (..\RC26_User\Inc\RC_data_pool.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -5560,7 +5560,7 @@ I (..\RC26_User\Inc\RC_data_pool.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -5630,7 +5630,7 @@ I (..\RC26_User\Inc\RC_data_pool.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -5789,7 +5789,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -5872,7 +5872,7 @@ I (..\RC26_Api\Inc\RC_can.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -5935,7 +5935,7 @@ I (..\RC26_Api\Inc\RC_cdc.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -6018,7 +6018,7 @@ I (..\RC26_Api\Inc\RC_cdc.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -6082,7 +6082,7 @@ I (..\RC26_Api\Inc\RC_cdc.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -6175,12 +6175,12 @@ I (..\RC26_Api\Inc\RC_tim.h)(0x6A0420D3)
 I (..\RC26_Lib\Inc\RC_nonlinear_pid.h)(0x6A0420D3)
 I (..\RC26_Ros_Interface\Inc\RC_map.h)(0x6A0420D3)
 F (..\RC26_Ros_Interface\Inc\RC_best_path.h)(0x6A0420D3)()
-F (..\RC26_User\Src\RC_init.cpp)(0x6A3BB12A)(-xc++ -std=gnu++17 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar -fno-exceptions-gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/rc_init.o -MMD)
+F (..\RC26_User\Src\RC_init.cpp)(0x6A439DA3)(-xc++ -std=gnu++17 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar -fno-exceptions-gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include -I ../RC26_Lib/Inc -I ../RC26_User/Inc -I ../RC26_Motor/Inc -I ../RC26_Ros_Interface/Inc -I ../RC26_Api/Inc -I ../RC26_Path/Inc -I ../RC26_Gantry/Inc-I./RTE/_RC2026-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/Include-ID:/Keil5/ARM/PACK/ARM/CMSIS-DSP/1.16.2/PrivateInclude-ID:/Keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-D__UVISION_VERSION="543" -DSTM32H723xx -D_RTE_ -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -D__FPU_PRESENT="1U" -D__VFP_FP__="1" -DARM_MATH_CM7-o rc2026/rc_init.o -MMD)
 I (..\RC26_User\Inc\RC_init.h)(0x6A3B61C1)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)
@@ -6294,7 +6294,7 @@ I (..\RC26_Lib\Inc\RC_nonlinear_pid.h)(0x6A0420D3)
 I (..\RC26_Path\Inc\RC_head_ctrl.h)(0x6A0420D3)
 I (..\RC26_Lib\Inc\RC_auto_lift.h)(0x6A0420D3)
 I (..\RC26_Path\Inc\RC_event3.h)(0x6A0420D3)
-I (..\RC26_Lib\Inc\RC_ws2812.h)(0x6A3BBD3D)
+I (..\RC26_Lib\Inc\RC_ws2812.h)(0x6A439D0D)
 I (..\Core\Inc\spi.h)(0x6A3B3B43)
 I (..\RC26_Path\Inc\RC_traj_plan3.h)(0x6A0420D3)
 I (..\RC26_Path\Inc\RC_path3.h)(0x6A0420D3)
@@ -6318,7 +6318,7 @@ I (..\RC26_User\Inc\RC_data_pool.h)(0x6A0420D3)
 I (..\RC26_Api\Inc\RC_task.h)(0x6A3B6EE0)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h)(0x68CC609D)
-I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3B8F88)
+I (..\Core\Inc\FreeRTOSConfig.h)(0x6A3BCD8D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\projdefs.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\portable.h)(0x68CC609D)
 I (..\Middlewares\Third_Party\FreeRTOS\Source\include\deprecated_definitions.h)(0x68CC609D)

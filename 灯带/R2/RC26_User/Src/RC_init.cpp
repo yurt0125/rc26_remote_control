@@ -185,25 +185,70 @@ void Main_Task(void *argument)
 //	
 //	graph_plan.Plan(start, dst);
 //	
-
-	// === 灯带测试：启动时亮绿灯 ===
-	// static bool ws2812_test_once = true;
-	// if (ws2812_test_once)
-	// {
-	// 	ws2812_test_once = false;
-	// 	LED.SetGreen();
-	// }
+			LED.SetYellow();
 
 	for (;;)
 	{
-		// === 灯带测试：每 2 秒自动闪烁一次 ===
-		static uint32_t flash_test_time = 0;
-		if (timer::Timer::Get_DeltaTime(flash_test_time) > 2000000)
+		// === 灯带测试流程 ===
+		// 黄3s → 蓝灭闪烁10s → 蓝常亮5s → 蓝绿闪一次 → 蓝常亮5s → 循环
+		static enum {
+			TEST_YELLOW,
+			TEST_FLASH_CONTINUOUS,
+			TEST_BLUE1,
+			TEST_FLASH_ONCE_WAIT,
+			TEST_BLUE2
+		} test_state = TEST_YELLOW;
+		static uint32_t test_timer = 0;
+
+		switch (test_state)
 		{
-			flash_test_time = timer::Timer::Get_TimeStamp();
-			LED.FlashOnce();
+		case TEST_YELLOW:
+			if (timer::Timer::Get_DeltaTime(test_timer) > 3000000)
+			{
+				test_timer = timer::Timer::Get_TimeStamp();
+				LED.  (ws2812::Color::BLUE, ws2812::Color::NONE);
+				test_state = TEST_FLASH_CONTINUOUS;
+			}
+			break;
+
+		case TEST_FLASH_CONTINUOUS:
+			if (timer::Timer::Get_DeltaTime(test_timer) > 10000000)
+			{
+				test_timer = timer::Timer::Get_TimeStamp();
+				LED.SetBlue();
+				test_state = TEST_BLUE1;
+			}
+			break;
+
+		case TEST_BLUE1:
+			if (timer::Timer::Get_DeltaTime(test_timer) > 5000000)
+			{
+				test_timer = timer::Timer::Get_TimeStamp();
+				LED.FlashOnce(ws2812::Color::BLUE, ws2812::Color::GREEN);
+				test_state = TEST_FLASH_ONCE_WAIT;
+			}
+			break;
+
+		case TEST_FLASH_ONCE_WAIT:
+			// 等待 FlashOnce 完成 (4 * 80000 = 320ms, 留余量 400ms)
+			if (timer::Timer::Get_DeltaTime(test_timer) > 400000)
+			{
+				test_timer = timer::Timer::Get_TimeStamp();
+				// FlashOnce 完成后自动恢复到 current_color (BLUE)
+				test_state = TEST_BLUE2;
+			}
+			break;
+
+		case TEST_BLUE2:
+			if (timer::Timer::Get_DeltaTime(test_timer) > 5000000)
+			{
+				test_timer = timer::Timer::Get_TimeStamp();
+				LED.SetYellow();
+				test_state = TEST_YELLOW;
+			}
+			break;
 		}
-		
+
 //		wave.Set_Amplitude(a);
 //		target = wave.Get_Signal();
 
