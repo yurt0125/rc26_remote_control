@@ -39,7 +39,7 @@ void HMI_Task_Init(UART_HandleTypeDef *huart)
     
     // 挂载 DMA 接收空闲中断至 DMA 专用连续缓冲区
     HAL_UARTEx_ReceiveToIdle_DMA(g_HMI.huart, g_HMI.dma_rx_buf, DMA_BUF_SIZE);
-    for(int i=0; i<=8; i++)
+    for (uint8_t i = 0; i < COMM_COMMAND_COUNT; i++)
     {
     Communication_SendCommandFrame(i,0,0);
     }
@@ -400,5 +400,4 @@ void HMI_UartError_Callback_Wrapper(UART_HandleTypeDef *huart)
         HAL_UARTEx_ReceiveToIdle_DMA(g_HMI.huart, g_HMI.dma_rx_buf, DMA_BUF_SIZE);
     }
 }
-
 
