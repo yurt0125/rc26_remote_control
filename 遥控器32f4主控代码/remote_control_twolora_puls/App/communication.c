@@ -8,6 +8,27 @@
 CommContext g_Comm = {0};
 static volatile uint8_t g_comm_initialized = 0;
 
+#define COMM_RETRY_COUNT       3U
+#define COMM_RETRY_QUEUE_SIZE 32U
+
+typedef union {
+    CommCommandFrame_t command;
+    CommSettingFrame_t setting;
+} CommRetryFrameStorage_t;
+
+#define COMM_RETRY_FRAME_SIZE ((uint8_t)sizeof(CommRetryFrameStorage_t))
+
+typedef struct {
+    uint8_t data[sizeof(CommRetryFrameStorage_t)];
+    uint8_t length;
+    uint8_t repeats_remaining;
+} CommRetryEntry_t;
+
+static CommRetryEntry_t g_retry_queue[COMM_RETRY_QUEUE_SIZE];
+static volatile uint8_t g_retry_queue_head = 0U;
+static volatile uint8_t g_retry_queue_tail = 0U;
+static volatile uint8_t g_retry_queue_count = 0U;
+
 // 通信统计快照全局变量，由 Communication_Task_Loop() 周期性更新
 volatile uint16_t g_comm_rx_drop_cnt = 0;
 volatile uint16_t g_comm_tx_drop_cnt = 0;
@@ -102,6 +123,101 @@ static uint8_t Comm_MaybeCorruptTxCrc(uint8_t crc)
 #endif
 }
 
+/* CommandFrame和SettingFrame共用轮转队列，每个100ms周期发送队首的一份。 */
+static void Communication_EnqueueRetryFrame(const uint8_t* data, uint8_t length)
+{
+    if (data == NULL || length < 3U || length > COMM_RETRY_FRAME_SIZE) return;
+
+    uint32_t primask = Comm_EnterCritical();
+
+    /*
+     * 同一命令由“帧类型(header[1]) + command(data[2])”标识。
+     * 保持其他条目的先后顺序，删除同命令的旧值；完全相同的帧仅保留一项，
+     * 且不重置它已经剩余的发送次数。
+     */
+    uint8_t original_count = g_retry_queue_count;
+    uint8_t read_index = g_retry_queue_head;
+    uint8_t write_index = g_retry_queue_head;
+    uint8_t kept_count = 0U;
+    uint8_t identical_found = 0U;
+
+    for (uint8_t n = 0U; n < original_count; n++) {
+        CommRetryEntry_t entry = g_retry_queue[read_index];
+        uint8_t keep_entry = 1U;
+
+        read_index = (uint8_t)((read_index + 1U) % COMM_RETRY_QUEUE_SIZE);
+
+        if (entry.length >= 3U &&
+            entry.data[1] == data[1] &&
+            entry.data[2] == data[2]) {
+            uint8_t is_identical = (entry.length == length) ? 1U : 0U;
+
+            if (is_identical != 0U) {
+                for (uint8_t i = 0U; i < length; i++) {
+                    if (entry.data[i] != data[i]) {
+                        is_identical = 0U;
+                        break;
+                    }
+                }
+            }
+
+            if (is_identical != 0U && identical_found == 0U) {
+                identical_found = 1U;
+            } else {
+                keep_entry = 0U;
+            }
+        }
+
+        if (keep_entry != 0U) {
+            g_retry_queue[write_index] = entry;
+            write_index = (uint8_t)((write_index + 1U) % COMM_RETRY_QUEUE_SIZE);
+            kept_count++;
+        }
+    }
+
+    g_retry_queue_tail = write_index;
+    g_retry_queue_count = kept_count;
+
+    if (identical_found == 0U && g_retry_queue_count < COMM_RETRY_QUEUE_SIZE) {
+        CommRetryEntry_t* entry = &g_retry_queue[g_retry_queue_tail];
+        for (uint8_t i = 0U; i < length; i++) {
+            entry->data[i] = data[i];
+        }
+        entry->length = length;
+        entry->repeats_remaining = COMM_RETRY_COUNT;
+        g_retry_queue_tail = (uint8_t)((g_retry_queue_tail + 1U) % COMM_RETRY_QUEUE_SIZE);
+        g_retry_queue_count++;
+    } else if (identical_found == 0U) {
+        g_Comm.tx_fifo.drop_cnt += length;
+    }
+
+    Comm_ExitCritical(primask);
+}
+
+static void Communication_QueueRetryCopyForThisPeriod(void)
+{
+    uint32_t primask = Comm_EnterCritical();
+
+    if (g_retry_queue_count > 0U) {
+        CommRetryEntry_t entry = g_retry_queue[g_retry_queue_head];
+        g_retry_queue_head = (uint8_t)((g_retry_queue_head + 1U) % COMM_RETRY_QUEUE_SIZE);
+        g_retry_queue_count--;
+
+        for (uint8_t i = 0U; i < entry.length; i++) {
+            FIFO_Push(&g_Comm.tx_fifo, entry.data[i]);
+        }
+
+        entry.repeats_remaining--;
+        if (entry.repeats_remaining > 0U) {
+            g_retry_queue[g_retry_queue_tail] = entry;
+            g_retry_queue_tail = (uint8_t)((g_retry_queue_tail + 1U) % COMM_RETRY_QUEUE_SIZE);
+            g_retry_queue_count++;
+        }
+    }
+
+    Comm_ExitCritical(primask);
+}
+
 static HAL_StatusTypeDef Comm_StartRxDma(void)
 {
 #if COMM_TEST_FORCE_RX_DMA_START_FAIL_ONCE
@@ -142,6 +258,9 @@ void Communication_Task_Init(UART_HandleTypeDef *txhuart, UART_HandleTypeDef *rx
     g_Comm.tx_error_cnt = 0;
     g_Comm.rx_error_cnt = 0;
     g_Comm.rx_crc_error_cnt = 0;
+    g_retry_queue_head = 0U;
+    g_retry_queue_tail = 0U;
+    g_retry_queue_count = 0U;
     Communication_UpdateCounterSnapshot();
     
     // 初始化一些摇杆测试数据
@@ -263,6 +382,12 @@ void Comm_Timer_Callback_Wrapper(void)
 
     if(g_Comm.tx_busy==0)
     {
+        uint8_t module_ready = (HAL_GPIO_ReadPin(TXSX1281_AUX_GPIO_Port, TXSX1281_AUX_Pin) == GPIO_PIN_SET) ? 1U : 0U;
+
+        if (module_ready != 0U) {
+            Communication_QueueRetryCopyForThisPeriod();
+        }
+
         Communication_SetJoystickAndKeyData(joystick_Buf[0],joystick_Buf[1],joystick_Buf[2],joystick_Buf[3],tx_button_state, hmi_state);
 
         // ---- 按键统计 (移植自接收工程) ----
@@ -305,7 +430,7 @@ void Comm_Timer_Callback_Wrapper(void)
             
         // 如果底部DMA且模块空闲（AUX为高电平），且队列里有东西，则通知任务立即发送
         if (g_Comm.tx_busy == 0 && FIFO_Count(&g_Comm.tx_fifo) > 0) {
-            if(HAL_GPIO_ReadPin(TXSX1281_AUX_GPIO_Port, TXSX1281_AUX_Pin) == GPIO_PIN_SET)
+            if(module_ready != 0U)
             {
                 extern osThreadId_t TxBufferToDMAHandle;
                 if (xPortIsInsideInterrupt()) {
@@ -372,29 +497,7 @@ void Communication_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load
     frame.crc       = Comm_MaybeCorruptTxCrc(crc8((uint8_t*)&frame + 2, sizeof(CommSettingFrame_t) - 4));
     frame.tail      = 0xDE;
 
-    uint8_t* ptr = (uint8_t*)&frame;
-    uint32_t primask = Comm_EnterCritical();
-    for (int repeat = 0; repeat < 3; repeat++) {
-        for (int i = 0; i < sizeof(CommSettingFrame_t); i++) {
-            FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
-        }
-    }
-    Comm_ExitCritical(primask);
-
-    // 如果底部DMA空闲（AUX为高电平），且队列里有东西，则通知发送任务
-    if (g_Comm.tx_busy == 0 && FIFO_Count(&g_Comm.tx_fifo) > 0) {
-        if(HAL_GPIO_ReadPin(TXSX1281_AUX_GPIO_Port, TXSX1281_AUX_Pin) == GPIO_PIN_SET)
-        {
-            extern osThreadId_t TxBufferToDMAHandle;
-            if (xPortIsInsideInterrupt()) {
-                BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-                vTaskNotifyGiveFromISR((TaskHandle_t)TxBufferToDMAHandle, &xHigherPriorityTaskWoken);
-                portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-            } else {
-                xTaskNotifyGive((TaskHandle_t)TxBufferToDMAHandle);
-            }
-        }
-    }
+    Communication_EnqueueRetryFrame((const uint8_t*)&frame, (uint8_t)sizeof(frame));
 }
 
 // 发送 CommandFrame (0xAA 0x77) — 转发串口屏命令到机器人
@@ -411,29 +514,7 @@ void Communication_SendCommandFrame(uint8_t command, uint8_t load1, uint8_t load
     frame.crc       = Comm_MaybeCorruptTxCrc(crc8((uint8_t*)&frame + 2, sizeof(CommCommandFrame_t) - 4));
     frame.tail      = 0xDE;
 
-    uint8_t* ptr = (uint8_t*)&frame;
-    uint32_t primask = Comm_EnterCritical();
-    for (int repeat = 0; repeat < 3; repeat++) {
-        for (int i = 0; i < sizeof(CommCommandFrame_t); i++) {
-            FIFO_Push(&g_Comm.tx_fifo, ptr[i]);
-        }
-    }
-    Comm_ExitCritical(primask);
-
-    // 如果底部DMA空闲（AUX为高电平），且队列里有东西，则通知发送任务
-    if (g_Comm.tx_busy == 0 && FIFO_Count(&g_Comm.tx_fifo) > 0) {
-        if(HAL_GPIO_ReadPin(TXSX1281_AUX_GPIO_Port, TXSX1281_AUX_Pin) == GPIO_PIN_SET)
-        {
-            extern osThreadId_t TxBufferToDMAHandle;
-            if (xPortIsInsideInterrupt()) {
-                BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-                vTaskNotifyGiveFromISR((TaskHandle_t)TxBufferToDMAHandle, &xHigherPriorityTaskWoken);
-                portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-            } else {
-                xTaskNotifyGive((TaskHandle_t)TxBufferToDMAHandle);
-            }
-        }
-    }
+    Communication_EnqueueRetryFrame((const uint8_t*)&frame, (uint8_t)sizeof(frame));
 }
 
 uint16_t Communication_GetRxDropCnt(void)

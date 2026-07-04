@@ -10,8 +10,8 @@
 #include "stm32f4xx.h"
 #include "tjc_huart_hmi.h"
 
-#define RING_BUF_SIZE 256
-#define DMA_BUF_SIZE  64
+#define RING_BUF_SIZE 512
+#define DMA_BUF_SIZE  128
 #define COMM_COMMAND_COUNT 12U
 
 #ifndef COMM_TX_BUSY_TIMEOUT_MS
@@ -182,10 +182,10 @@ void Communication_SendData(const uint8_t* data, uint16_t len);
 // 业务层接口：设置当前要发送的摇杆和按键数据
 void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t key, uint8_t page);
 
-// 发送 SettingFrame (0xAA 0x66) — 发送KFS位置等设置参数
+// 排队发送 SettingFrame：与其他重发帧轮转，三个100ms周期各发送一次
 void Communication_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load2);
 
-// 发送 CommandFrame — 转发串口屏命令到机器人
+// 排队发送 CommandFrame：与其他重发帧轮转，三个100ms周期各发送一次
 void Communication_SendCommandFrame(uint8_t command, uint8_t load1, uint8_t load2);
 
 //真正通过DMA发送数据的函数，任务调用

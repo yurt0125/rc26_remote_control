@@ -7,8 +7,8 @@
 #include "dma.h"
 #include <stdint.h>
 #include "communication.h"
-#define RING_BUF_SIZE 256
-#define DMA_BUF_SIZE  64
+#define RING_BUF_SIZE 512
+#define DMA_BUF_SIZE  128
 
 
 
