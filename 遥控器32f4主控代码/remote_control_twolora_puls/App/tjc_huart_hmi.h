@@ -103,6 +103,11 @@ typedef struct {
 
     // 最近一帧 DataFrame 有效标记（切回 page2 时主动刷新用）
     uint8_t last_data_valid;
+
+    // Receiver startup command, deferred until the HMI is on page 2 or 3.
+    uint8_t receiver_command_pending;
+    uint8_t receiver_command;
+    uint8_t receiver_command_load[2];
 } HMIContext;
 
 extern HMIContext g_HMI;
@@ -118,6 +123,7 @@ void HMI_SendDataFrame(int16_t x, int16_t y, int16_t z,
                        uint8_t KFS_want_place1, uint8_t KFS_want_place2,
                        uint8_t spear, uint8_t KFS_Keepplace);
 void HMI_ButtonTransmitFrame(uint8_t command, uint8_t load1, uint8_t load2);
+void HMI_ForwardReceiverCommand(uint8_t command, uint8_t load1, uint8_t load2);
 
 // HAL 相关的回调接口
 // void HMI_Timer_Callback_Wrapper(void);

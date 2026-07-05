@@ -127,6 +127,16 @@ typedef struct {
     uint8_t tail;      // e.g. 0xED
 } XYZFrame_t;
 
+// Receiver-to-remote command that must be forwarded to the HMI.
+typedef struct {
+    uint8_t header[2]; // 0x55 0xEE
+    uint8_t command;
+    uint8_t load1;
+    uint8_t load2;
+    uint8_t crc;
+    uint8_t tail;      // 0xED
+} CommHmiCommandFrame_t;
+
 #pragma pack(pop)
 
 /* 全局通信上下文 */

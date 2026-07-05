@@ -4,6 +4,9 @@
 
 HMIContext g_HMI = {0};
 
+static void HMI_TryForwardReceiverCommand(void);
+static uint8_t HMI_EnqueueButtonFrame(uint8_t command, uint8_t load1, uint8_t load2);
+
 /* ================= 环形缓冲区 (FIFO) 操作 ================= */
 // 数据存入尾部 (tail)
 static void FIFO_Push(hmi_FIFO_t* fifo, uint8_t data) {
@@ -32,8 +35,10 @@ static uint16_t FIFO_Count(hmi_FIFO_t* fifo) {
 void HMI_Task_Init(UART_HandleTypeDef *huart)
 {
     g_HMI.huart = huart;
+    g_HMI.page_id = 2;
     g_HMI.tx_busy = 0;
     g_HMI.last_data_valid = 0;
+    g_HMI.receiver_command_pending = 0;
     g_HMI.rx_fifo.drop_cnt = 0;
     g_HMI.tx_fifo.drop_cnt = 0;
     
@@ -75,6 +80,9 @@ static void HMI_StartTx(void)
 
 void HMI_Task_Loop(void)
 {
+    // Retry a deferred receiver command once TX FIFO space is available.
+    HMI_TryForwardReceiverCommand();
+
     // TX: 如果发送空闲且 tx_fifo 有数据，拉起 DMA 发送
     if (g_HMI.tx_busy == 0 && FIFO_Count(&g_HMI.tx_fifo) > 0) {
         HMI_StartTx(); 
@@ -165,6 +173,7 @@ void HMI_Task_Loop(void)
                                       g_HMI.data_send_KFS_want_place1, g_HMI.data_send_KFS_want_place2,
                                       g_HMI.data_send_spear, g_HMI.data_send_KFS_Keepplace);
                 }
+                HMI_TryForwardReceiverCommand();
                 break;
             }
             case 2: { // SettingFrame (0x55 0xBB) — 仅数据设置界面(page 1)
@@ -272,6 +281,15 @@ void HMI_ButtonTransmitFrame(uint8_t command, uint8_t load1, uint8_t load2)
 {
     if (hmi_state != 2 && hmi_state != 3) return;
 
+    (void)HMI_EnqueueButtonFrame(command, load1, load2);
+}
+
+static uint8_t HMI_EnqueueButtonFrame(uint8_t command, uint8_t load1, uint8_t load2)
+{
+    if ((RING_BUF_SIZE - 1U - FIFO_Count(&g_HMI.tx_fifo)) < sizeof(SettingFrame_t)) {
+        return 0;
+    }
+
     SettingFrame_t frame;
     frame.header[0] = 0x55;
     frame.header[1] = 0xEE;
@@ -280,12 +298,6 @@ void HMI_ButtonTransmitFrame(uint8_t command, uint8_t load1, uint8_t load2)
     frame.load2     = load2;
     frame.tail      = 0x0E;
 
-    // __disable_irq();
-    // g_HMI.setting_tx_command  = command;
-    // g_HMI.setting_tx_load[0]  = load1;
-    // g_HMI.setting_tx_load[1]  = load2;
-    // __enable_irq();
-
     uint8_t* ptr = (uint8_t*)&frame;
     for (int i = 0; i < sizeof(SettingFrame_t); i++) {
         FIFO_Push(&g_HMI.tx_fifo, ptr[i]);
@@ -293,6 +305,50 @@ void HMI_ButtonTransmitFrame(uint8_t command, uint8_t load1, uint8_t load2)
 
     if (g_HMI.tx_busy == 0) {
         HMI_StartTx();
+    }
+
+    return 1;
+}
+
+void HMI_ForwardReceiverCommand(uint8_t command, uint8_t load1, uint8_t load2)
+{
+    __disable_irq();
+    g_HMI.receiver_command = command;
+    g_HMI.receiver_command_load[0] = load1;
+    g_HMI.receiver_command_load[1] = load2;
+    g_HMI.receiver_command_pending = 1;
+    __enable_irq();
+
+    HMI_TryForwardReceiverCommand();
+}
+
+static void HMI_TryForwardReceiverCommand(void)
+{
+    uint8_t command;
+    uint8_t load1;
+    uint8_t load2;
+
+    if (hmi_state != 2 && hmi_state != 3) return;
+
+    __disable_irq();
+    if (!g_HMI.receiver_command_pending) {
+        __enable_irq();
+        return;
+    }
+    command = g_HMI.receiver_command;
+    load1 = g_HMI.receiver_command_load[0];
+    load2 = g_HMI.receiver_command_load[1];
+    __enable_irq();
+
+    if (HMI_EnqueueButtonFrame(command, load1, load2)) {
+        __disable_irq();
+        if (g_HMI.receiver_command_pending &&
+            g_HMI.receiver_command == command &&
+            g_HMI.receiver_command_load[0] == load1 &&
+            g_HMI.receiver_command_load[1] == load2) {
+            g_HMI.receiver_command_pending = 0;
+        }
+        __enable_irq();
     }
 }
 
@@ -400,4 +456,3 @@ void HMI_UartError_Callback_Wrapper(UART_HandleTypeDef *huart)
         HAL_UARTEx_ReceiveToIdle_DMA(g_HMI.huart, g_HMI.dma_rx_buf, DMA_BUF_SIZE);
     }
 }
-

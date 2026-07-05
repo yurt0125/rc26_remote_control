@@ -309,7 +309,7 @@ void Communication_Task_Loop(void)
     return;
 #endif
     // 不断处理 RX FIFO 里面收到的数据，直到剩余数据不足一帧长度
-    while (FIFO_Count(&g_Comm.rx_fifo) >= sizeof(XYZFrame_t)) {
+    while (FIFO_Count(&g_Comm.rx_fifo) >= sizeof(CommHmiCommandFrame_t)) {
         
         uint16_t t_head = g_Comm.rx_fifo.head;
         uint8_t byte1 = g_Comm.rx_fifo.buffer[t_head];
@@ -317,6 +317,8 @@ void Communication_Task_Loop(void)
         
         // 查找帧头 0x55 0xAA
         if (byte1 == 0x55 && byte2 == 0xAA) {
+            if (FIFO_Count(&g_Comm.rx_fifo) < sizeof(XYZFrame_t)) break;
+
             uint8_t frame_buf[sizeof(XYZFrame_t)];
             uint16_t p = t_head;
             
@@ -360,6 +362,28 @@ void Communication_Task_Loop(void)
                     g_Comm.rx_crc_error_cnt++;
                 }
                 // 坏帧，跳过头部第一个错误字节，继续往后寻找
+                g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
+            }
+        } else if (byte1 == 0x55 && byte2 == 0xEE) {
+            uint8_t frame_buf[sizeof(CommHmiCommandFrame_t)];
+            uint16_t p = t_head;
+
+            for (int i = 0; i < sizeof(CommHmiCommandFrame_t); i++) {
+                frame_buf[i] = g_Comm.rx_fifo.buffer[p];
+                p = (p + 1) % RING_BUF_SIZE;
+            }
+
+            CommHmiCommandFrame_t* pFrame = (CommHmiCommandFrame_t*)frame_buf;
+            uint8_t tail_ok = (pFrame->tail == 0xED);
+            uint8_t crc_ok = (pFrame->crc == crc8(frame_buf + 2, sizeof(CommHmiCommandFrame_t) - 4));
+
+            if (tail_ok && crc_ok) {
+                g_Comm.rx_fifo.head = p;
+                rx_stamp = HAL_GetTick();
+                rx_cnt++;
+                HMI_ForwardReceiverCommand(pFrame->command, pFrame->load1, pFrame->load2);
+            } else {
+                g_Comm.rx_crc_error_cnt++;
                 g_Comm.rx_fifo.head = (g_Comm.rx_fifo.head + 1) % RING_BUF_SIZE;
             }
         } else {
