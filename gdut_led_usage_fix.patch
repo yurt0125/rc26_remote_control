@@ -1,0 +1,162 @@
+diff --git a/RC2026_H7/RC26_User/Src/RC_init.cpp b/RC2026_H7/RC26_User/Src/RC_init.cpp
+index e2e5ef7..8dcd90d 100644
+--- a/RC2026_H7/RC26_User/Src/RC_init.cpp
++++ b/RC2026_H7/RC26_User/Src/RC_init.cpp
+@@ -252,19 +252,15 @@ void Main_Task(void *argument)
+ {
+ 	remote_ctrl.signal_swa();
+ 	remote_ctrl.signal_swd();
++	led.SetRed();
+ //	wave.Init();
+ 	
+ 	
+ 	
+ 	for (;;)
+ 	{
+-		
+-		
+-		led.SetRed();
+-		
+-		
+-		
+-		if (remote_ctrl.signal_swd())
++		bool swd_changed = remote_ctrl.signal_swd();
++		if (swd_changed)
+ 		{
+ 			led.FlashOnce(ws2812::Color::GREEN, ws2812::Color::NONE);
+ 		}
+@@ -303,7 +299,7 @@ void Main_Task(void *argument)
+ 		}
+ 		else if (remote_ctrl.swc == 1)
+ 		{
+-			if (remote_ctrl.signal_swd())
++			if (swd_changed)
+ 			{
+ 				radar.Reposition(); /*雷达重定位*/
+ 			}
+diff --git a/RC2026_H7/RC26_Lib/Inc/RC_ws2812.h b/RC2026_H7/RC26_Lib/Inc/RC_ws2812.h
+index 6ecffb8..d8f588a 100644
+--- a/RC2026_H7/RC26_Lib/Inc/RC_ws2812.h
++++ b/RC2026_H7/RC26_Lib/Inc/RC_ws2812.h
+@@ -88,16 +88,17 @@ namespace ws2812
+         // 常量
+         static constexpr uint8_t RESET_BYTES = 100;
+ 
+-        // SPI 数据缓存 (DMA 需要放在 AXI SRAM)
++        // SPI 数据缓存
+         static uint8_t spi_buf[WS2812B_AMOUNT * 24 + RESET_BYTES];
+ 
+         // 灯条颜色显存
+         ColorCache color_cache[WS2812B_AMOUNT];
++        bool refresh_pending = true;
+ 
+         // 将单颗灯珠的 RGB 值编码为 SPI 波形数据
+         void EncodeLed(uint16_t led_index, uint8_t r, uint8_t g, uint8_t b);
+ 
+-        // 通过 SPI DMA 发送灯条数据
++        // 通过阻塞式 SPI 发送灯条数据
+         void SpiSend();
+ 
+         // 队列命令
+diff --git a/RC2026_H7/RC26_Lib/Src/RC_ws2812.cpp b/RC2026_H7/RC26_Lib/Src/RC_ws2812.cpp
+index 7bc7cf5..b8389dd 100644
+--- a/RC2026_H7/RC26_Lib/Src/RC_ws2812.cpp
++++ b/RC2026_H7/RC26_Lib/Src/RC_ws2812.cpp
+@@ -13,6 +13,6 @@ namespace ws2812
+ Ws2812B* g_ws2812b_instance = nullptr;
+ 
+-// DMA 缓冲区
++// SPI 发送缓冲区
+ uint8_t Ws2812B::spi_buf[WS2812B_AMOUNT * 24 + RESET_BYTES];
+ 
+ Ws2812B::Ws2812B(SPI_HandleTypeDef* hspi_)
+@@ -190,7 +190,10 @@ void Ws2812B::Task_Process()
+ 
+ void Ws2812B::SpiSend()
+ {
+-    // 上一次 DMA 还没完成，跳过本轮
++    if (!refresh_pending)
++        return;
++
++    // SPI 外设忙时保留刷新请求，下一轮重试
+     if (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY)
+         return;
+ 
+@@ -207,12 +210,9 @@ void Ws2812B::SpiSend()
+         pReset[i] = 0x00;
+     }
+ 
+-    // 刷新 DCache，确保 DMA 读到最新数据（STM32H7 必需）
+-    //SCB_CleanDCache_by_Addr((uint32_t*)spi_buf, WS2812B_AMOUNT * 24 + RESET_BYTES);
+-
+-    // DMA 一次性发送 LED 数据 + 复位信号
+-    //HAL_SPI_Transmit_DMA(hspi, spi_buf, WS2812B_AMOUNT * 24 + RESET_BYTES);
+-	HAL_SPI_Transmit(hspi, spi_buf, WS2812B_AMOUNT * 24 + RESET_BYTES, 100);
++    // 保持阻塞发送；失败时不清除标志，下一轮继续尝试
++    if (HAL_SPI_Transmit(hspi, spi_buf, WS2812B_AMOUNT * 24 + RESET_BYTES, 100) == HAL_OK)
++        refresh_pending = false;
+ }
+ 
+ // 设置全部灯为指定颜色
+@@ -224,6 +224,7 @@ void Ws2812B::SetAllColor(uint8_t r, uint8_t g, uint8_t b)
+         color_cache[i].G = g;
+         color_cache[i].B = b;
+     }
++    refresh_pending = true;
+ }
+ 
+ void Ws2812B::ApplyColor(Color color)
+@@ -247,7 +248,11 @@ void Ws2812B::LedOff()
+ 
+ void Ws2812B::SetColor(Color color)
+ {
+-    if (signal_queue == nullptr) return;
++    if (signal_queue == nullptr)
++    {
++        current_color = color;
++        return;
++    }
+     Command command = {CommandType::SET_COLOR, color, Color::NONE};
+     xQueueSend(signal_queue, &command, 0);
+ }
+diff --git a/RC2026_H7/Core/Src/spi.c b/RC2026_H7/Core/Src/spi.c
+index 5508934..8f12b40 100644
+--- a/RC2026_H7/Core/Src/spi.c
++++ b/RC2026_H7/Core/Src/spi.c
+@@ -102,14 +102,14 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
+     GPIO_InitStruct.Pin = GPIO_PIN_12;
+     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+     GPIO_InitStruct.Pull = GPIO_NOPULL;
+-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
++    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+     GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
+     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+ 
+     GPIO_InitStruct.Pin = GPIO_PIN_3;
+     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+     GPIO_InitStruct.Pull = GPIO_NOPULL;
+-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
++    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+     GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
+     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 
+diff --git a/RC2026_H7/RC2026.ioc b/RC2026_H7/RC2026.ioc
+index 1c2b351..81756b5 100644
+--- a/RC2026_H7/RC2026.ioc
++++ b/RC2026_H7/RC2026.ioc
+@@ -488,5 +488,7 @@ PB12.Signal=FDCAN2_RX
+ PB13.Mode=FDCAN_Activate
+ PB13.Signal=FDCAN2_TX
++PB3(JTDO/TRACESWO).GPIOParameters=GPIO_Speed
++PB3(JTDO/TRACESWO).GPIO_Speed=GPIO_SPEED_FREQ_VERY_HIGH
+ PB3(JTDO/TRACESWO).Mode=TX_Only_Simplex_Unidirect_Master
+ PB3(JTDO/TRACESWO).Signal=SPI3_SCK
+ PB6.Locked=true
+@@ -500,5 +502,7 @@ PC10.GPIO_PuPd=GPIO_PULLUP
+ PC10.Locked=true
+ PC10.Signal=GPIO_Input
++PC12.GPIOParameters=GPIO_Speed
++PC12.GPIO_Speed=GPIO_SPEED_FREQ_VERY_HIGH
+ PC12.Locked=true
+ PC12.Mode=TX_Only_Simplex_Unidirect_Master
+ PC12.Signal=SPI3_MOSI

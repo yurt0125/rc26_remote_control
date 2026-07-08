@@ -49,6 +49,7 @@ namespace communication{
         uint16_t ch4;
         uint16_t key;
         uint8_t page;
+        uint8_t display_color;
         uint8_t crc;
         uint8_t tail;      // e.g. 0xDE
     } JoystickFrame_t;
@@ -326,10 +327,7 @@ namespace communication{
         }
 
         uint8_t GetColor(void) {
-            if ((rec_page & 0x0F) == 1) {
-                saved_color = rec_page >> 4;
-            }
-            return saved_color;
+            return rec_display_color;
         }
 
     private:
@@ -373,6 +371,7 @@ namespace communication{
         uint16_t rec_joystick[4];
         uint16_t rec_send_key;
         uint8_t rec_page;
+        uint8_t rec_display_color;
         uint8_t rec_setting_command;
         uint8_t rec_setting_load1;
         uint8_t rec_setting_load2;
@@ -397,8 +396,6 @@ namespace communication{
         uint8_t rec_KFS2_place3;
         uint8_t rec_KFS2_place4;
         uint8_t rec_KFSf_place1;
-        uint8_t saved_color;  // color 缓存，仅在 page==1 时更新
-
     protected:
     };
 }

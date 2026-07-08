@@ -206,7 +206,7 @@ void Main_Task(void *argument)
 			if (timer::Timer::Get_DeltaTime(test_timer) > 3000000)
 			{
 				test_timer = timer::Timer::Get_TimeStamp();
-				LED.  (ws2812::Color::BLUE, ws2812::Color::NONE);
+				LED.FlashContinuous(ws2812::Color::BLUE, ws2812::Color::NONE);
 				test_state = TEST_FLASH_CONTINUOUS;
 			}
 			break;

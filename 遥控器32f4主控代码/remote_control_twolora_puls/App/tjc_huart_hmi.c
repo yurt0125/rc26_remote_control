@@ -152,6 +152,9 @@ void HMI_Task_Loop(void)
                 uint8_t prev_state = hmi_state;
                 g_HMI.page_id = pf->page_id;
                 hmi_state = pf->page_id;
+                if ((pf->page_id & 0x0FU) == 1U) {
+                    display_color = pf->page_id >> 4;
+                }
 
                 // 离开数据显示页面时，清空发送队列并中止 DMA
                 // 防止残留 DataFrame 发到其他页面导致屏幕协议错乱、按键失效

@@ -85,6 +85,7 @@ typedef struct {
     uint16_t ch4;
     uint16_t key;
     uint8_t page;
+    uint8_t display_color;
     uint8_t crc;
     uint8_t tail;      // e.g. 0xDE
 } JoystickFrame_t;
@@ -163,6 +164,7 @@ typedef struct {
     uint16_t send_joystick[4]; 
     uint16_t send_key;
     uint8_t send_page;
+    uint8_t send_display_color;
     int16_t recv_x;
     int16_t recv_y;
     int16_t recv_z;
@@ -190,7 +192,7 @@ void Communication_Task_Loop(void);
 void Communication_SendData(const uint8_t* data, uint16_t len);
 
 // 业务层接口：设置当前要发送的摇杆和按键数据
-void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t key, uint8_t page);
+void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t key, uint8_t page, uint8_t display_color);
 
 // 排队发送 SettingFrame：与其他重发帧轮转，三个100ms周期各发送一次
 void Communication_SendSettingFrame(uint8_t command, uint8_t load1, uint8_t load2);

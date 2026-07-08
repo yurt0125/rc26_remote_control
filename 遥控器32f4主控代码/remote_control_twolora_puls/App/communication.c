@@ -412,7 +412,7 @@ void Comm_Timer_Callback_Wrapper(void)
             Communication_QueueRetryCopyForThisPeriod();
         }
 
-        Communication_SetJoystickAndKeyData(joystick_Buf[0],joystick_Buf[1],joystick_Buf[2],joystick_Buf[3],tx_button_state, hmi_state);
+        Communication_SetJoystickAndKeyData(joystick_Buf[0],joystick_Buf[1],joystick_Buf[2],joystick_Buf[3],tx_button_state, hmi_state, display_color);
 
         // ---- 按键统计 (移植自接收工程) ----
         {
@@ -442,6 +442,7 @@ void Comm_Timer_Callback_Wrapper(void)
         frame.ch4 = g_Comm.send_joystick[3];
         frame.key = g_Comm.send_key;
         frame.page = g_Comm.send_page;
+        frame.display_color = g_Comm.send_display_color;
         frame.crc = Comm_MaybeCorruptTxCrc(crc8((uint8_t*)&frame + 2, sizeof(JoystickFrame_t) - 4));
         frame.tail = 0xDE;
 
@@ -497,7 +498,7 @@ void Communication_SendData(const uint8_t* data, uint16_t len)
     }
 }
 
-void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t TX_Button_state, uint8_t page)
+void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch3, uint16_t ch4, uint16_t TX_Button_state, uint8_t page, uint8_t display_color)
 {
     g_Comm.send_joystick[0] = ch1;
     g_Comm.send_joystick[1] = ch2;
@@ -505,6 +506,7 @@ void Communication_SetJoystickAndKeyData(uint16_t ch1, uint16_t ch2, uint16_t ch
     g_Comm.send_joystick[3] = ch4;
     g_Comm.send_key = TX_Button_state;
     g_Comm.send_page = page;
+    g_Comm.send_display_color = display_color;
 }
 
 // 发送 SettingFrame (0xAA 0x66) — 发送KFS位置等设置参数
