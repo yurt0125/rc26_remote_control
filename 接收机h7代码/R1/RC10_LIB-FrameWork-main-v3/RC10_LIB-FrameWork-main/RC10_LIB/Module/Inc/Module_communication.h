@@ -6,7 +6,7 @@
 
 #define RING_BUF_SIZE 512
 #define DMA_BUF_SIZE  128
-#define COMM_COMMAND_COUNT 12U
+#define COMM_COMMAND_COUNT 16U
 
 #ifndef COMM_TX_BUSY_TIMEOUT_MS
 #define COMM_TX_BUSY_TIMEOUT_MS 50U
@@ -210,7 +210,7 @@ namespace communication{
 
         /**
          * @brief 获取单个命令的计数值
-         * @param cmd 命令号 (0~11)
+         * @param cmd 命令号 (0~15)
          * @return 该命令的累计计数值
          */
         uint8_t GetRecvCommandCnt(uint8_t cmd) {
@@ -218,8 +218,8 @@ namespace communication{
         }
 
         /**
-         * @brief 获取全部 12 个命令 (0~11) 的计数器总和
-         * @return 0~11 号命令计数值的累加和
+         * @brief 获取全部 16 个命令 (0~15) 的计数器总和
+         * @return 0~15 号命令计数值的累加和
          */
         uint8_t GetRecvCommandTotalCnt() {
             uint16_t sum = 0;
@@ -380,7 +380,7 @@ namespace communication{
         uint8_t rec_command_command;
         uint8_t rec_command_load1;
         uint8_t rec_command_load2;
-        uint8_t recv_command_cnts[COMM_COMMAND_COUNT];  // 0~11 号命令各自的计数器
+        uint8_t recv_command_cnts[COMM_COMMAND_COUNT];  // 0~15 号命令各自的计数器
 
         // 待发送的KFS相关数据（填入XYZ帧扩展字段）
         uint8_t send_KFS_want_place1;

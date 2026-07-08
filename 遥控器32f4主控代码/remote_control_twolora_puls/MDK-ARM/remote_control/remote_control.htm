@@ -3,7 +3,7 @@
 <title>Static Call Graph - [remote_control\remote_control.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image remote_control\remote_control.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Mon Jul  6 03:50:17 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Thu Jul  9 03:06:27 2026
 <BR><P>
 <H3>Maximum Stack Usage =        184 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -631,8 +631,8 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> freertos.o(.text.MX_FREERTOS_Init)
 </UL>
-<P><STRONG><a name="[92]"></a>Comm_Timer_Callback_Wrapper</STRONG> (Thumb, 1818 bytes, Stack size 48 bytes, communication.o(.text.Comm_Timer_Callback_Wrapper))
-<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = Comm_Timer_Callback_Wrapper &rArr; vTaskNotifyGiveFromISR
+<P><STRONG><a name="[92]"></a>Comm_Timer_Callback_Wrapper</STRONG> (Thumb, 1882 bytes, Stack size 56 bytes, communication.o(.text.Comm_Timer_Callback_Wrapper))
+<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = Comm_Timer_Callback_Wrapper &rArr; vTaskNotifyGiveFromISR
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
 <LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskNotifyGiveFromISR
@@ -1063,7 +1063,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[c0]"></a>HAL_TIM_IRQHandler</STRONG> (Thumb, 334 bytes, Stack size 16 bytes, stm32f4xx_hal_tim.o(.text.HAL_TIM_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; Comm_Timer_Callback_Wrapper &rArr; vTaskNotifyGiveFromISR
+<BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; Comm_Timer_Callback_Wrapper &rArr; vTaskNotifyGiveFromISR
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIMEx_CommutCallback
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_TriggerCallback
@@ -1111,7 +1111,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[c4]"></a>HAL_TIM_PeriodElapsedCallback</STRONG> (Thumb, 54 bytes, Stack size 0 bytes, main.o(.text.HAL_TIM_PeriodElapsedCallback))
-<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = HAL_TIM_PeriodElapsedCallback &rArr; Comm_Timer_Callback_Wrapper &rArr; vTaskNotifyGiveFromISR
+<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = HAL_TIM_PeriodElapsedCallback &rArr; Comm_Timer_Callback_Wrapper &rArr; vTaskNotifyGiveFromISR
 </UL>
 <BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Comm_Timer_Callback_Wrapper
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_IncTick
@@ -1286,7 +1286,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Display_task
 </UL>
 
-<P><STRONG><a name="[a4]"></a>HMI_Task_Loop</STRONG> (Thumb, 1502 bytes, Stack size 88 bytes, tjc_huart_hmi.o(.text.HMI_Task_Loop))
+<P><STRONG><a name="[a4]"></a>HMI_Task_Loop</STRONG> (Thumb, 1522 bytes, Stack size 88 bytes, tjc_huart_hmi.o(.text.HMI_Task_Loop))
 <BR><BR>[Stack]<UL><LI>Max Depth = 168<LI>Call Chain = HMI_Task_Loop &rArr; Communication_SendCommandFrame &rArr; Communication_EnqueueRetryFrame
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HMI_EnqueueButtonFrame
@@ -1502,14 +1502,14 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(.text)
 </UL>
 <P><STRONG><a name="[23]"></a>TIM1_UP_TIM10_IRQHandler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, stm32f4xx_it.o(.text.TIM1_UP_TIM10_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = TIM1_UP_TIM10_IRQHandler &rArr; HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; Comm_Timer_Callback_Wrapper &rArr; vTaskNotifyGiveFromISR
+<BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = TIM1_UP_TIM10_IRQHandler &rArr; HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; Comm_Timer_Callback_Wrapper &rArr; vTaskNotifyGiveFromISR
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IRQHandler
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
 <P><STRONG><a name="[26]"></a>TIM2_IRQHandler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, stm32f4xx_it.o(.text.TIM2_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = TIM2_IRQHandler &rArr; HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; Comm_Timer_Callback_Wrapper &rArr; vTaskNotifyGiveFromISR
+<BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = TIM2_IRQHandler &rArr; HAL_TIM_IRQHandler &rArr; HAL_TIM_PeriodElapsedCallback &rArr; Comm_Timer_Callback_Wrapper &rArr; vTaskNotifyGiveFromISR
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IRQHandler
 </UL>
@@ -1533,7 +1533,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[6a]"></a>TxBufferToDMA_task</STRONG> (Thumb, 74 bytes, Stack size 0 bytes, freertos.o(.text.TxBufferToDMA_task))
-<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = TxBufferToDMA_task &rArr; Comm_Timer_Callback_Wrapper &rArr; vTaskNotifyGiveFromISR
+<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = TxBufferToDMA_task &rArr; Comm_Timer_Callback_Wrapper &rArr; vTaskNotifyGiveFromISR
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ulTaskNotifyTake
 <LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TxBufferToDMA
