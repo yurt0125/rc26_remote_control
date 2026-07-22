@@ -272,6 +272,7 @@ void Lora_communication::Task_Process() {
     airjoy_data.tx_error_cnt     = GetTxErrorCnt();
     airjoy_data.tx_timeout_recovery_cnt = GetTxTimeoutRecoveryCnt();
     airjoy_data.rx_crc_error_cnt = GetRxCrcErrorCnt();
+    airjoy_data.max_joystick_rx_interval_ms = GetMaxJoystickRxIntervalMs();
 }
 
 void Lora_communication::send_robot_pos(float x, float y, float yaw)
@@ -362,6 +363,7 @@ void Lora_communication::update_airjoy_data(RC10_AirJoy_Data_S * data)
     data->tx_error_cnt     = airjoy_data.tx_error_cnt;
     data->tx_timeout_recovery_cnt = airjoy_data.tx_timeout_recovery_cnt;
     data->rx_crc_error_cnt = airjoy_data.rx_crc_error_cnt;
+    data->max_joystick_rx_interval_ms = airjoy_data.max_joystick_rx_interval_ms;
 
 }
 

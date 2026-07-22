@@ -75,6 +75,10 @@ namespace communication{
         this->tx_error_cnt = 0;
         this->rx_crc_error_cnt = 0;
         this->joystick_frame_count = 0;
+        this->last_joystick_rx_interval_tick = 0;
+        this->max_joystick_rx_interval_ms = 0;
+
+
 
         send_xyz[0]=0;
         send_xyz[1]=0;
@@ -244,6 +248,14 @@ namespace communication{
                 // 将 FIFO 头部读取指针越过已经正确消费的这一帧
                 rx_fifo.head = p;
                 rx_cnt++;
+                uint32_t now_tick = HAL_GetTick();
+                if (joystick_frame_count > 0U) {
+                    uint32_t interval_ms = now_tick - last_joystick_rx_interval_tick;
+                    if (interval_ms > max_joystick_rx_interval_ms) {
+                        max_joystick_rx_interval_ms = interval_ms;
+                    }
+                }
+                last_joystick_rx_interval_tick = now_tick;
                 joystick_frame_count++;
                 data_updated = true; // 标记数据已更新
             } else {

@@ -253,6 +253,10 @@ namespace communication{
             return rx_crc_error_cnt;
         }
 
+        uint32_t GetMaxJoystickRxIntervalMs() const {
+            return max_joystick_rx_interval_ms;
+        }
+
         /**
          * @brief [已废弃] 设置待发送的KFS相关数据，已合并至 Comm_SendAxisDataToTxBuffer 参数中
          * @deprecated 请直接在 Comm_SendAxisDataToTxBuffer 调用时传入 KFS 参数，无需单独调用此函数
@@ -361,6 +365,8 @@ namespace communication{
         volatile uint16_t tx_error_cnt;
         volatile uint16_t rx_crc_error_cnt;
         uint32_t joystick_frame_count;
+        uint32_t last_joystick_rx_interval_tick;
+        uint32_t max_joystick_rx_interval_ms;
 
         /* 解析出来/待发送的业务数据 */
         uint16_t send_xyz[3]; 

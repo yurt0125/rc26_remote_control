@@ -68,6 +68,7 @@ typedef struct{
     uint16_t tx_error_cnt;
     uint16_t tx_timeout_recovery_cnt;
     uint16_t rx_crc_error_cnt;
+    uint32_t max_joystick_rx_interval_ms;
 
 }RC10_AirJoy_Data_S;
 
@@ -97,6 +98,7 @@ public:
     uint16_t get_tx_error_cnt() const { return GetTxErrorCnt(); }
     uint16_t get_tx_timeout_recovery_cnt() const { return GetTxTimeoutRecoveryCnt(); }
     uint16_t get_rx_crc_error_cnt() const { return GetRxCrcErrorCnt(); }
+    uint32_t get_max_joystick_rx_interval_ms() const { return GetMaxJoystickRxIntervalMs(); }
 
     void send_robot_pos(float x, float y, float yaw);
 
